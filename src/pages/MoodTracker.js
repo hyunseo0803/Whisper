@@ -17,7 +17,7 @@ export default MoodTracker;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#8fcbbc",
+    backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
   },
