@@ -17,14 +17,14 @@ const Tabs = () => {
                 tabBarShowLabel: false, // text 나타나지 않게
                 tabBarStyle: {
                   position: 'relative',
-                  display: 'flex',
+                  display: 'flex',        // 아이템들의 정렬
                   justifyContent: 'space-between',
-                  height: 100,  // 높이 지정
-                  shadowColor: '#D3D5DA',
+                  height: 100,  // 탭 높이 지정
+                  shadowColor: '#D3D5DA', // 그림자
                   shadowRadius: 10,
                   shadowOffset: 1,
                   shadowOpacity: .7,
-                  borderTopWidth: 0,
+                  borderTopWidth: 0,    // 탭 상단 선 제거
                 },
                 headerShown: false,  // 상단 안내 보일 것인지
             }}
@@ -49,13 +49,11 @@ const Tabs = () => {
                 <Ionicons name="add-outline" size={55} color='white' />
               ),
               tabBarItemStyle: {
-                // position: 'absolute',
-                borderRadius: 100,
-                top: -40,
+                borderRadius: 100,  // 둘글게 만들기 위함
+                top: -40,           // 위로 40만큼 올라옴
                 height: '110%',
                 backgroundColor: '#E76B5C',
                 shadowColor: '#BDBFC4',
-                shadowOffset: 100,
                 shadowOpacity: 1,
                 shadowRadius: 10,
               },
