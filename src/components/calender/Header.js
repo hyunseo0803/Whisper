@@ -26,19 +26,26 @@ function Header(props) {
 
   return(
     <View style={S.headerContainer}>
-      <Pressable onPress={props.movePrevMonth.bind(this, props.month)}>
-        <Ionicons name="chevron-back" size={32} color='black' />
+      <Pressable 
+      style={S.btnBox}
+      onPress={props.movePrevMonth.bind(this, props.month)}>
+        <Ionicons name="chevron-back" size={40} color='black' />
       </Pressable>
 
-      <View style={S.dateContainer}>
+      <Pressable style={S.dateContainer}
+      onPress={() => {
+        alert("연, 월 선택가능한 모달창 나와야합니다")
+      }}>
         <Text style={GlobalStyle.font_body}>{props.year}</Text>
         <Text style={GlobalStyle.font_title1}>
           {changeMonth(props.month)}
         </Text>
-      </View>
+      </Pressable>
 
-      <Pressable onPress={props.moveNextMonth.bind(this, props.month)}>
-        <Ionicons name="chevron-forward" size={32} color='black' />
+      <Pressable 
+      style = {S.btnBox}
+      onPress={props.moveNextMonth.bind(this, props.month)}>
+        <Ionicons name="chevron-forward" size={40} color='black' />
       </Pressable>
     </View>
   )
@@ -48,14 +55,19 @@ export default Header;
 
 const S = StyleSheet.create({
   headerContainer: {
-    backgroundColor: 'red',
     width: '100%',
     flexDirection: 'row',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center'
+  },
 
-    // marginTop: 40
+  btnBox:{
+    height: 50,
+    width: 50,
+
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   
   dateContainer:{

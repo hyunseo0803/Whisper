@@ -10,7 +10,7 @@ function Calender() {
   const YEAR = DATE.getFullYear();
   const MONTH = DATE.getMonth();
 
-  const [month, setMonth] = useState(MONTH);
+  const [month, setMonth] = useState(MONTH+1);
   const [year, setYear] = useState(YEAR);
 
   // 다음 달로 이동하는 화살표 버튼 함수

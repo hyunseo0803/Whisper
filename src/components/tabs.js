@@ -25,7 +25,7 @@ const Tabs = () => {
                   shadowOpacity: .7,
                   borderTopWidth: 0,    // 탭 상단 선 제거
                 },
-                headerShown: false,  // 상단 안내 보일 것인지
+                headerShown: false,  // 상단 안내 안보이도록
             }}
         >
             <Tab.Screen name='Home' component={HomeScreen}
@@ -54,7 +54,7 @@ const Tabs = () => {
                 backgroundColor: '#E76B5C',
                 shadowColor: '#BDBFC4',
                 shadowOpacity: 1,
-                shadowRadius: 10,
+                shadowRadius: 5,
               },
             }}
             />
