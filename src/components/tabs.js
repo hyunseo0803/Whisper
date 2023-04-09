@@ -22,7 +22,6 @@ const Tabs = () => {
                   height: 100,  // 탭 높이 지정
                   shadowColor: '#D3D5DA', // 그림자
                   shadowRadius: 10,
-                  shadowOffset: 1,
                   shadowOpacity: .7,
                   borderTopWidth: 0,    // 탭 상단 선 제거
                 },
