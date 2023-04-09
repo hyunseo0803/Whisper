@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableOpcity } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import MoodTrackerScreen from '../pages/MoodTracker'
-import SearchScreen from '../pages/Search'
+import HomeScreen from '../pages/Home'
 import WriteScreen from '../pages/Write'
 import ListScreen from '../pages/List'
 import SettingScreen from '../pages/Setting'
@@ -28,17 +28,17 @@ const Tabs = () => {
                 headerShown: false,  // 상단 안내 보일 것인지
             }}
         >
+            <Tab.Screen name='Home' component={HomeScreen}
+            options={{
+              tabBarIcon: ({focused}) => (
+                <Ionicons name="home-outline" size={32} color={focused ? '#E76B5C' : 'gray'} />
+              ),
+            }}
+            />
             <Tab.Screen name='MoodTracker' component={MoodTrackerScreen}
             options={{
               tabBarIcon: ({focused}) => (
                 <Ionicons name="analytics-outline" size={32} color={focused ? '#E76B5C' : 'gray'} />
-              ),
-            }}
-            />
-            <Tab.Screen name='Search' component={SearchScreen}
-            options={{
-              tabBarIcon: ({focused}) => (
-                <Ionicons name="search-outline" size={32} color={focused ? '#E76B5C' : 'gray'} />
               ),
             }}
             />

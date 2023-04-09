@@ -1,5 +1,6 @@
 import { Button, StyleSheet, Text, View } from "react-native";
 import React from "react";
+import Calender from "../components/Calender";
 
 const Home = () => {
   return (
@@ -8,6 +9,8 @@ const Home = () => {
       <Button
         title='Click Here'
         onPress = { () => alert('Button Clicked!')}/>
+
+			<Calender/>
     </View>
   );
 }
