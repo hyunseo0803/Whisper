@@ -266,7 +266,6 @@ const styles = StyleSheet.create({
 		padding: 10,
 		marginBottom: 20,
 		position: "relative",
-		// fontSize: 16,
 		//backgroundColor: "red",
 	},
 	selectShow: {
