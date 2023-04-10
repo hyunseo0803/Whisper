@@ -6,26 +6,28 @@ import {
 	Image,
 	View,
 	Alert,
+	SafeAreaView,
 } from "react-native";
 import React, { useState } from "react";
-//import { Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import NameLogo from "../../../assets/images/NameLogo.png";
-import AutoLogin from "../../../assets/images/AutoLogin.png";
 import GoogleLogo from "../../../assets/images/GoogleLogo.png";
+import { Pressable } from "react-native";
+import GlobalStyle from "../../globalStyle/GlobalStyle";
 
 export default function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [showPassword] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
+	const [savelogin, setSaveLogin] = useState("checkmark-circle-outline");
 
-	/*this.state = {
-		email: "",
-		password: "",
+	const saveLogin = () => {
+		setSaveLogin(!savelogin);
 	};
 
-	/*function passwordShowcheck(){
-		this.setState({ showPassword: !showPassword });
-	}*/
+	const passwordShowcheck = () => {
+		setShowPassword(!showPassword);
+	};
 
 	const handleLogin = () => {
 		console.log(email, password);
@@ -37,104 +39,125 @@ export default function Login() {
 	};
 
 	return (
-		<View
+		<SafeAreaView
 			style={{
 				display: "flex",
-				//backgroundColor: "yellow",
 				alignItems: "center",
-				width: "90%",
-				height: 750,
+				marginHorizontal: 30,
+				height: "85%",
 			}}
 		>
+			{/* 로고 */}
 			<View
 				style={{
-					display: "flex",
 					alignItems: "center",
-					justifyContent: "center",
-					top: "15%",
+					justifyContent: "flex-start",
+					marginTop: 50,
+					width: "100%",
+					height: 110,
+					// backgroundColor: "red",
 				}}
 			>
 				<Image source={NameLogo} style={styles.logo} />
-				<Text style={styles.login}>로그인</Text>
+				<Text style={[styles.login, GlobalStyle.font_title2]}>로그인</Text>
 			</View>
+
+			{/* 입력 폼 */}
 			<View
 				style={{
-					display: "flex",
-					//backgroundColor: "white",
-					alignItems: "center",
-					justifyContent: "center",
-					position: "absolute",
-					top: "35%",
+					// backgroundColor: "white",
+					alignItems: "stretch",
+					marginTop: 50,
+					flexDirection: "row",
+					flexWrap: "wrap",
 				}}
 			>
 				<TextInput
-					style={styles.inputbox}
+					style={[styles.inputbox, GlobalStyle.font_caption1]}
 					value={email}
 					placeholder="이메일"
 					label="email"
 					onChangeText={setEmail}
 				/>
-				<TextInput
-					style={styles.inputbox}
-					value={password}
-					placeholder="비밀번호"
-					onChangeText={setPassword}
-					label="Password"
-					secureTextEntry={!showPassword}
-				/>
-				{/*<TextInput.Right>
-						<TouchableOpacity onPress={this.passwordShowcheck}>
-							<Ionicons
-								name={
-									this.state.showPassword ? "eye-off-outline" : "eye-outline"
-								}
-								size={24}
-								color="black"
-							/> 
-						</TouchableOpacity>
-					</TextInput.Right>
-							*/}
+				<View
+					style={{
+						width: "100%",
+						height: 60,
+						//backgroundColor: "blue",
+					}}
+				>
+					<TextInput
+						style={[styles.inputbox, GlobalStyle.font_caption1]}
+						value={password}
+						placeholder="비밀번호"
+						onChangeText={setPassword}
+						label="Password"
+						secureTextEntry={!showPassword}
+					/>
+					<Pressable style={styles.selectShow} onPress={passwordShowcheck}>
+						<Ionicons
+							name={showPassword ? "eye-off-outline" : "eye-outline"}
+							size={24}
+							color="black"
+						/>
+					</Pressable>
+				</View>
 			</View>
+
+			{/* 자동로그인 */}
 			<View
 				style={{
-					width: 250,
+					width: "100%",
 					height: 30,
-					justifyContent: "flex-start",
-					position: "absolute",
-					top: 400,
+					alignItems: "center",
+					marginTop: 10,
 					//backgroundColor: "blue",
-					flex: 1,
 					flexDirection: "row",
 				}}
 			>
-				<Image source={AutoLogin} style={styles.autoLoginImg} />
-				<Text style={styles.autoLogin}>자동 로그인</Text>
+				<Pressable style={styles.selectSave} onPress={saveLogin}>
+					<Ionicons
+						name={
+							savelogin ? "checkmark-circle-outline" : "checkmark-circle-sharp"
+						}
+						size={24}
+						color="black"
+					/>
+				</Pressable>
+				<Text style={[styles.autoLogin, GlobalStyle.font_caption1]}>
+					자동 로그인
+				</Text>
 			</View>
-			<View>
+
+			{/* 로그인버튼 */}
+			<View style={styles.loginButtonWrap}>
 				<TouchableOpacity
 					activeOpacity={0.8}
 					style={styles.loginbutton}
 					onPress={handleLogin}
 				>
 					<Text
-						style={{
-							color: "white",
-							textAlign: "center",
-							top: 15,
-							fontSize: 20,
-						}}
+						style={[
+							{
+								color: "white",
+								fontSize: 20,
+							},
+							GlobalStyle.font_title2,
+						]}
 					>
 						로그인
 					</Text>
 				</TouchableOpacity>
 			</View>
+
+			{/* 비밀번호 재설정 | 회원가입 */}
 			<View
 				style={{
 					width: "100%",
 					height: 14,
-					position: "absolute",
-					top: 520,
-					flex: 1,
+					// position: "absolute",
+					marginTop: 20,
+					// flex: 1,
 					flexDirection: "row",
 					//backgroundColor: "red",
 				}}
@@ -150,11 +173,13 @@ export default function Login() {
 					onPress={() => Alert.alert("test", "테스트.")}
 				>
 					<Text
-						style={{
-							color: "black",
-							textAlign: "center",
-							fontSize: 14,
-						}}
+						style={[
+							{
+								color: "black",
+								textAlign: "center",
+							},
+							GlobalStyle.font_caption1,
+						]}
 					>
 						비밀번호 재설정
 					</Text>
@@ -171,50 +196,47 @@ export default function Login() {
 					onPress={() => Alert.alert("test", "테스트.")}
 				>
 					<Text
-						style={{
-							color: "black",
-							textAlign: "center",
-							fontSize: 14,
-						}}
+						style={[
+							{
+								color: "black",
+								textAlign: "center",
+							},
+							GlobalStyle.font_caption1,
+						]}
 					>
 						회원가입
 					</Text>
 				</TouchableOpacity>
 			</View>
+
+			{/* sns로그인 */}
 			<View
 				style={{
 					width: "100%",
 					height: 14,
-					position: "absolute",
-					top: 580,
-					flex: 1,
+					marginTop: 50,
 					flexDirection: "row",
-					//backgroundColor: "blue",
-					justifyContent: "space-around",
+					justifyContent: "space-between",
 				}}
 			>
-				<View
-					style={{
-						width: 90,
-						height: 1,
-						backgroundColor: "black",
-						alignSelf: "stretch",
-						marginTop: 7,
-					}}
-				/>
-				<Text style={{ fontSize: 14 }}>SNS계정으로 로그인 하기</Text>
-				<View
-					style={{
-						width: 90,
-						height: 1,
-						backgroundColor: "black",
-						alignSelf: "stretch",
-						marginTop: 7,
-					}}
-				/>
+				<View style={styles.line} />
+				<Text style={[{ paddingHorizontal: 10 }, GlobalStyle.font_caption1]}>
+					SNS계정으로 로그인 하기
+				</Text>
+				<View style={styles.line} />
 			</View>
-			<Image source={GoogleLogo} style={styles.Googlelogo} />
-		</View>
+			<View
+				style={{
+					width: "100%",
+					alignItems: "center",
+					padding: 10,
+					flexDirection: "row",
+					marginTop: 20,
+				}}
+			>
+				<Image source={GoogleLogo} style={styles.Googlelogo} />
+			</View>
+		</SafeAreaView>
 	);
 }
 
@@ -224,46 +246,85 @@ const styles = StyleSheet.create({
 		height: 50,
 		margin: "auto",
 		textAlign: "center",
-		top: "10%",
 	},
 
 	login: {
-		fontSize: 20,
+		// fontSize: 20,
 		justifyContentcontent: "center",
 		color: "#4E4981",
-		fontWeight: 800,
-		LineHeight: 23,
-		fontfamily: "Abhaya Libre ExtraBold",
+		// fontWeight: 800,
 		textAlign: "center",
-		top: 30,
+		marginTop: 20,
 	},
 	inputbox: {
-		width: 250,
-		height: 40,
+		// flex: 1,
+		width: "100%",
+		height: 60,
 		borderColor: "#4E4981",
 		borderWidth: 1,
 		borderRadius: 10,
 		padding: 10,
 		marginBottom: 20,
+		position: "relative",
+		// fontSize: 16,
 		//backgroundColor: "red",
 	},
+	selectShow: {
+		height: "100%",
+		position: "absolute",
+		right: 0,
+		alignItems: "center",
+		justifyContent: "center",
+		paddingHorizontal: 10,
+	},
+	selectSave: {
+		height: "100%",
+		position: "absolute",
+		left: 0,
+		alignItems: "center",
+		justifyContent: "center",
+		paddingHorizontal: 8,
+	},
+
 	autoLogin: {
-		width: 210,
-		height: 40,
-		top: 7,
-		fontSize: 15,
-		marginLeft: 5,
+		width: "100%",
+		left: 40,
+		alignItems: "center",
+		justifyContent: "center",
+		//position: "absolute",
+		//marginLeft: 5,
+		//backgroundColor: "yellow",
 	},
 	autoLoginImg: {
 		width: 30,
 		height: 30,
 	},
+
+	loginButtonWrap: {
+		width: "100%",
+		height: 60,
+		flexDirection: "row",
+		marginTop: 20,
+	},
 	loginbutton: {
-		width: 300,
-		height: 50,
+		width: "100%",
+		height: "100%",
+		alignItems: "center",
+		justifyContent: "center",
 		borderRadius: 10,
 		backgroundColor: "#E76B5C",
-		top: 380,
 	},
-	Googlelogo: { width: 55, height: 55, top: 500 },
+	line: {
+		width: "30%",
+		height: 1,
+		backgroundColor: "gray",
+		alignSelf: "stretch",
+		marginTop: 7,
+	},
+	Googlelogo: {
+		width: 50,
+		height: 50,
+		// marginTop: 50,
+		backgroundColor: "red",
+	},
 });
