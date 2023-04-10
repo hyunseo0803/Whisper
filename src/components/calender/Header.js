@@ -1,8 +1,14 @@
-import { Pressable, View, Text, StyleSheet } from "react-native";
+import React, {useState, useEffect} from "react";
+import { Pressable, View, Text, StyleSheet, Modal, Button } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import GlobalStyle from "../../globalStyle/GlobalStyle";
+import YMPicker from "../datePicker/YMPicker";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 function Header(props) {
+
+  // 모달창 show
+  const [showModal, setShowModal] = useState(false);
 
   // 숫자로 되어있는 월을 영어로 바꿔주는 함수
   const changeMonth = (NMonth) => {
@@ -24,6 +30,10 @@ function Header(props) {
     return EMonth[NMonth-1]
   }
 
+  const closeModal = () => {
+    setShowModal(false);
+  }
+
   return(
     <View style={S.headerContainer}>
       <Pressable 
@@ -34,7 +44,7 @@ function Header(props) {
 
       <Pressable style={S.dateContainer}
       onPress={() => {
-        alert("연, 월 선택가능한 모달창 나와야합니다")
+        setShowModal(true);
       }}>
         <Text style={GlobalStyle.font_body}>{props.year}</Text>
         <Text style={GlobalStyle.font_title1}>
@@ -47,6 +57,21 @@ function Header(props) {
       onPress={props.moveNextMonth.bind(this, props.month)}>
         <Ionicons name="chevron-forward" size={40} color='black' />
       </Pressable>
+
+      {
+        showModal &&
+        <YMPicker 
+          animationType = 'slide'
+          visible={true}
+  
+          closeModal = {closeModal}
+          month = {props.month}
+          setMonth = {props.setMonth}
+          year = {props.year}
+          setYear = {props.setYear}
+        />
+      }
+
     </View>
   )
 }

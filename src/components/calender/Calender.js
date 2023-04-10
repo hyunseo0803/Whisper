@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import Header from './Header'
 import Body from './Body'
 import GlobalStyle from '../../globalStyle/GlobalStyle';
+import YMPicker from '../datePicker/YMPicker';
 
 function Calender() {
 
@@ -42,6 +43,8 @@ function Calender() {
         year = {year}
         moveNextMonth = {moveNextMonth}
         movePrevMonth = {movePrevMonth}
+        setMonth = {setMonth}
+        setYear = {setYear}
       />
       <Body
         month = {month}
@@ -49,6 +52,7 @@ function Calender() {
         moveNextMonth = {moveNextMonth}
         movePrevMonth = {movePrevMonth}
       />
+
     </View>
   );
 }

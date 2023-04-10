@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import Tabs from './src/components/tabs';
-import { View, Text } from 'react-native';
 import * as Font from "expo-font";
 
 
