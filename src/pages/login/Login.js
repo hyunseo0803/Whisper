@@ -7,21 +7,40 @@ import {
 	View,
 	Alert,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+//import { Ionicons } from "@expo/vector-icons";
 import NameLogo from "../../../assets/images/NameLogo.png";
 import AutoLogin from "../../../assets/images/AutoLogin.png";
+import GoogleLogo from "../../../assets/images/GoogleLogo.png";
 
-export default function App() {
-	state = {
-		emailinput: "",
-		passwordinput: "",
+export default function Login() {
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [showPassword] = useState(false);
+
+	/*this.state = {
+		email: "",
+		password: "",
+	};
+
+	/*function passwordShowcheck(){
+		this.setState({ showPassword: !showPassword });
+	}*/
+
+	const handleLogin = () => {
+		console.log(email, password);
+		if (email === "admin@naver.com" && password === "admin") {
+			Alert.alert("로그인 성공");
+		} else {
+			Alert.alert("로그인 실패", "이메일 또는 비밀번호가 일치하지 않습니다.");
+		}
 	};
 
 	return (
 		<View
 			style={{
 				display: "flex",
-				backgroundColor: "yellow",
+				//backgroundColor: "yellow",
 				alignItems: "center",
 				width: "90%",
 				height: 750,
@@ -30,10 +49,8 @@ export default function App() {
 			<View
 				style={{
 					display: "flex",
-					//backgroundColor: "white",
 					alignItems: "center",
 					justifyContent: "center",
-					//position: "absolute",
 					top: "15%",
 				}}
 			>
@@ -43,38 +60,49 @@ export default function App() {
 			<View
 				style={{
 					display: "flex",
-					backgroundColor: "white",
+					//backgroundColor: "white",
 					alignItems: "center",
 					justifyContent: "center",
 					position: "absolute",
-					top: "40%",
+					top: "35%",
 				}}
 			>
 				<TextInput
 					style={styles.inputbox}
-					value={this.state.emailinput}
+					value={email}
 					placeholder="이메일"
 					label="email"
-					onChange={(emailinput) => this.setState({ emailinput: emailinput })}
+					onChangeText={setEmail}
 				/>
 				<TextInput
 					style={styles.inputbox}
-					value={this.state.passwordinput}
+					value={password}
 					placeholder="비밀번호"
+					onChangeText={setPassword}
 					label="Password"
-					onChange={(passwordinput) =>
-						this.setState({ passwordinput: passwordinput })
-					}
+					secureTextEntry={!showPassword}
 				/>
+				{/*<TextInput.Right>
+						<TouchableOpacity onPress={this.passwordShowcheck}>
+							<Ionicons
+								name={
+									this.state.showPassword ? "eye-off-outline" : "eye-outline"
+								}
+								size={24}
+								color="black"
+							/> 
+						</TouchableOpacity>
+					</TextInput.Right>
+							*/}
 			</View>
 			<View
 				style={{
-					//display: "flex",
-					height: 40,
-					justifyContent: "center",
+					width: 250,
+					height: 30,
+					justifyContent: "flex-start",
 					position: "absolute",
-					top: 430,
-					backgroundColor: "blue",
+					top: 400,
+					//backgroundColor: "blue",
 					flex: 1,
 					flexDirection: "row",
 				}}
@@ -86,7 +114,7 @@ export default function App() {
 				<TouchableOpacity
 					activeOpacity={0.8}
 					style={styles.loginbutton}
-					onPress={() => Alert.alert("test", "테스트.")}
+					onPress={handleLogin}
 				>
 					<Text
 						style={{
@@ -100,6 +128,92 @@ export default function App() {
 					</Text>
 				</TouchableOpacity>
 			</View>
+			<View
+				style={{
+					width: "100%",
+					height: 14,
+					position: "absolute",
+					top: 520,
+					flex: 1,
+					flexDirection: "row",
+					//backgroundColor: "red",
+				}}
+			>
+				<TouchableOpacity
+					activeOpacity={0.8}
+					style={{
+						//backgroundColor: "green",
+						width: 100,
+						height: 14,
+						marginLeft: 70,
+					}}
+					onPress={() => Alert.alert("test", "테스트.")}
+				>
+					<Text
+						style={{
+							color: "black",
+							textAlign: "center",
+							fontSize: 14,
+						}}
+					>
+						비밀번호 재설정
+					</Text>
+				</TouchableOpacity>
+				<Text>|</Text>
+				<TouchableOpacity
+					activeOpacity={0.8}
+					style={{
+						//backgroundColor: "pink",
+						width: 100,
+						height: 14,
+						marginEnd: 70,
+					}}
+					onPress={() => Alert.alert("test", "테스트.")}
+				>
+					<Text
+						style={{
+							color: "black",
+							textAlign: "center",
+							fontSize: 14,
+						}}
+					>
+						회원가입
+					</Text>
+				</TouchableOpacity>
+			</View>
+			<View
+				style={{
+					width: "100%",
+					height: 14,
+					position: "absolute",
+					top: 580,
+					flex: 1,
+					flexDirection: "row",
+					//backgroundColor: "blue",
+					justifyContent: "space-around",
+				}}
+			>
+				<View
+					style={{
+						width: 90,
+						height: 1,
+						backgroundColor: "black",
+						alignSelf: "stretch",
+						marginTop: 7,
+					}}
+				/>
+				<Text style={{ fontSize: 14 }}>SNS계정으로 로그인 하기</Text>
+				<View
+					style={{
+						width: 90,
+						height: 1,
+						backgroundColor: "black",
+						alignSelf: "stretch",
+						marginTop: 7,
+					}}
+				/>
+			</View>
+			<Image source={GoogleLogo} style={styles.Googlelogo} />
 		</View>
 	);
 }
@@ -110,9 +224,7 @@ const styles = StyleSheet.create({
 		height: 50,
 		margin: "auto",
 		textAlign: "center",
-		//display: "block",
 		top: "10%",
-		//bottom: "20%",
 	},
 
 	login: {
@@ -121,37 +233,37 @@ const styles = StyleSheet.create({
 		color: "#4E4981",
 		fontWeight: 800,
 		LineHeight: 23,
-		// backgroundColor: "black",
 		fontfamily: "Abhaya Libre ExtraBold",
 		textAlign: "center",
 		top: 30,
 	},
 	inputbox: {
-		//backgroundColor: "black",
 		width: 250,
 		height: 40,
-		// justifyContent: "center",
 		borderColor: "#4E4981",
 		borderWidth: 1,
 		borderRadius: 10,
 		padding: 10,
 		marginBottom: 20,
+		//backgroundColor: "red",
 	},
 	autoLogin: {
 		width: 210,
 		height: 40,
-		top: 10,
+		top: 7,
 		fontSize: 15,
+		marginLeft: 5,
 	},
 	autoLoginImg: {
-		width: 40,
-		height: 40,
+		width: 30,
+		height: 30,
 	},
 	loginbutton: {
 		width: 300,
 		height: 50,
 		borderRadius: 10,
 		backgroundColor: "#E76B5C",
-		top: 410,
+		top: 380,
 	},
+	Googlelogo: { width: 55, height: 55, top: 500 },
 });
