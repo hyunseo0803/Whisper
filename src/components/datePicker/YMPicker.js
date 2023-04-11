@@ -32,12 +32,41 @@ export default function YMPicker(props) {
   const onClickSelectMonth = (month) => {
     setSelectMonth(month);
   }
+  
+  /**
+   *  모달 선택 취소 버튼
+   *  @result showModal -> false
+   */
+  const onClickBtnCancle = () => {
+    setSelectYear(props.year)
+    setSelectMonth(props.month)
+    props.setShowModal(false);
+  }
 
-  const onClickBtnSave = () => {}
+  /**
+   * 모달 선택(저장) 버튼
+   */
+  const onClickBtnSave = () => {
+    props.setMonth(selectMonth)
+    props.setYear(selectYear)
+    props.setShowModal(false)
+  }
+
+  /**
+   * 모달창을 닫을 때 선택한 연도, 월을 보내주는 함수
+   * @param {number} year 
+   * @param {number} month 
+   */
+  // const sendYM = (year, month) => {
+
+  // }
 
   console.log(selectMonth)
+  console.log(selectYear)
 
-
+  /**
+   * 세글자 월 이름 배열
+   */
   const Month = [
     'Jan',
     'Fab',
@@ -71,7 +100,7 @@ export default function YMPicker(props) {
               onPress={btnPrevYear}/>
             </Pressable>
             
-            <Text style={GlobalStyle.font_title2}>{selectYear}</Text>
+            <Text style={[GlobalStyle.font_title2, {color: '#4E4981'}]}>{selectYear}</Text>
             
             <Pressable>
               <Ionicons name="chevron-forward-outline" size={35} color="black" 
@@ -86,10 +115,10 @@ export default function YMPicker(props) {
             {
               Month.map((monthName, index) => (
                 <Pressable
-                style={pickerS.btnMonth}
+                style={[pickerS.btnMonth, TextS(index+1, selectMonth).btnMonthBox]}
                 key={index}
-                onPress={() => onClickSelectMonth(monthName)}>
-                  <Text style={[GlobalStyle.font_body, pickerS.monthText]}>{monthName}</Text>
+                onPress={() => onClickSelectMonth(index+1)}>
+                  <Text style={[GlobalStyle.font_body, pickerS.monthText, TextS(index+1, selectMonth).btnMonthText]}>{monthName}</Text>
                 </Pressable>
               ))
             }
@@ -98,18 +127,16 @@ export default function YMPicker(props) {
           {/* FOOTER */}
           <View style={pickerS.footer}>
             <Pressable
-            style={pickerS.btnInFooter}
-            onPress={props.closeModal}>
-              <Text style={GlobalStyle.font_body}>취 소</Text>
+            style={[pickerS.btnInFooter, TextS(0, ).btnSaveCancle]}
+            onPress={onClickBtnCancle}>
+              <Text style={[GlobalStyle.font_body, TextS(0, ).btnSaveCancleText]}>취 소</Text>
             </Pressable>
             <Pressable
-            style={pickerS.btnInFooter}>
-              <Text style={GlobalStyle.font_body}>적 용</Text>
+            style={[pickerS.btnInFooter, TextS(1, ).btnSaveCancle]}
+            onPress={onClickBtnSave}>
+              <Text style={[GlobalStyle.font_body, TextS(1, ).btnSaveCancleText]}>적 용</Text>
             </Pressable>
-
-        </View>
-
-
+          </View>
         </View>
       </View>
     </Modal>
@@ -124,8 +151,9 @@ const modalS = StyleSheet.create({
     },
   modalBody:{
     marginHorizontal: 50,
-    height: 400,
+    height: 410,
     backgroundColor: '#fff',
+    justifyContent: 'space-between',
     display: 'flex',
     gap: 5,
     padding: 10,
@@ -138,15 +166,14 @@ const pickerS = StyleSheet.create({
   header:{
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: 'red',
     justifyContent: 'space-between',
     alignItems: 'center',
     flex: 1
   },
   btnArrow:{
-    backgroundColor: 'yellow',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    color: '#4E4981'
   },  
 
   // 바디
@@ -156,13 +183,12 @@ const pickerS = StyleSheet.create({
     flexWrap: 'wrap',
     // gap: 10,
     justifyContent: 'space-between',
-    backgroundColor: 'blue',
+    flex: 5
   },
   btnMonth:{
-    backgroundColor: '#000',
-    width: '32%',
+    width: '33%',
     padding: 20,
-    marginVertical: 5,
+    marginVertical: 3,
     borderRadius: 10,
 
     alignItems: 'center',
@@ -175,10 +201,9 @@ const pickerS = StyleSheet.create({
   // 푸터
   footer:{
     display: 'flex',
-    height: 50,
-    backgroundColor: 'green',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    flex: 1
   },
   btnInFooter:{
     width: '47%',
@@ -189,7 +214,20 @@ const pickerS = StyleSheet.create({
   },
 })
 
-const TextS = (el) = StyleSheet.create({
+const TextS = (el, month) => StyleSheet.create({
+  btnMonthBox:{
+    backgroundColor: el === month ? '#4E4981' : '#fff',
+  },
   btnMonthText:{
+    color: el === month ? '#fff' : '#4E4981'
+  },
+
+  btnSaveCancle:{
+    backgroundColor: el===0? '#fff' : '#E76B5C',
+    borderWidth : 2,
+    borderColor: '#E76B5C' 
+  },
+  btnSaveCancleText:{
+    color: el===0 ? '#E76B5C' : '#fff'
   }
 })

@@ -30,9 +30,6 @@ function Header(props) {
     return EMonth[NMonth-1]
   }
 
-  const closeModal = () => {
-    setShowModal(false);
-  }
 
   return(
     <View style={S.headerContainer}>
@@ -64,7 +61,7 @@ function Header(props) {
           animationType = 'slide'
           visible={true}
   
-          closeModal = {closeModal}
+          setShowModal = {setShowModal}
           month = {props.month}
           setMonth = {props.setMonth}
           year = {props.year}
