@@ -14,21 +14,19 @@ import NameLogo from "../../../assets/images/NameLogo.png";
 import GoogleLogo from "../../../assets/images/GoogleLogo.png";
 import { Pressable } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
+import LoginInput from "../login/LoginInput";
+import PwSettingSignup from "../login/PwSettingSignup";
+import LoginButton from "../login/LoginButton";
 
 export default function Login() {
 	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	let [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [savelogin, setSaveLogin] = useState("checkmark-circle-outline");
 
 	const saveLogin = () => {
 		setSaveLogin(!savelogin);
 	};
-
-	const passwordShowcheck = () => {
-		setShowPassword(!showPassword);
-	};
-
 	const handleLogin = () => {
 		console.log(email, password);
 		if (email === "admin@naver.com" && password === "admin") {
@@ -63,46 +61,12 @@ export default function Login() {
 			</View>
 
 			{/* 입력 폼 */}
-			<View
-				style={{
-					// backgroundColor: "white",
-					alignItems: "stretch",
-					marginTop: 50,
-					flexDirection: "row",
-					flexWrap: "wrap",
-				}}
-			>
-				<TextInput
-					style={[styles.inputbox, GlobalStyle.font_caption1]}
-					value={email}
-					placeholder="이메일"
-					label="email"
-					onChangeText={setEmail}
-				/>
-				<View
-					style={{
-						width: "100%",
-						height: 60,
-						//backgroundColor: "blue",
-					}}
-				>
-					<TextInput
-						style={[styles.inputbox, GlobalStyle.font_caption1]}
-						value={password}
-						placeholder="비밀번호"
-						onChangeText={setPassword}
-						label="Password"
-						secureTextEntry={!showPassword}
-					/>
-					<Pressable style={styles.selectShow} onPress={passwordShowcheck}>
-						<Ionicons
-							name={showPassword ? "eye-off-outline" : "eye-outline"}
-							size={24}
-							color="black"
-						/>
-					</Pressable>
-				</View>
-			</View>
+			<LoginInput
+				email={email}
+				setEmail={setEmail}
+				password={password}
+				setPassword={setPassword}
+			/>
 
 			{/* 자동로그인 */}
 			<View
@@ -130,84 +94,10 @@ export default function Login() {
 			</View>
 
 			{/* 로그인버튼 */}
-			<View style={styles.loginButtonWrap}>
-				<TouchableOpacity
-					activeOpacity={0.8}
-					style={styles.loginbutton}
-					onPress={handleLogin}
-				>
-					<Text
-						style={[
-							{
-								color: "white",
-								fontSize: 20,
-							},
-							GlobalStyle.font_title2,
-						]}
-					>
-						로그인
-					</Text>
-				</TouchableOpacity>
-			</View>
+			<LoginButton handleLogin={handleLogin} />
 
 			{/* 비밀번호 재설정 | 회원가입 */}
-			<View
-				style={{
-					width: "100%",
-					height: 14,
-					// position: "absolute",
-					marginTop: 20,
-					// flex: 1,
-					flexDirection: "row",
-					//backgroundColor: "red",
-				}}
-			>
-				<TouchableOpacity
-					activeOpacity={0.8}
-					style={{
-						//backgroundColor: "green",
-						width: 100,
-						height: 14,
-						marginLeft: 70,
-					}}
-					onPress={() => Alert.alert("test", "테스트.")}
-				>
-					<Text
-						style={[
-							{
-								color: "black",
-								textAlign: "center",
-							},
-							GlobalStyle.font_caption1,
-						]}
-					>
-						비밀번호 재설정
-					</Text>
-				</TouchableOpacity>
-				<Text>|</Text>
-				<TouchableOpacity
-					activeOpacity={0.8}
-					style={{
-						//backgroundColor: "pink",
-						width: 100,
-						height: 14,
-						marginEnd: 70,
-					}}
-					onPress={() => Alert.alert("test", "테스트.")}
-				>
-					<Text
-						style={[
-							{
-								color: "black",
-								textAlign: "center",
-							},
-							GlobalStyle.font_caption1,
-						]}
-					>
-						회원가입
-					</Text>
-				</TouchableOpacity>
-			</View>
+			<PwSettingSignup />
 
 			{/* sns로그인 */}
 			<View
@@ -256,26 +146,6 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		marginTop: 20,
 	},
-	inputbox: {
-		// flex: 1,
-		width: "100%",
-		height: 60,
-		borderColor: "#4E4981",
-		borderWidth: 1,
-		borderRadius: 10,
-		padding: 10,
-		marginBottom: 20,
-		position: "relative",
-		//backgroundColor: "red",
-	},
-	selectShow: {
-		height: "100%",
-		position: "absolute",
-		right: 0,
-		alignItems: "center",
-		justifyContent: "center",
-		paddingHorizontal: 10,
-	},
 	selectSave: {
 		height: "100%",
 		position: "absolute",
@@ -294,25 +164,7 @@ const styles = StyleSheet.create({
 		//marginLeft: 5,
 		//backgroundColor: "yellow",
 	},
-	autoLoginImg: {
-		width: 30,
-		height: 30,
-	},
 
-	loginButtonWrap: {
-		width: "100%",
-		height: 60,
-		flexDirection: "row",
-		marginTop: 20,
-	},
-	loginbutton: {
-		width: "100%",
-		height: "100%",
-		alignItems: "center",
-		justifyContent: "center",
-		borderRadius: 10,
-		backgroundColor: "#E76B5C",
-	},
 	line: {
 		width: "30%",
 		height: 1,
