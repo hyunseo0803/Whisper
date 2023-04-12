@@ -95,7 +95,7 @@ function DailyPhotoScreen(props) {
 
                   <View style={modalS.ImgWrap}>
                     <Image source={{url : props.modalImg}}
-                    style={[modalS.shadowSet, {width:'100%', height:'100%', resizeMode:'stretch'}]}/>
+                    style={[modalS.ImgStyle, {width:'100%', height:'100%', resizeMode:'stretch'}]}/>
                   </View>
                 </Animated.View>
             </View>
@@ -158,6 +158,8 @@ const modalS = StyleSheet.create({
   ImgWrap:{
     width: 350,
     height: 450,
+    borderRadius: 20,
+    backgroundColor: '#fff',
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -166,15 +168,8 @@ const modalS = StyleSheet.create({
     shadowOpacity: 0.29,
     shadowRadius: 4.65,
   },
-  shadowSet:{
+  ImgStyle:{
     borderRadius: 20,
-    shadowColor: "#000",
-  shadowOffset: {
-    width: 0,
-    height: 3,
-  },
-  shadowOpacity: 0.29,
-  shadowRadius: 5.65,
   }
 })
 
