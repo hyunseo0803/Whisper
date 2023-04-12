@@ -4,6 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import YMPicker from "../datePicker/YMPicker";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { changeMonth } from "../../util/Calender.js";
 
 function Header(props) {
 
@@ -11,24 +12,24 @@ function Header(props) {
   const [showModal, setShowModal] = useState(false);
 
   // 숫자로 되어있는 월을 영어로 바꿔주는 함수
-  const changeMonth = (NMonth) => {
-    const EMonth = [
-      'January',
-      'Fabruary',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'
-    ]
+  // const changeMonth = (NMonth) => {
+  //   const EMonth = [
+  //     'January',
+  //     'Fabruary',
+  //     'March',
+  //     'April',
+  //     'May',
+  //     'June',
+  //     'July',
+  //     'August',
+  //     'September',
+  //     'October',
+  //     'November',
+  //     'December'
+  //   ]
 
-    return EMonth[NMonth-1]
-  }
+  //   return EMonth[NMonth-1]
+  // }
 
 
   return(
