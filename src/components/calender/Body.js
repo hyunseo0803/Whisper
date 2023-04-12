@@ -1,10 +1,16 @@
 import React, {useEffect, useState} from "react";
 import { View, StyleSheet, Text, Button, Pressable, ImageBackground } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
+import DailyPhotoScreen from "../../pages/home/DailyPhotoScreen";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
 
 function Body(props) {
 
   const [totalDays, setTotalDays] = useState([]);
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [modalImg, setModalImg] = useState('https://images.unsplash.com/photo-1680951103843-a370c042fb03?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60');
+  const [modalDay, setModalDay] = useState();
 
   // 배열을 일주일 단위로 나누는 함수
   const division = (arr, n) => {
@@ -86,7 +92,10 @@ function Body(props) {
                   key={index}
                   onPress={() => {
                     if(day !== ''){
-                      alert(`${props.month}월 ${day}일의 사진이 나와야 합니다`)
+                      // TODO: if url이 없다면 alert보내줘야함
+                      setShowPhotoModal(true)
+                      setModalDay(day)
+                      // setModalImg(이미지 주소)
                     }}
                   }>
                     <ImageBackground 
@@ -100,10 +109,26 @@ function Body(props) {
                   </Pressable>
                 ))
               }
+              
             </View>
+            
           ))
         }
       </View>
+
+      {/* 오늘의 사진 모달창 */}
+      {
+        showPhotoModal &&
+        <DailyPhotoScreen
+        showPhotoModal={showPhotoModal}
+        setShowPhotoModal={setShowPhotoModal}
+
+        modalImg={modalImg}
+        month={props.month}
+        year = {props.year}
+        day={modalDay}
+        />
+      }
     </View>
   )
 }
