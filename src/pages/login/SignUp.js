@@ -17,109 +17,97 @@ import GlobalStyle from "../../globalStyle/GlobalStyle";
 import LoginInput from "../login/LoginInput";
 import PwSettingSignup from "../login/PwSettingSignup";
 import SignUpButton from "../login/SignUpButton";
+import { SIGNUP_email_password } from "../../../firebase";
 
-export default function SignUp() {
+export default function SignUp({navigation}) {
 	const [email, setEmail] = useState("");
-	let [password, setPassword] = useState("");
+	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
-	// const [savelogin, setSaveLogin] = useState("checkmark-circle-outline");
 
-	// const saveLogin = () => {
-	// 	setSaveLogin(!savelogin);
-	// };
+  /**
+   * 회원가입 버튼 click함수
+   */
 	const handleSignUp = () => {
-		console.log(email, password);
-		if (email !== "" && password !== "") {
-			Alert.alert("회원가입 성공", "로그인 하셔서 소곤소곤을 이용해보세요 ! ");
-		} else {
-			Alert.alert("회원가입 실패", "이메일 또는 비밀번호를 입력해주세요! ");
-		}
+		SIGNUP_email_password(email, password)
 	};
 
 	return (
-		<SafeAreaView
-			style={{
-				display: "flex",
-				alignItems: "center",
-				marginHorizontal: 30,
-				height: "85%",
-				backgroundColor: "yellow",
-			}}
-		>
-			<View
+		<View
+		style={{
+			display: 'flex',
+			flex: 1,
+			backgroundColor: '#fff'
+		}}>
+			<SafeAreaView
 				style={{
-					position: "absolute",
-					// backgroundColor: "red",
-					width: "100%",
-					flexDirection: "row",
-					// paddingVertical: 10,
+					display: "flex",
+					alignItems: "center",
+					marginHorizontal: 30,
+					flex: 1,
+					backgroundColor: "#ffff",
 				}}
 			>
-				<Ionicons
-					name="chevron-back-sharp"
-					size={28}
-					color="black"
-					style={{ paddingVertical: 4 }}
+
+				{/* 로고 */}
+				<View
+					style={{
+						alignItems: "center",
+						justifyContent: "flex-start",
+						marginTop: 50,
+						width: "100%",
+						height: 110,
+					}}
+				>
+					<Image source={NameLogo} style={styles.logo} />
+					<Text style={[styles.login, GlobalStyle.font_title2]}>회원가입</Text>
+				</View>
+
+				{/* 입력 폼 */}
+				<LoginInput
+					email={email}
+					setEmail={setEmail}
+					password={password}
+					setPassword={setPassword}
 				/>
-				<Text style={[{ paddingVertical: 10 }, GlobalStyle.font_caption1]}>
-					로그인
-				</Text>
-			</View>
 
-			{/* 로고 */}
-			<View
-				style={{
-					alignItems: "center",
-					justifyContent: "flex-start",
-					marginTop: 50,
-					width: "100%",
-					height: 110,
-					// backgroundColor: "red",
-				}}
-			>
-				<Image source={NameLogo} style={styles.logo} />
-				<Text style={[styles.login, GlobalStyle.font_title2]}>회원가입</Text>
-			</View>
+				{/* 회원가입 버튼 */}
+				<SignUpButton handleLogin={handleSignUp} />
 
-			{/* 입력 폼 */}
-			<LoginInput
-				email={email}
-				setEmail={setEmail}
-				password={password}
-				setPassword={setPassword}
-			/>
-
-			{/* 로그인버튼 */}
-			<SignUpButton handleLogin={handleSignUp} />
-
-			{/* sns로그인 */}
-			<View
-				style={{
-					width: "100%",
-					height: 14,
-					marginTop: 50,
-					flexDirection: "row",
-					justifyContent: "space-between",
-				}}
-			>
-				<View style={styles.line} />
-				<Text style={[{ paddingHorizontal: 10 }, GlobalStyle.font_caption1]}>
-					SNS계정으로 시작하기
-				</Text>
-				<View style={styles.line} />
-			</View>
-			<View
-				style={{
-					width: "100%",
-					alignItems: "center",
-					padding: 10,
-					flexDirection: "row",
-					marginTop: 20,
-				}}
-			>
-				<Image source={GoogleLogo} style={styles.Googlelogo} />
-			</View>
-		</SafeAreaView>
+				{/* sns로그인 */}
+				<View
+					style={{
+						width: "100%",
+						height: 14,
+						marginTop: 50,
+						flexDirection: "row",
+						justifyContent: "space-between",
+					}}
+				>
+					<View style={styles.line} />
+					<Text style={[{ paddingHorizontal: 10 }, GlobalStyle.font_caption1]}>
+						SNS계정으로 시작하기
+					</Text>
+					<View style={styles.line} />
+				</View>
+				<View
+					style={{
+						width: "100%",
+						alignItems: "center",
+            justifyContent: 'center',
+						padding: 10,
+						flexDirection: "row",
+						marginTop: 20,
+					}}
+				>
+          <Pressable
+          onPress={() => {
+            alert('구글 회원가입')
+          }}>
+					  <Image source={GoogleLogo} style={styles.Googlelogo} />
+          </Pressable>
+				</View>
+			</SafeAreaView>
+		</View>
 	);
 }
 
@@ -133,7 +121,7 @@ const styles = StyleSheet.create({
 
 	login: {
 		// fontSize: 20,
-		justifyContentcontent: "center",
+		justifyContent: "center",
 		color: "#4E4981",
 		// fontWeight: 800,
 		textAlign: "center",

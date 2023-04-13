@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View, Alert } from "react-native";
 import React, { useState } from "react";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 
-export default function PwSettingSignup() {
+export default function PwSettingSignup({navigation}) {
 	return (
 		<View
 			style={{
@@ -10,6 +10,7 @@ export default function PwSettingSignup() {
 				height: 14,
 				marginTop: 20,
 				flexDirection: "row",
+				alignItems: 'center'
 			}}
 		>
 			<TouchableOpacity
@@ -41,7 +42,7 @@ export default function PwSettingSignup() {
 					height: 14,
 					marginEnd: 70,
 				}}
-				onPress={() => Alert.alert("test", "테스트.")}
+				onPress={() => navigation.navigate('SignUp')}
 			>
 				<Text
 					style={[
