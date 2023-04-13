@@ -113,7 +113,7 @@ export default function Login({ navigation }) {
           }}
         >
           <View style={styles.line} />
-          <Text style={[{ paddingHorizontal: 10 }, GlobalStyle.font_caption1]}>
+          <Text style={[{ paddingHorizontal: 10, color: '#86878C' }, GlobalStyle.font_caption1]}>
             SNS계정으로 로그인 하기
           </Text>
           <View style={styles.line} />
@@ -172,9 +172,9 @@ const styles = StyleSheet.create({
 	},
 
 	line: {
-		width: "30%",
+		width: "25%",
 		height: 1,
-		backgroundColor: "gray",
+    backgroundColor: "#D3D5DA",
 		alignSelf: "stretch",
 		marginTop: 7,
 	},

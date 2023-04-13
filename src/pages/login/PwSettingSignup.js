@@ -25,7 +25,7 @@ export default function PwSettingSignup({navigation}) {
 				<Text
 					style={[
 						{
-							color: "black",
+							color: "#86878C",
 							textAlign: "center",
 						},
 						GlobalStyle.font_caption1,
@@ -34,7 +34,7 @@ export default function PwSettingSignup({navigation}) {
 					비밀번호 재설정
 				</Text>
 			</TouchableOpacity>
-			<Text>|</Text>
+			<Text style={{color: '#86878C'}}>|</Text>
 			<TouchableOpacity
 				activeOpacity={0.8}
 				style={{
@@ -47,7 +47,7 @@ export default function PwSettingSignup({navigation}) {
 				<Text
 					style={[
 						{
-							color: "black",
+							color: "#86878C",
 							textAlign: "center",
 						},
 						GlobalStyle.font_caption1,
