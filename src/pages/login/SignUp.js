@@ -24,9 +24,10 @@ export default function SignUp() {
 	const [showPassword, setShowPassword] = useState(false);
 	// const [savelogin, setSaveLogin] = useState("checkmark-circle-outline");
 
-	// const saveLogin = () => {
-	// 	setSaveLogin(!savelogin);
-	// };
+	const BackToLogin = () => {
+		Alert.alert("로그인화면으로", "이동합니다. ");
+	};
+
 	const handleSignUp = () => {
 		console.log(email, password);
 		if (email !== "" && password !== "") {
@@ -55,15 +56,17 @@ export default function SignUp() {
 					// paddingVertical: 10,
 				}}
 			>
-				<Ionicons
-					name="chevron-back-sharp"
-					size={28}
-					color="black"
-					style={{ paddingVertical: 4 }}
-				/>
-				<Text style={[{ paddingVertical: 10 }, GlobalStyle.font_caption1]}>
-					로그인
-				</Text>
+				<Pressable style={{ flexDirection: "row" }} onPress={BackToLogin}>
+					<Ionicons
+						name="chevron-back-sharp"
+						size={28}
+						color="black"
+						style={{ paddingVertical: 4 }}
+					/>
+					<Text style={[{ paddingVertical: 10 }, GlobalStyle.font_caption1]}>
+						로그인
+					</Text>
+				</Pressable>
 			</View>
 
 			{/* 로고 */}
@@ -103,7 +106,12 @@ export default function SignUp() {
 				}}
 			>
 				<View style={styles.line} />
-				<Text style={[{ paddingHorizontal: 10 }, GlobalStyle.font_caption1]}>
+				<Text
+					style={[
+						{ paddingHorizontal: 10, color: "#86878C" },
+						GlobalStyle.font_caption1,
+					]}
+				>
 					SNS계정으로 시작하기
 				</Text>
 				<View style={styles.line} />
@@ -164,6 +172,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "gray",
 		alignSelf: "stretch",
 		marginTop: 7,
+		backgroundColor: "#D3D5DA",
 	},
 	Googlelogo: {
 		width: 50,
