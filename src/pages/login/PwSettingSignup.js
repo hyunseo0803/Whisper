@@ -8,17 +8,13 @@ export default function PwSettingSignup() {
 			style={{
 				width: "100%",
 				height: 14,
-				// position: "absolute",
 				marginTop: 20,
-				// flex: 1,
 				flexDirection: "row",
-				//backgroundColor: "red",
 			}}
 		>
 			<TouchableOpacity
 				activeOpacity={0.8}
 				style={{
-					//backgroundColor: "green",
 					width: 100,
 					height: 14,
 					marginLeft: 70,
@@ -41,7 +37,6 @@ export default function PwSettingSignup() {
 			<TouchableOpacity
 				activeOpacity={0.8}
 				style={{
-					//backgroundColor: "pink",
 					width: 100,
 					height: 14,
 					marginEnd: 70,
