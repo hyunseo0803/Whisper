@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, 
   createUserWithEmailAndPassword, signInWithEmailAndPassword,
   // GoogleAuthProvider, signInWithRedirect, getRedirectResult, signInWithPopup,
-  signOut
+  signOut, sendPasswordResetEmail
 } from "firebase/auth";
 import { Alert } from "react-native";
 
@@ -114,6 +114,23 @@ export const SIGNIN_email_password = (email, password) => {
 //       // ...
 //     });
 //   }
+
+
+
+export const RESET_password = (email) => {
+  sendPasswordResetEmail(auth, email)
+  .then(() => {
+    // Password reset email sent!
+    // ..
+    Alert.alert("이메일 보내기 성공!", "메일함을 확인해보세요 ");
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // ..
+    Alert.alert("이메일 보내기 실패!", "이메일을 입력해주세요. ");
+  });
+}
 
 
 /**
