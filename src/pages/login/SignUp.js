@@ -106,6 +106,7 @@ export default function SignUp({navigation}) {
 				<Image source={GoogleLogo} style={styles.Googlelogo} />
 			</View>
 		</SafeAreaView>
+    </View>
 	);
 }
 
