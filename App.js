@@ -21,7 +21,8 @@ export default function App() {
 	  	  <Stack.Screen name="SignUp" component={SignUpScreen} 
         options={{headerStyle: {backgroundColor:'rgba(0,0,0,0)'}, headerTitle:""}}/>
         {/* 비밀번호 변경 화면 */}
-        <Stack.Screen name="FindPW" component={FindPWScreen}/>
+        <Stack.Screen name="FindPW" component={FindPWScreen}
+        options={{headerStyle: {backgroundColor:'rgba(0,0,0,0)'}, headerTitle:""}}/>
 
 	  	</Stack.Navigator>
 	  </NavigationContainer>

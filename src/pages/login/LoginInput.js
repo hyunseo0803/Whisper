@@ -18,7 +18,6 @@ export default function LoginInput(props) {
 	return (
 		<View
 			style={{
-				// backgroundColor: "white",
 				alignItems: "stretch",
 				marginTop: 50,
 				flexDirection: "row",
@@ -36,7 +35,6 @@ export default function LoginInput(props) {
 				style={{
 					width: "100%",
 					height: 60,
-					//backgroundColor: "blue",
 				}}
 			>
 				<TextInput

@@ -1,5 +1,5 @@
-import { Text, TouchableOpacity, View, Alert } from "react-native";
-import React, { useState } from "react";
+import { Text, TouchableOpacity, View,} from "react-native";
+import React from "react";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 
 export default function PwSettingSignup({navigation}) {
@@ -20,7 +20,7 @@ export default function PwSettingSignup({navigation}) {
 					height: 14,
 					marginLeft: 70,
 				}}
-				onPress={() => Alert.alert("test", "테스트.")}
+				onPress={() => navigation.navigate('FindPW')}
 			>
 				<Text
 					style={[

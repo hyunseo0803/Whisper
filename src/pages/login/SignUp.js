@@ -1,28 +1,22 @@
 import {
 	StyleSheet,
 	Text,
-	TextInput,
-	TouchableOpacity,
 	Image,
 	View,
-	Alert,
 	SafeAreaView,
 } from "react-native";
 import React, { useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
 import NameLogo from "../../../assets/images/NameLogo.png";
 import GoogleLogo from "../../../assets/images/GoogleLogo.png";
 import { Pressable } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import LoginInput from "../login/LoginInput";
-import PwSettingSignup from "../login/PwSettingSignup";
 import SignUpButton from "../login/SignUpButton";
 import { SIGNUP_email_password } from "../../../firebase";
 
 export default function SignUp({navigation}) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [showPassword, setShowPassword] = useState(false);
 
   /**
    * 회원가입 버튼 click함수
@@ -101,9 +95,13 @@ export default function SignUp({navigation}) {
 					padding: 10,
 					flexDirection: "row",
 					marginTop: 20,
+          justifyContent: "center"
 				}}
 			>
-				<Image source={GoogleLogo} style={styles.Googlelogo} />
+        <Pressable
+        onPress={() => { alert('구글 회원가입하기')}}>
+				  <Image source={GoogleLogo} style={styles.Googlelogo} />
+        </Pressable>
 			</View>
 		</SafeAreaView>
     </View>
@@ -119,10 +117,8 @@ const styles = StyleSheet.create({
 	},
 
 	login: {
-		// fontSize: 20,
 		justifyContent: "center",
 		color: "#4E4981",
-		// fontWeight: 800,
 		textAlign: "center",
 		marginTop: 20,
 	},
@@ -140,9 +136,6 @@ const styles = StyleSheet.create({
 		left: 40,
 		alignItems: "center",
 		justifyContent: "center",
-		//position: "absolute",
-		//marginLeft: 5,
-		//backgroundColor: "yellow",
 	},
 
 	line: {
@@ -156,7 +149,6 @@ const styles = StyleSheet.create({
 	Googlelogo: {
 		width: 50,
 		height: 50,
-		// marginTop: 50,
 		backgroundColor: "red",
 	},
 });

@@ -14,13 +14,11 @@ import GlobalStyle from "../../globalStyle/GlobalStyle";
 import LoginInput from "../login/LoginInput";
 import PwSettingSignup from "../login/PwSettingSignup";
 import LoginButton from "../login/LoginButton";
-import { auth, firebaseConfig, SIGNIN_email_password } from "../../../firebase";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { SIGNIN_email_password } from "../../../firebase";
 
 export default function Login({ navigation }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [showPassword, setShowPassword] = useState(false);
 	const [savelogin, setSaveLogin] = useState("checkmark-circle-outline");
 
 	/**
