@@ -1,11 +1,8 @@
 import {
 	StyleSheet,
 	Text,
-	TextInput,
-	TouchableOpacity,
 	Image,
 	View,
-	Alert,
 	SafeAreaView,
 } from "react-native";
 import React, { useState } from "react";
@@ -17,23 +14,28 @@ import GlobalStyle from "../../globalStyle/GlobalStyle";
 import LoginInput from "../login/LoginInput";
 import PwSettingSignup from "../login/PwSettingSignup";
 import LoginButton from "../login/LoginButton";
+import { auth, firebaseConfig, SIGNIN_email_password } from "../../../firebase";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Login() {
 	const [email, setEmail] = useState("");
-	let [password, setPassword] = useState("");
+	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [savelogin, setSaveLogin] = useState("checkmark-circle-outline");
 
-	const saveLogin = () => {
+	/**
+   * 자동 로그인 onClick
+   */
+  const saveLogin = () => {
 		setSaveLogin(!savelogin);
 	};
+
+  /**
+   * 로그인 버튼 onClick 함수
+   */
 	const handleLogin = () => {
-		console.log(email, password);
-		if (email === "admin@naver.com" && password === "admin") {
-			Alert.alert("로그인 성공");
-		} else {
-			Alert.alert("로그인 실패", "이메일 또는 비밀번호가 일치하지 않습니다.");
-		}
+		// console.log(email, password);
+    SIGNIN_email_password(email, password);
 	};
 
 	return (
@@ -53,7 +55,6 @@ export default function Login() {
 					marginTop: 50,
 					width: "100%",
 					height: 110,
-					// backgroundColor: "red",
 				}}
 			>
 				<Image source={NameLogo} style={styles.logo} />
@@ -75,7 +76,6 @@ export default function Login() {
 					height: 30,
 					alignItems: "center",
 					marginTop: 10,
-					//backgroundColor: "blue",
 					flexDirection: "row",
 				}}
 			>
@@ -124,7 +124,13 @@ export default function Login() {
 					marginTop: 20,
 				}}
 			>
-				<Image source={GoogleLogo} style={styles.Googlelogo} />
+        <Pressable
+        onPress={() => {
+          alert('test!')
+        }
+        }>
+				  <Image source={GoogleLogo} style={styles.Googlelogo} />
+        </Pressable>
 			</View>
 		</SafeAreaView>
 	);
@@ -139,10 +145,8 @@ const styles = StyleSheet.create({
 	},
 
 	login: {
-		// fontSize: 20,
-		justifyContentcontent: "center",
+		justifyContent: "center",
 		color: "#4E4981",
-		// fontWeight: 800,
 		textAlign: "center",
 		marginTop: 20,
 	},
@@ -160,9 +164,6 @@ const styles = StyleSheet.create({
 		left: 40,
 		alignItems: "center",
 		justifyContent: "center",
-		//position: "absolute",
-		//marginLeft: 5,
-		//backgroundColor: "yellow",
 	},
 
 	line: {
@@ -175,7 +176,6 @@ const styles = StyleSheet.create({
 	Googlelogo: {
 		width: 50,
 		height: 50,
-		// marginTop: 50,
 		backgroundColor: "red",
 	},
 });
