@@ -73,41 +73,39 @@ export default function SignUp({navigation}) {
 				{/* 회원가입 버튼 */}
 				<SignUpButton handleLogin={handleSignUp} />
 
-				{/* sns로그인 */}
-				<View
-					style={{
-						width: "100%",
-						height: 14,
-						marginTop: 50,
-						flexDirection: "row",
-						justifyContent: "space-between",
-					}}
+			{/* sns로그인 */}
+			<View
+				style={{
+					width: "100%",
+					height: 14,
+					marginTop: 50,
+					flexDirection: "row",
+					justifyContent: "space-between",
+				}}
+			>
+				<View style={styles.line} />
+				<Text
+					style={[
+						{ paddingHorizontal: 10, color: "#86878C" },
+						GlobalStyle.font_caption1,
+					]}
 				>
-					<View style={styles.line} />
-					<Text style={[{ paddingHorizontal: 10 }, GlobalStyle.font_caption1]}>
-						SNS계정으로 시작하기
-					</Text>
-					<View style={styles.line} />
-				</View>
-				<View
-					style={{
-						width: "100%",
-						alignItems: "center",
-            justifyContent: 'center',
-						padding: 10,
-						flexDirection: "row",
-						marginTop: 20,
-					}}
-				>
-          <Pressable
-          onPress={() => {
-            alert('구글 회원가입')
-          }}>
-					  <Image source={GoogleLogo} style={styles.Googlelogo} />
-          </Pressable>
-				</View>
-			</SafeAreaView>
-		</View>
+					SNS계정으로 시작하기
+				</Text>
+				<View style={styles.line} />
+			</View>
+			<View
+				style={{
+					width: "100%",
+					alignItems: "center",
+					padding: 10,
+					flexDirection: "row",
+					marginTop: 20,
+				}}
+			>
+				<Image source={GoogleLogo} style={styles.Googlelogo} />
+			</View>
+		</SafeAreaView>
 	);
 }
 
@@ -152,6 +150,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "gray",
 		alignSelf: "stretch",
 		marginTop: 7,
+		backgroundColor: "#D3D5DA",
 	},
 	Googlelogo: {
 		width: 50,
