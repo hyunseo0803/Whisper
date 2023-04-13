@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
 
 	login: {
 		// fontSize: 20,
-		justifyContentcontent: "center",
+		justifycontent: "center",
 		color: "#4E4981",
 		// fontWeight: 800,
 		textAlign: "center",
