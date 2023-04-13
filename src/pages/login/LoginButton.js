@@ -1,12 +1,8 @@
 import {
 	StyleSheet,
 	Text,
-	TextInput,
 	TouchableOpacity,
-	Image,
 	View,
-	Alert,
-	SafeAreaView,
 } from "react-native";
 import React, { useState } from "react";
 import GlobalStyle from "../../globalStyle/GlobalStyle";

@@ -1,12 +1,7 @@
 import {
 	StyleSheet,
-	Text,
 	TextInput,
-	TouchableOpacity,
-	Image,
 	View,
-	Alert,
-	SafeAreaView,
 } from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -65,7 +60,6 @@ export default function LoginInput(props) {
 }
 const styles = StyleSheet.create({
 	inputbox: {
-		// flex: 1,
 		width: "100%",
 		height: 60,
 		borderColor: "#4E4981",
@@ -74,7 +68,6 @@ const styles = StyleSheet.create({
 		padding: 10,
 		marginBottom: 20,
 		position: "relative",
-		//backgroundColor: "red",
 	},
 	selectShow: {
 		height: "100%",
