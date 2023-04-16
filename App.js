@@ -20,12 +20,12 @@ export default function App() {
     onAuthStateChanged(auth, (user) => {
       if (user){
         setIsLogin(true);
-        Alert.alert('로그인 성공!')
+        // Alert.alert('로그인 성공!')
         console.log(islogin)
       }
       else{
         setIsLogin(false);
-        Alert.alert('로그아웃!!')
+        // Alert.alert('로그아웃!!')
         console.log(islogin)
       }
     })
