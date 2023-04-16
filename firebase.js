@@ -6,7 +6,7 @@ import { getAuth,
   signOut, sendPasswordResetEmail, getIdToken, getIdTokenResult
 } from "firebase/auth";
 import { Alert } from "react-native";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, setDoc, doc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -41,18 +41,16 @@ export const SIGNUP_email_password = (email, password) => {
   createUserWithEmailAndPassword(auth, email, password)
   .then(async(userCredential) => {
     try {
-      const UserRef = await addDoc(collection(db, "users"), {
+      const user = userCredential.user;
+      console.log("사용자~!~!~!~!~", user.uid)
+      const UserRef = await setDoc(doc(db, "users", user.uid), {
         email: email,
         time: ''
       });
-      const DiaryRef = await addDoc(collection(db, 'diary'), {
-        
-      })
     } catch (e) {
       console.error("Error adding document: ", e);
     }
     // Signed in
-    const user = userCredential.user;
     Alert.alert('회원가입 성공!')
   })
   .catch((error) => {

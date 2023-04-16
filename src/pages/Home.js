@@ -3,18 +3,24 @@ import React from "react";
 import Calender from "../components/calender/Calender";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import { Image } from "react-native";
-import Logo from '../../assets/images/Logo.png';
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../firebase";
+import Logo from '../../assets/images/logo.png';
+import { doc, getDoc, query } from "firebase/firestore";
+import { db, auth } from "../../firebase";
+import { onAuthStateChanged, getDocs, collection } from "firebase/auth";
 
 const Home = () => {
 
   const getData = async() => {
-    const docRef = doc(db, "users", "1jwlDGzHtnXYzotdlrHf");
+    const docRef = doc(db, "users", auth.currentUser.uid);
+
+    // const q = query(collection(db, "diary"), where("image", "!=", null))
+
     const docSnap = await getDoc(docRef);
+
   
     if (docSnap.exists()) {
       console.log("Document data:", docSnap.data());
+      // console.log("데이터를 뽑아보자 : ", )
     } else {
       // doc.data() will be undefined in this case
       console.log("No such document!");
