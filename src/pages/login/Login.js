@@ -4,6 +4,7 @@ import {
 	Image,
 	View,
 	SafeAreaView,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,7 +20,7 @@ import { SIGNIN_email_password } from "../../../firebase";
 export default function Login({ navigation }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [savelogin, setSaveLogin] = useState("checkmark-circle-outline");
+	const [savelogin, setSaveLogin] = useState(false);
 
 	/**
    * 자동 로그인 onClick
@@ -27,12 +28,13 @@ export default function Login({ navigation }) {
   const saveLogin = () => {
 		setSaveLogin(!savelogin);
 	};
-
+  
+  console.log(savelogin)
   /**
    * 로그인 버튼 onClick 함수
    */
-	const handleLogin = () => {
-    SIGNIN_email_password(email, password);
+	const handleLogin = () => {    
+    SIGNIN_email_password(savelogin, email, password);
 	};
 
 	return (
@@ -85,10 +87,10 @@ export default function Login({ navigation }) {
           <Pressable style={styles.selectSave} onPress={saveLogin}>
             <Ionicons
               name={
-                savelogin ? "checkmark-circle-outline" : "checkmark-circle-sharp"
+                savelogin ? "checkmark-circle-sharp" : "checkmark-circle-outline" 
               }
               size={24}
-              color="black"
+              color="#4E4981"
             />
           </Pressable>
           <Text style={[styles.autoLogin, GlobalStyle.font_caption1]}>

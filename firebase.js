@@ -2,10 +2,12 @@ import { initializeApp } from "firebase/app";
 import { getAuth, 
   createUserWithEmailAndPassword, signInWithEmailAndPassword,
   // GoogleAuthProvider, signInWithRedirect, getRedirectResult, signInWithPopup,
-  signOut, sendPasswordResetEmail
+  setPersistence, browserSessionPersistence,
+  signOut, sendPasswordResetEmail, getIdToken, getIdTokenResult
 } from "firebase/auth";
 import { Alert } from "react-native";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -48,7 +50,7 @@ export const SIGNUP_email_password = (email, password) => {
     }
     // Signed in
     const user = userCredential.user;
-    alert('회원가입 성공!')
+    Alert.alert('회원가입 성공!')
   })
   .catch((error) => {
     switch (error.code) {
@@ -76,19 +78,47 @@ export const SIGNUP_email_password = (email, password) => {
  * @param {string} email 
  * @param {string} password 
  */
-export const SIGNIN_email_password = (email, password) => {
-  signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed in
-    const user = userCredential.user;
-    alert('로그인 성공!!')
-    // ...
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    alert(errorMessage)
-  });
+export const SIGNIN_email_password = async(autoLogin, email, password) => {
+  try{
+    if(autoLogin){
+      await signInWithEmailAndPassword(auth, email, password)
+      .then(async(userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        alert("저장되어야해")
+        await AsyncStorage.setItem(
+          'user',
+          JSON.stringify({
+            token: getIdTokenResult,
+            userId: email
+          })
+        );
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        Alert.alert(errorMessage)
+      });
+    }
+    else{
+      signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        alert('노 저장')
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        Alert.alert(errorMessage)
+      });
+    }
+  }
+  catch(e){
+    console.log(e)
+  }
 }
 
 

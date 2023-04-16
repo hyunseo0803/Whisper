@@ -5,7 +5,7 @@ import {
 	View,
 	SafeAreaView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NameLogo from "../../../assets/images/NameLogo.png";
 import GoogleLogo from "../../../assets/images/GoogleLogo.png";
 import { Pressable } from "react-native";
@@ -13,17 +13,42 @@ import GlobalStyle from "../../globalStyle/GlobalStyle";
 import LoginInput from "../login/LoginInput";
 import SignUpButton from "../login/SignUpButton";
 import { SIGNUP_email_password } from "../../../firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { async } from "@firebase/util";
 
 export default function SignUp({navigation}) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+
+	function onAuthStateChanged(user) {
+		setUser(user);
+		if (initializing) setInitializing(false);
+	  }
+  
+	  useEffect(() => {
+		const subscriber = onAuthStateChanged(onAuthStateChanged);
+		return subscriber; // unsubscribe on unmount
+	  }, []);
+
+	  if (initializing) return null;
 
   /**
    * 회원가입 버튼 click함수
    */
-	const handleSignUp = () => {
-		SIGNUP_email_password(email, password)
+	const handleSignUp = async() => {
+    try {
+      const user = await SIGNUP_email_password(email, password)
+      console.log('User account created & signed in!');
+    } catch(error) {
+      console.log(error.message);
+    }
 	};
+
+
+	
 
 	return (
 		<View
