@@ -26,9 +26,9 @@ export const firebaseConfig = {
 
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 // Initialize Cloud Firestore and get a reference to the service
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 export const auth = getAuth(app);
 
@@ -45,6 +45,9 @@ export const SIGNUP_email_password = (email, password) => {
         email: email,
         time: ''
       });
+      const DiaryRef = await addDoc(collection(db, 'diary'), {
+        
+      })
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -184,3 +187,15 @@ export const SIGNOUT = () => {
     // An error happened.
   });
 }
+
+
+// 데이터 가져오기
+// const docRef = doc(db, "cities", "SF");
+// const docSnap = await getDoc(docRef);
+
+// if (docSnap.exists()) {
+//   console.log("Document data:", docSnap.data());
+// } else {
+//   // doc.data() will be undefined in this case
+//   console.log("No such document!");
+// }
