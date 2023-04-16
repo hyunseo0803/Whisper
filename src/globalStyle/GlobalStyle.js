@@ -28,5 +28,3 @@ const GlobalStyle = StyleSheet.create({
 		fontFamily: "Diary",
 	},
 });
-
-export default GlobalStyle;
