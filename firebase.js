@@ -5,6 +5,7 @@ import { getAuth,
   signOut, sendPasswordResetEmail
 } from "firebase/auth";
 import { Alert } from "react-native";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -24,6 +25,8 @@ export const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+// Initialize Cloud Firestore and get a reference to the service
+const db = getFirestore(app);
 
 export const auth = getAuth(app);
 
@@ -34,7 +37,15 @@ export const auth = getAuth(app);
  */
 export const SIGNUP_email_password = (email, password) => {
   createUserWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
+  .then(async(userCredential) => {
+    try {
+      const UserRef = await addDoc(collection(db, "users"), {
+        email: email,
+        time: ''
+      });
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
     // Signed in
     const user = userCredential.user;
     alert('회원가입 성공!')
