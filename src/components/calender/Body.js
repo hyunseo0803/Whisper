@@ -2,8 +2,6 @@ import React, {useEffect, useState} from "react";
 import { View, StyleSheet, Text, Button, Pressable, ImageBackground } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import DailyPhotoScreen from "../../pages/home/DailyPhotoScreen";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-
 
 function Body(props) {
 
@@ -58,8 +56,6 @@ function Body(props) {
       { length: monthLength },
       (v, i) => i + 1,
     );
-
-
 
     if(lastMonth.toString() === ['', '', '', '', '', '', ''].toString()){
       setTotalDays(division(thisDays, 7))
@@ -202,11 +198,4 @@ const dayS = (el) => StyleSheet.create({
   dayOfWeek: {
     color: el === 0 ? '#E76B5C' : el === 6 ? '#4E4981' : '#000',
   },
-})
-
-const dateS = (month, day) => StyleSheet.create({
-  dateImgBackground: {
-    // 랜덤 핵사 코드 추출
-    // backgroundColor: day==='' ? '#80000000' : `#${Math.floor(Math.random() * 16777215).toString(16)}`
-  }
 })
