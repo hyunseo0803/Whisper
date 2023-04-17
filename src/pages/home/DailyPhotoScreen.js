@@ -95,7 +95,7 @@ function DailyPhotoScreen(props) {
 
                   <View style={modalS.ImgWrap}>
                     <Image source={{url : props.modalImg}}
-                    style={[modalS.ImgStyle, {width:'100%', height:'100%', resizeMode:'stretch'}]}/>
+                    style={[modalS.ImgStyle, {width:'100%', height:'100%', resizeMode:'cover'}]}/>
                   </View>
                 </Animated.View>
             </View>
