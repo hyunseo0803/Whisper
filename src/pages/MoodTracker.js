@@ -15,7 +15,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { btnGoWriteScreen } from "../globalStyle/BtnStyle";
 
 
-const MoodTracker = () => {
+const MoodTracker = ({navigation}) => {
 
   const DATE = new Date();
   const YEAR = DATE.getFullYear();
@@ -181,7 +181,7 @@ const MoodTracker = () => {
           <Pressable
           style={[btnGoWriteScreen.btnWrap]}
           onPress={() => {
-            Alert.alert("페이지 이동!", '네비게이션 페이지로 이동합니다.')
+            navigation.navigate('Write')
           }}>
             <Ionicons style={btnGoWriteScreen.plusIcon} name="add-outline" size={50} color='white' />
           </Pressable>
@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     marginHorizontal: 20,
+    position: 'relative'
   },
 
   headText:{
@@ -208,9 +209,9 @@ const styles = StyleSheet.create({
   },
 
   btnWrap:{
-    width: '100%',
-    alignItems: 'flex-end',
-    marginTop: 10
+    position: 'absolute',
+    bottom: 20,
+    right: 0
   }
 });
 const moodTrackerStyle = StyleSheet.create({

@@ -3,6 +3,8 @@ import React, {useState, useEffect} from "react";
 import LoginScreen from "./src/pages/login/Login";
 import FindPWScreen from "./src/pages/login/FindPW";
 import SignUpScreen from "./src/pages/login/SignUp";
+import WriteScreen from "./src/pages/Write";
+import HomeScreen from "./src/pages/Home";
 import * as Font from "expo-font";
 import Tabs from './src/components/tabs'
 import { NavigationContainer } from '@react-navigation/native';
@@ -38,7 +40,13 @@ export default function App() {
   if(islogin){
     return(
       <NavigationContainer>
-      <Tabs />
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={Tabs}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen name="Write" component={WriteScreen}
+          options={{headerShown: false}}/>
+        </Stack.Navigator>
       </NavigationContainer>
     )
   }
