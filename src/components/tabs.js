@@ -10,7 +10,7 @@ import SettingScreen from '../pages/Setting'
 
 const Tab = createBottomTabNavigator();
 
-const Tabs = () => {
+const Tabs = ({ navigation }) => {
     return(
         <Tab.Navigator
             screenOptions={{
@@ -29,6 +29,7 @@ const Tabs = () => {
             }}
         >
             <Tab.Screen name='Home' component={HomeScreen}
+            navigation = {navigation}
             options={{
               tabBarIcon: ({focused}) => (
                 <Ionicons name="home-outline" size={32} color={focused ? '#E76B5C' : 'gray'} />
@@ -36,26 +37,11 @@ const Tabs = () => {
             }}
             />
             <Tab.Screen name='MoodTracker' component={MoodTrackerScreen}
+            navigation={navigation}
             options={{
               tabBarIcon: ({focused}) => (
                 <Ionicons name="analytics-outline" size={32} color={focused ? '#E76B5C' : 'gray'} />
               ),
-            }}
-            />
-            <Tab.Screen name='Write' component={WriteScreen}
-            options={{
-              tabBarIcon: ({focused}) => (
-                <Ionicons name="add-outline" size={55} color='white' />
-              ),
-              tabBarItemStyle: {
-                borderRadius: 100,  // 둘글게 만들기 위함
-                top: -40,           // 위로 40만큼 올라옴
-                height: '110%',
-                backgroundColor: '#E76B5C',
-                shadowColor: '#BDBFC4',
-                shadowOpacity: 1,
-                shadowRadius: 5,
-              },
             }}
             />
             <Tab.Screen name='List' component={ListScreen}
