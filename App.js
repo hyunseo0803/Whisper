@@ -41,7 +41,7 @@ export default function App() {
     return(
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Home" component={Tabs}
+          <Stack.Screen name="HomeTab" component={Tabs}
             options={{headerShown: false}}
           />
           <Stack.Screen name="Write" component={WriteScreen}
