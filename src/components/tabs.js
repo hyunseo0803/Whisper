@@ -24,10 +24,11 @@ const Tabs = ({ navigation }) => {
                   shadowRadius: 10,
                   shadowOpacity: .7,
                   borderTopWidth: 0,    // 탭 상단 선 제거
-                  backgroundColor: '#fff'
+                  backgroundColor: '#fff',
                 },
-                headerShown: false,  // 상단 안내 안보이도록
-            }}
+                headerShown: false,  // 상단 안내 안보이도록,
+              }}
+              initialRouteName='Home'
         >
             <Tab.Screen name='MoodTracker' component={MoodTrackerScreen}
             navigation={navigation}
