@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>33932466396-to8e07rq1pnb3g946in8t9vk5lit89fl.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.33932466396-to8e07rq1pnb3g946in8t9vk5lit89fl</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCbGufeBM-jYRuVGvquD7VA6fj0-orxo8M</string>
+	<key>GCM_SENDER_ID</key>
+	<string>33932466396</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>whisper</string>
+	<key>PROJECT_ID</key>
+	<string>whisper-5d18b</string>
+	<key>STORAGE_BUCKET</key>
+	<string>whisper-5d18b.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:33932466396:ios:741003f9c4646f5b8c3c19</string>
+</dict>
+</plist>
