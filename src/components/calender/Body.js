@@ -2,17 +2,21 @@ import React, {useEffect, useState} from "react";
 import { View, StyleSheet, Text, Button, Pressable, ImageBackground } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import DailyPhotoScreen from "../../pages/home/DailyPhotoScreen";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-
 
 function Body(props) {
 
   const [totalDays, setTotalDays] = useState([]);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
-  const [modalImg, setModalImg] = useState('https://images.unsplash.com/photo-1680951103843-a370c042fb03?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60');
+  const [modalImg, setModalImg] = useState('');
   const [modalDay, setModalDay] = useState();
+  const DATA = props.data;
 
-  // 배열을 일주일 단위로 나누는 함수
+  /**
+   * 배열을 일주일 단위로 나누는 함수
+   * @param {array} arr 
+   * @param {int} n 
+   * @returns arr/n
+   */
   const division = (arr, n) => {
     const length = arr.length;
     const divide = Math.floor(length / n) + (Math.floor( length % n ) > 0 ? 1 : 0);
@@ -32,7 +36,11 @@ function Body(props) {
     return newArray;
   }
 
-  // 한 달 구하기
+  /**
+   * 한 달 구하는 함수
+   * @param {int} year 
+   * @param {int} month 
+   */
   const getMonthDays = (year, month) => {
     const monthLength = new Date(year, month, 0).getDate()  // 현재 달이 몇일 까지인지
     const monthStartDay = (new Date(year, month-1, 0).getDay()) +1  // 저번 달이 몇 요일까지인지
@@ -42,6 +50,7 @@ function Body(props) {
       {length: monthStartDay },
       (v, i) => '',
     )
+
     // 이번달 배열
     const thisDays = Array.from(
       { length: monthLength },
@@ -55,8 +64,6 @@ function Body(props) {
       calenderDate = lastMonth.concat(thisDays)
       setTotalDays(division(calenderDate, 7))
     }
-
-
   }
 
   // 연, 월 이 바뀔 때마다 한 번씩만 실행
@@ -65,7 +72,17 @@ function Body(props) {
   }, [props.year, props.month])
 
 
-  // 요일 날짜
+  /**
+   * 해당 날짜에 이미지를 찾아주는 함수
+   * @param {int} day 
+   * @returns {string}imgUrl
+   */
+  const FindImg = (day) => {
+    let img = DATA.find(data => data.date === day)
+    return img?.imgUrl
+  }
+
+  // 요일 날짜 배열
   const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
 
   return(
@@ -88,26 +105,27 @@ function Body(props) {
               {
                 week.map((day, index) => (
                   <Pressable 
-                  style={styles.dateBox} 
-                  key={index}
-                  onPress={() => {
-                    if(day !== ''){
-                      // TODO: if url이 없다면 alert보내줘야함
-                      setShowPhotoModal(true)
-                      setModalDay(day)
-                      // setModalImg(이미지 주소)
-                    }}
-                  }>
-                    <ImageBackground 
-                    // TODO(emyo): 배경은 이미지마다 바뀌도록 처리해야함
-                    source={{url: "https://images.unsplash.com/photo-1680951103843-a370c042fb03?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60"}}
-                    style={[{width: "100%", height: "100%" }, day===''? {opacity:0} : {opacity: 0.45}]}
-                    />
-                    <Text 
-                    style={[dayS(index).dayOfWeek, GlobalStyle.font_body, styles.dateText]}
-                    >{day}</Text>
-                  </Pressable>
-                ))
+                    style={styles.dateBox} 
+                    key={index}
+                    onPress={() => {
+                      if(day !== ''){
+                        // 날짜에 이미지가 있음
+                        if(FindImg(day) !== undefined){
+                          setModalImg(FindImg(day))
+                          setShowPhotoModal(true)
+                          setModalDay(day)
+                        }
+                      }}
+                    }>
+                      <ImageBackground 
+                      source={{url: FindImg(day) === undefined ? "" : FindImg(day)}}
+                      style={[{width: "100%", height: "100%" }, day===''? {opacity:0} : {opacity: 0.45}, {backgroundColor: '#D3D5DA'}]}
+                      />
+                      <Text 
+                      style={[dayS(index).dayOfWeek, GlobalStyle.font_body, styles.dateText]}
+                      >{day}</Text>
+                    </Pressable>)
+                )
               }
               
             </View>
@@ -180,11 +198,4 @@ const dayS = (el) => StyleSheet.create({
   dayOfWeek: {
     color: el === 0 ? '#E76B5C' : el === 6 ? '#4E4981' : '#000',
   },
-})
-
-const dateS = (month, day) => StyleSheet.create({
-  dateImgBackground: {
-    // 랜덤 핵사 코드 추출
-    // backgroundColor: day==='' ? '#80000000' : `#${Math.floor(Math.random() * 16777215).toString(16)}`
-  }
 })

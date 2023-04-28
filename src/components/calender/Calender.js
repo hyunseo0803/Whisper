@@ -18,7 +18,10 @@ function Calender() {
   const [year, setYear] = useState(YEAR);
   const [Ddata, setDdata] = useState([]);
 
-  // 다음 달로 이동하는 화살표 버튼 함수
+  /**
+   * 다음 달로 이동하는 화살표 버튼 함수
+   * @param {int} month 
+   */
   const moveNextMonth = (month) => {
     if (month === 12) {
       setYear((prevYear) => prevYear+1);
@@ -29,7 +32,10 @@ function Calender() {
     }
   }
 
-  // 이전 달로 이동하는 화살표 버튼 함수
+  /**
+   * 이전달로 이동하는 화살표 버튼 함수
+   * @param {int} month 
+   */
   const movePrevMonth = (month) => {
     if (month ===1 ) {
       setYear((prevYear) => prevYear-1)
@@ -44,35 +50,38 @@ function Calender() {
 
   /**
    * firebase에서 데이터 받아오는 함수
+   * @param {int} month 
+   * @param {int} year 
+   * 
+   * @return {array} Ddata
    */
   const getData = async(month, year) => {
-    console.log(`${auth.currentUser.uid} 유저의`)
     const q = query(collection(db, "diary"), 
                 where("uid", "==", auth.currentUser.uid),
                 orderBy("date"),
                 where("date", ">", new Date(`${year}-${month}-1`)),  // 4월의 첫 날 00시
                 where("date", "<", new Date(`${year}-${month+1}-1`))    // 5월의 첫 날 00시
               );
-    console.log(`${year}년 ${month}월 데이터`)
 
     const d_data = [];
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      const imageCalenderData = new Object();
       // doc.data() is never undefined for query doc snapshots
-      console.log(doc.data().date.toDate().toISOString())
       //날짜 convert day+1
       const year = doc.data().date.toDate().toISOString().split('T')[0].split("-")[0]
-      const month = doc.data().date.toDate().toISOString().split('T')[0].split("-")[1]
-      const day = doc.data().date.toDate().toISOString().split('T')[0].split("-")[2]
-      const date = dayPlus(year, 0, month, 0, day, 1)
+      const month = doc.data().date.toDate().toISOString().split('T')[0].split("-")[1][0] === '0' ? doc.data().date.toDate().toISOString().split('T')[0].split("-")[1][1] : doc.data().date.toDate().toISOString().split('T')[0].split("-")[1]
+      const day = doc.data().date.toDate().toISOString().split('T')[0].split("-")[2][0] === '0' ? doc.data().date.toDate().toISOString().split('T')[0].split("-")[2][1] : doc.data().date.toDate().toISOString().split('T')[0].split("-")[2]
+      // const imgdate = dayPlus(year, 0, month, 0, day, 1)
+      // const imgdate = (year+"-"+month+"-"+day)
+      const imgdate = (day*1)
       // 이미지
       const imgUrl = doc.data().image;
-      console.log("date!! : ", `${year}-${month}-${day}`)
 
-
-      d_data.push(doc.data())
-      // console.log(doc.id, " => ", doc.data());
+      const imageCalenderData = {
+        date : imgdate,
+        imgUrl : imgUrl
+      }
+      d_data.push(imageCalenderData)
     });
     setDdata(d_data)
   }
@@ -80,8 +89,6 @@ function Calender() {
   useEffect(() => {
     getData(month, year);
   }, [month, year]);
-  console.log(Ddata)
-
 
   return(
     <View style={S.calenderContainer}>
@@ -98,6 +105,7 @@ function Calender() {
         year = {year}
         moveNextMonth = {moveNextMonth}
         movePrevMonth = {movePrevMonth}
+        data = {Ddata}
       />
 
     </View>

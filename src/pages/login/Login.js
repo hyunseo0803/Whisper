@@ -148,7 +148,6 @@ const styles = StyleSheet.create({
 		width: 200,
 		height: 50,
 		margin: "auto",
-		textAlign: "center",
 	},
 
 	login: {
