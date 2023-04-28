@@ -23,7 +23,9 @@ const Write = () => {
 				</View>
 				<ExpoDatePicker />
 			</View>
-			<View style={styles.title}>기분</View>
+			<View style={styles.title}>
+				<Text>기분</Text>
+			</View>
 		</SafeAreaView>
 	);
 };
