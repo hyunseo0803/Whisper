@@ -3,7 +3,7 @@ import React from "react";
 import Calender from "../components/calender/Calender";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import { Image } from "react-native";
-import Logo from "../../assets/images/Logo.png";
+import Logo from "../../assets/images/logo.png";
 import { btnGoWriteScreen } from "../globalStyle/BtnStyle";
 import { Ionicons } from "@expo/vector-icons";
 
