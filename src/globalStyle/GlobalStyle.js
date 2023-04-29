@@ -27,6 +27,15 @@ const GlobalStyle = StyleSheet.create({
 		fontSize: 28,
 		fontFamily: "Diary",
 	},
+
+	/**
+	 * safeArea 감싸는 wrap
+	 */
+	safeAreaWrap: {
+		marginHorizontal: 20,
+		display: 'flex',
+		flex: 1
+	}
 });
 
 export default GlobalStyle;

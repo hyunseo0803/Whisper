@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, Pressable} from 'react-native';
 import { getGoogleVisionResult, moodAnalysis } from '../../util/writeDiary';
 
 const AnalysisResultScreen = ({navigation, route}) => {
