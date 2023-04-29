@@ -4,15 +4,16 @@ import {
   TextInput,
   Image,
   View,
-  Alert,
   SafeAreaView,
   Pressable,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import NameLogo from "../../../assets/images/NameLogo.png";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { RESET_password } from "../../../firebase";
+import { GlobalLoginStyle } from "../../globalStyle/LoginStyle";
+import { Keyboard } from "react-native";
 
 export default function FindPW() {
   const [email, setEmail] = useState("");
@@ -26,39 +27,32 @@ export default function FindPW() {
   };
 
   return (
-    <View
-      style={{
-        backgroundColor: '#fff',
-        display: 'flex',
-        flex: 1
-      }}>
+    <Pressable
+    onPress={Keyboard.dismiss}
+    style={{
+      backgroundColor: '#fff',
+      display: 'flex',
+      flex: 1
+    }}>
       <SafeAreaView
-        style={{
-          display: "flex",
-          alignItems: "center",
-          marginHorizontal: 30,
-          height: "85%",
-        }}
+        style={[GlobalStyle.safeAreaWrap, {marginHorizontal: 30}]}
       >
 
         {/* 로고 */}
         <View
           style={{
             alignItems: "center",
-            justifyContent: "flex-start",
             marginTop: 50,
-            width: "100%",
             height: 110,
           }}
         >
-          <Image source={NameLogo} style={styles.logo} />
-          <Text style={[styles.login, GlobalStyle.font_title2]}>
+          <Image source={NameLogo} style={GlobalLoginStyle.logo} />
+          <Text style={[GlobalLoginStyle.loginTitle, GlobalStyle.font_title2]}>
             비밀번호 재설정
           </Text>
         </View>
         <View
           style={{
-            justifyContent: "center",
             alignItems: "center",
             marginTop: 50,
           }}
@@ -74,10 +68,7 @@ export default function FindPW() {
         {/* 입력 폼 */}
         <View
           style={{
-            alignItems: "stretch",
             marginTop: 20,
-            flexDirection: "row",
-            flexWrap: "wrap",
           }}
         >
           <TextInput
@@ -115,23 +106,11 @@ export default function FindPW() {
           </Pressable>
         </View>
       </SafeAreaView>
-    </View>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  logo: {
-    width: 200,
-    height: 50,
-    margin: "auto",
-  },
-
-  login: {
-    justifyContent: "center",
-    color: "#4E4981",
-    textAlign: "center",
-    marginTop: 20,
-  },
   inputbox: {
     width: "100%",
     height: 60,

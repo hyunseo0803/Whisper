@@ -13,8 +13,8 @@ import GlobalStyle from "../../globalStyle/GlobalStyle";
 import LoginInput from "../login/LoginInput";
 import SignUpButton from "../login/SignUpButton";
 import { SIGNUP_email_password } from "../../../firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { async } from "@firebase/util";
+import { GlobalLoginStyle } from "../../globalStyle/LoginStyle";
+import { Keyboard } from "react-native";
 
 export default function SignUp({navigation}) {
 	const [email, setEmail] = useState("");
@@ -51,34 +51,30 @@ export default function SignUp({navigation}) {
 	
 
 	return (
-		<View
-		style={{
-			display: 'flex',
-			flex: 1,
-			backgroundColor: '#fff'
-		}}>
+    <Pressable
+      style={{
+        display: 'flex',
+        flex: 1,
+        backgroundColor: '#fff'}}
+      onPress={Keyboard.dismiss}
+    >
+
 			<SafeAreaView
-				style={{
-					display: "flex",
-					alignItems: "center",
+				style={[GlobalStyle.safeAreaWrap, {
 					marginHorizontal: 30,
-					flex: 1,
-					backgroundColor: "#ffff",
-				}}
+				}]}
 			>
 
 				{/* 로고 */}
 				<View
 					style={{
 						alignItems: "center",
-						justifyContent: "flex-start",
 						marginTop: 50,
-						width: "100%",
 						height: 110,
 					}}
 				>
-					<Image source={NameLogo} style={styles.logo} />
-					<Text style={[styles.login, GlobalStyle.font_title2]}>회원가입</Text>
+					<Image source={NameLogo} style={GlobalLoginStyle.logo} />
+					<Text style={[GlobalLoginStyle.loginTitle, GlobalStyle.font_title2]}>회원가입</Text>
 				</View>
 
 				{/* 입력 폼 */}
@@ -93,76 +89,50 @@ export default function SignUp({navigation}) {
 				<SignUpButton handleLogin={handleSignUp} />
 
 			{/* sns로그인 */}
-			<View
-				style={{
-					width: "100%",
-					height: 14,
-					marginTop: 50,
-					flexDirection: "row",
-					justifyContent: "space-between",
-				}}
-			>
-				<View style={styles.line} />
-				<Text
-					style={[
-						{ paddingHorizontal: 10, color: "#86878C" },
-						GlobalStyle.font_caption1,
-					]}
-				>
-					SNS계정으로 시작하기
-				</Text>
-				<View style={styles.line} />
-			</View>
-			<View
-				style={{
-					width: "100%",
-					alignItems: "center",
-					padding: 10,
-					flexDirection: "row",
-					marginTop: 20,
-          justifyContent: "center"
-				}}
-			>
-        <Pressable
-        onPress={() => { alert('구글 회원가입하기')}}>
-				  <Image source={GoogleLogo} style={styles.Googlelogo} />
-        </Pressable>
-			</View>
+      {/* TODO : 현재 기술 스텍 문제로 인해 SNS 로그인 불가, 추후 추가 예정 */}
+      {/* 
+        <View
+          style={{
+            width: "100%",
+            height: 14,
+            marginTop: 50,
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <View style={styles.line} />
+          <Text
+            style={[
+              { paddingHorizontal: 10, color: "#86878C" },
+              GlobalStyle.font_caption1,
+            ]}
+          >
+            SNS계정으로 시작하기
+          </Text>
+          <View style={styles.line} />
+        </View>
+        <View
+          style={{
+            width: "100%",
+            alignItems: "center",
+            padding: 10,
+            flexDirection: "row",
+            marginTop: 20,
+            justifyContent: "center"
+          }}
+        >
+          <Pressable
+          onPress={() => { alert('구글 회원가입하기')}}>
+            <Image source={GoogleLogo} style={styles.Googlelogo} />
+          </Pressable>
+        </View>
+       */}
 		</SafeAreaView>
-    </View>
+    </Pressable>
 	);
 }
 
 const styles = StyleSheet.create({
-	logo: {
-		width: 200,
-		height: 50,
-		margin: "auto",
-		textAlign: "center",
-	},
-
-	login: {
-		justifyContent: "center",
-		color: "#4E4981",
-		textAlign: "center",
-		marginTop: 20,
-	},
-	selectSave: {
-		height: "100%",
-		position: "absolute",
-		left: 0,
-		alignItems: "center",
-		justifyContent: "center",
-		paddingHorizontal: 8,
-	},
-
-	autoLogin: {
-		width: "100%",
-		left: 40,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-
 	line: {
 		width: "30%",
 		height: 1,

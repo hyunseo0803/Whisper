@@ -1,11 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 
 const GlobalStyle = StyleSheet.create({
-	GWidth: {
-		flex: 1,
-		paddingHorizontal: 20,
-	},
-
 	// font
 	font_caption2: {
 		fontSize: 12,
