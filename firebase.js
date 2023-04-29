@@ -1,27 +1,25 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, 
   createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  // GoogleAuthProvider, signInWithRedirect, getRedirectResult, signInWithPopup,
-  setPersistence, browserSessionPersistence,
-  signOut, sendPasswordResetEmail, getIdToken, getIdTokenResult
+  signOut, sendPasswordResetEmail, getIdTokenResult
 } from "firebase/auth";
 import { Alert } from "react-native";
 import { getFirestore, collection, setDoc, doc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_PROJECT_ID, FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGE_SENDER_ID, FIREBASE_APP_ID, FIREBASE_MEASUREMENT_ID } from '@env';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const firebaseConfig = {
-  apiKey: "AIzaSyB-uWN6o2ZLTiy6RiOJcQQF0HtS7YvFpb8",
-  authDomain: "whisper-5d18b.firebaseapp.com",
-  projectId: "whisper-5d18b",
-  storageBucket: "whisper-5d18b.appspot.com",
-  messagingSenderId: "33932466396",
-  appId: "1:33932466396:web:2756893aacc6cb768c3c19",
-  measurementId: "G-85SFJMKGEB"
+  apiKey: FIREBASE_API_KEY,
+  authDomain: FIREBASE_AUTH_DOMAIN,
+  projectId: FIREBASE_PROJECT_ID,
+  storageBucket: FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: FIREBASE_MESSAGE_SENDER_ID,
+  appId: FIREBASE_APP_ID,
+  measurementId: FIREBASE_MEASUREMENT_ID
 };
 
 

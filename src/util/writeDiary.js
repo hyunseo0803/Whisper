@@ -1,3 +1,5 @@
+import {GOOGLE_VISION_KEY} from '@env'
+
 /**
  * 감정 중에 가장 가능성 있는걸 출력해주는 함수
  * @param {array} response 
@@ -37,7 +39,7 @@
 export const getGoogleVisionResult = async (base64) => {
   try {
     let response = await fetch(
-      "https://vision.googleapis.com/v1/images:annotate?key="+'AIzaSyDvtD7gg7HtR27QN2iuj6j180HP9TYCHpQ',
+      "https://vision.googleapis.com/v1/images:annotate?key="+GOOGLE_VISION_KEY,
       {
         headers: {
           Accept: "application/json",
