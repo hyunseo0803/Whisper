@@ -112,13 +112,31 @@ const WriteContent = ({navigation, route}) => {
         {/* header */}
         <View style={[headerStyle.mainWrap]}>
           <Pressable
-          onPress={() => navigation.pop()}>
+          onPress={() => {
+            Alert.alert(
+              "취소하시겠습니까?", "현재까지 작성된 내용은 저장되지 않습니다.",
+              [{
+                text: "계속 작성하기"
+              },{
+                text: "홈으로",
+                onPress: () => navigation.pop()
+              }]
+            )
+            }}>
             <Ionicons name="arrow-back-outline" size={40} color='black'/>
           </Pressable>
           <Text style={[GlobalStyle.font_caption1]}>Write Diary</Text>
           <Pressable
-          // TODO to 현서: 다음 페이지로 네비게이션 넣어주세요
-          onPress={() => alert("네비게이션 넣어주세요")}
+          onPress={() => Alert.alert(
+            "저장하시겠습니까?", "저장하시면 더이상 수정이 불가능합니다!",
+            [{ text: '취소',
+            },
+            { text: '저장',
+              onPress: () => {
+                // TODO to 현서 : db 저장 및 네비게이션 기능을 넣어주세요.
+            }},
+            ],
+          )}
           >
             <Feather name="check" size={40} color={canSave} />
           </Pressable>
