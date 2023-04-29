@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {View, StyleSheet, SafeAreaView, Text, Pressable, ScrollView, TextInput, KeyboardAvoidingView, Keyboard, NativeModules, Image} from 'react-native';
+import {View, StyleSheet, SafeAreaView, Text, Pressable, ScrollView, TextInput, KeyboardAvoidingView, Keyboard, Image, Alert} from 'react-native';
 import GlobalStyle from '../../globalStyle/GlobalStyle';
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { async } from '@firebase/util';
-
-const { StatusBarManager } = NativeModules
+import btnAddImg from '../../../assets/images/btnAddImg.png';
 
 const WriteContent = ({navigation, route}) => {
 
@@ -12,8 +11,11 @@ const WriteContent = ({navigation, route}) => {
   const [dTitle, setDTitle] = useState('');       // 일기 제목
   const [dContent, setDContent] = useState('');   // 일기 내용
   const [contentLength, setContentLength] = useState(0);
-  const [dImgUrl, setDImgUrl] = useState([]);     // 오늘의 사진  // 프리미엄 회원은 최대 3개까지이므로 일단 배열로 지정
+  const [img1, setImg1] = useState(''); // 오늘의 사진
+  const [img2, setImg2] = useState(''); // 프리미엄 유저부터 2번 3번 활성화
+  const [img3, setImg3] = useState('');
   const [canSave, setCanSave] = useState('#BDBFC4');
+
 
   // TODO to 현서 : 프리미엄 회원 구분해주세요
   const premium = true  // 프리미엄 회원 임시
@@ -21,8 +23,6 @@ const WriteContent = ({navigation, route}) => {
   useEffect(() => {
     setDSubject(['# 오늘의 작은 기쁨', '# 나만의 행복 습관', '# 나만의 행복 습관'])
   }, []);
-  console.log(dSubject)
-  console.log(dSubject.length !== 0)
 
   /**
    * 음성 녹음 / stt 관련 함수
@@ -46,18 +46,50 @@ const WriteContent = ({navigation, route}) => {
     }
   }
 
-  const checkValue = () => {
-    if(typeof(dContent)==undefined || dContent===null || !dContent ||
-    typeof(dTitle)==undefined || dTitle===null || !dTitle){
-      return '#BDBFC4'
-    }
-    else{
-      return '#E76B5C'
-    }
+  /**
+   * 주제입력해주는 버튼 이벤트
+   * @param {string} text 
+   */
+  const btnAddSubject = (text) => {
+    setDContent(dContent + text + '\n')
   }
 
+
+    /**
+   * 이미지 url 지정해주는 onChange 함수
+   * @param {int} number 
+   * @param {string} url 
+   */
+    const onChangeImgUrl = (number,url) => {
+      switch (number) {
+        case 1:
+          setImg1(url);
+          break;
+        case 2:
+          setImg2(url);
+          break;
+        case 3:
+          setImg3(url);
+          break;
+      }
+    }
+
+    /**
+     * 이미지 picker 함수
+     * @param {int} number 
+     */
+    const ImgPicker = async(number) => {
+      // TODO to 현서 : 함수 추가해주세요
+      Alert.alert(`${number}번째 이미지`, '이미지 피커로 이미지 uri 받아와주세요')
+
+      // onChangeImgUrl(number, 리턴값으로 받은 url)
+    }
+
+
   useEffect(() => {
-    setContentLength(dContent.length)
+    // 텍스트 길이 계산
+    setContentLength(dContent.length);
+    // 저장 가능한지 판단
     if(dContent.replace(/\s/g, "") === '' || dTitle.replace(/\s/g, "") === ''){
       setCanSave('#BDBFC4')
     }
@@ -86,31 +118,32 @@ const WriteContent = ({navigation, route}) => {
           <Text style={[GlobalStyle.font_caption1]}>Write Diary</Text>
           <Pressable
           // TODO to 현서: 다음 페이지로 네비게이션 넣어주세요
-          onPress={() => alert("다음 페이지로")}
+          onPress={() => alert("네비게이션 넣어주세요")}
           >
             <Feather name="check" size={40} color={canSave} />
           </Pressable>
         </View>
 
-        {
-          // 일기 주제가 하나라도 있다면 실행
-          dSubject.length !== 0 &&
-          <ScrollView style={headerStyle.subjectWrap}
-          horizontal
-          >
-            {
-              dSubject.map((subjectElement, index) => (
-                <View style={headerStyle.subjectBox} key={index}>
-                <Text style={[GlobalStyle.font_body, headerStyle.subjectText]}>{subjectElement}</Text>
-              </View>
-            ))
-          }
-          </ScrollView>
-        }
-
         {/* body */}
         <ScrollView style={BodyStyle.mainWrap}
         >
+          {
+            // 일기 주제가 하나라도 있다면 실행
+            dSubject.length !== 0 &&
+            <ScrollView style={headerStyle.subjectWrap}
+            horizontal
+            >
+              {
+                dSubject.map((subjectElement, index) => (
+                  <Pressable style={headerStyle.subjectBox} key={index} name={subjectElement}
+                  onPress={() => btnAddSubject(subjectElement)}>
+                    <Text style={[GlobalStyle.font_body, headerStyle.subjectText]}>{subjectElement}</Text>
+                  </Pressable>
+              ))
+            }
+            </ScrollView>
+          }
+
           {/* 일기 제목 */}
           <View style={BodyStyle.titleInputBox}>
             <TextInput
@@ -128,7 +161,7 @@ const WriteContent = ({navigation, route}) => {
           <TextInput
             onChangeText={text => setDContent(text)}
             value={dContent}
-            placeholder=' 음성 인식 기능(녹음시작)을 활용하거나 직접 입력하여 일기를 기록해 보세요! 
+            placeholder='음성 인식 기능(녹음시작)을 활용하거나 직접 입력하여 일기를 기록해 보세요! 
             여러분의 이야기를 기록해드릴게요. 오늘은 어떤 하루였나요? :)'
             editable
             multiline
@@ -152,23 +185,33 @@ const WriteContent = ({navigation, route}) => {
             <ScrollView
             horizontal>
               <Pressable style={BodyStyle.btnImg}
-              onPress={() => alert('hi')}>
-                <Image 
-                style={{width:'100%', height:'100%'}}
-                source={{uri: "https://images.unsplash.com/photo-1682752013336-7446ed2d507a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60"}}/>
+              onPress={() => ImgPicker(1)}>
+                <Image  source={
+                  // 이미지 url이 있으면 해당 이미지 출력 / 아니면 샘플 이미지 출력
+                  img1 === '' ?
+                  require('../../../assets/images/btnAddImg.png') :
+                  {uri : img1}
+                }
+                style={{width:'100%', height:'100%'}}/>
               </Pressable>
 
               <Pressable style={BodyStyle.btnImg}
-              onPress={() => alert('hi')}>
-                <Image 
-                style={{width:'100%', height:'100%'}}
-                source={{uri: "https://images.unsplash.com/photo-1682752013336-7446ed2d507a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60"}}/>
+              onPress={() => ImgPicker(2)}>
+                <Image source={
+                  img2 === ''?
+                  require('../../../assets/images/btnAddImg.png') :
+                  {uri: img2}
+                }
+                style={{width:'100%', height:'100%'}}/>
               </Pressable>
               <Pressable style={BodyStyle.btnImg}
-              onPress={() => alert('hi')}>
-                <Image 
-                style={{width:'100%', height:'100%'}}
-                source={{uri: "https://images.unsplash.com/photo-1682752013336-7446ed2d507a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60"}}/>
+              onPress={() => ImgPicker(3)}>
+                <Image  source={
+                  img3 === ''?
+                  require('../../../assets/images/btnAddImg.png'):
+                  {uri: img3}
+                }
+                style={{width:'100%', height:'100%'}}/>
               </Pressable>
             </ScrollView>
             ) 
@@ -177,9 +220,8 @@ const WriteContent = ({navigation, route}) => {
               <View style={{width: '100%', justifyContent:'center', alignItems:'center'}}>
                 <Pressable style={BodyStyle.btnImg}
                 onPress={() => alert('hi')}>
-                  <Image 
-                  style={{width:'100%', height:'100%'}}
-                  source={{uri: "https://images.unsplash.com/photo-1682752013336-7446ed2d507a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60"}}/>
+                  <Image source={require('../../../assets/images/btnAddImg.png')}
+                  style={{width:'100%', height:'100%'}}/>
                 </Pressable>
               </View>
             )
@@ -214,6 +256,7 @@ const headerStyle = StyleSheet.create({
   subjectBox:{
     backgroundColor: '#4E4981',
     paddingHorizontal: 15,
+    paddingVertical: 10,
     marginHorizontal: 5,
     borderRadius: 50,
     justifyContent: 'center'
@@ -227,11 +270,11 @@ const BodyStyle = StyleSheet.create({
   mainWrap:{
     display: 'flex',
     flex: 20,
-    marginTop: 14,
   },
   titleInputBox:{
     width: '100%',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: 15
   },
   titleInput: {
     width: '70%',
@@ -242,13 +285,13 @@ const BodyStyle = StyleSheet.create({
   },
 
   btnMic:{
-    marginTop: 15,
+    marginTop: 18,
     alignItems: 'center'
   },
 
   contentInput:{
     width: '100%',
-    marginTop: 10,
+    marginTop: 5,
     height: 400,
   },
 
