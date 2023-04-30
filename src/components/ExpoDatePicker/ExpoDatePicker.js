@@ -12,8 +12,8 @@ import GlobalStyle from "../../globalStyle/GlobalStyle";
 //import DatePicker from the package we installed
 import DatePicker from "react-native-datepicker";
 
-const ExpoDatePicker = () => {
-	const [date, setDate] = useState(new Date());
+const ExpoDatePicker = (props) => {
+	const [date, setDate] = useState(props.date);
 
 	return (
 		<View style={styles.container}>
@@ -24,7 +24,7 @@ const ExpoDatePicker = () => {
 					mode="date" //The enum of date, datetime and time
 					placeholder="select date"
 					format="YYYY.MM.DD"
-					minDate="2016.01.01"
+					minDate="2016-01-01"
 					maxDate={new Date()}
 					confirmBtnText="Confirm"
 					cancelBtnText="Cancel"
@@ -49,6 +49,7 @@ const ExpoDatePicker = () => {
 					}
 					onDateChange={(date) => {
 						setDate(date);
+						props.onDateChange(date);
 					}}
 				/>
 			</View>
@@ -65,6 +66,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		// backgroundColor: "blue",
+		marginTop: 15,
 	},
 	datePickerContainer: {
 		display: "flex",
