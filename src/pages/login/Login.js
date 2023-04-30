@@ -5,6 +5,7 @@ import {
 	View,
 	SafeAreaView,
   Alert,
+  Keyboard,
 } from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,6 +17,7 @@ import LoginInput from "../login/LoginInput";
 import PwSettingSignup from "../login/PwSettingSignup";
 import LoginButton from "../login/LoginButton";
 import { SIGNIN_email_password } from "../../../firebase";
+import { GlobalLoginStyle } from "../../globalStyle/LoginStyle";
 
 export default function Login({ navigation }) {
 	const [email, setEmail] = useState("");
@@ -38,6 +40,9 @@ export default function Login({ navigation }) {
 	};
 
 	return (
+    <Pressable
+    style={{display: 'flex', flex: 1}}
+    onPress={Keyboard.dismiss}>
     <View
     style={{
       display: 'flex',
@@ -45,25 +50,17 @@ export default function Login({ navigation }) {
       backgroundColor: '#fff'
     }}>
       <SafeAreaView
-        style={{
-          display: "flex",
-          alignItems: "center",
-          marginHorizontal: 30,
-          height: "85%",
-        }}
-      >
+        style={[GlobalStyle.safeAreaWrap, {marginHorizontal:30}]}>
         {/* 로고 */}
         <View
           style={{
             alignItems: "center",
-            justifyContent: "flex-start",
-            marginTop: 50,
-            width: "100%",
+            marginTop: 100,
             height: 110,
           }}
         >
-          <Image source={NameLogo} style={styles.logo} />
-          <Text style={[styles.login, GlobalStyle.font_title2]}>로그인</Text>
+          <Image source={NameLogo} style={GlobalLoginStyle.logo} />
+          <Text style={[GlobalLoginStyle.loginTitle, GlobalStyle.font_title2]}>로그인</Text>
         </View>
 
         {/* 입력 폼 */}
@@ -76,13 +73,7 @@ export default function Login({ navigation }) {
 
         {/* 자동로그인 */}
         <View
-          style={{
-            width: "100%",
-            height: 30,
-            alignItems: "center",
-            marginTop: 10,
-            flexDirection: "row",
-          }}
+          style={styles.autoLoginWrap}
         >
           <Pressable style={styles.selectSave} onPress={saveLogin}>
             <Ionicons
@@ -105,6 +96,7 @@ export default function Login({ navigation }) {
         <PwSettingSignup navigation={navigation}/>
 
         {/* sns로그인 */}
+        {/* TODO : 현재 기술 스텍 문제로 SNS로그인 불가 추후 수정 요망
         <View
           style={{
             width: "100%",
@@ -135,39 +127,27 @@ export default function Login({ navigation }) {
             alert('test!')
           }
           }>
-            <Image source={GoogleLogo} style={styles.Googlelogo} />
-          </Pressable>
+            <Image source={GoogleLogo} style={GlobalLoginStyle.Googlelogo} />
+          </Pressable> 
         </View>
+        */}
       </SafeAreaView>
     </View>
+    </Pressable>
 	);
 }
 
 const styles = StyleSheet.create({
-	logo: {
-		width: 200,
-		height: 50,
-		margin: "auto",
-	},
-
-	login: {
-		justifyContent: "center",
-		color: "#4E4981",
-		textAlign: "center",
-		marginTop: 20,
-	},
-	selectSave: {
-		height: "100%",
-		position: "absolute",
-		left: 0,
-		alignItems: "center",
-		justifyContent: "center",
-		paddingHorizontal: 8,
-	},
-
+  autoLoginWrap: {
+    width: "100%",
+    height: 30,
+    alignItems: "center",
+    marginTop: 10,
+    flexDirection: "row",
+  },
 	autoLogin: {
 		width: "100%",
-		left: 40,
+    left: 5,
 		alignItems: "center",
 		justifyContent: "center",
 	},
@@ -178,10 +158,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#D3D5DA",
 		alignSelf: "stretch",
 		marginTop: 7,
-	},
-	Googlelogo: {
-		width: 50,
-		height: 50,
-		backgroundColor: "red",
 	},
 });
