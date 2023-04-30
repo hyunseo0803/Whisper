@@ -9,7 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 const Home = ({ navigation }) => {
 	return (
-		<SafeAreaView style={[GlobalStyle.GWidth, styles.container]}>
+		<SafeAreaView style={[GlobalStyle.safeAreaWrap, styles.container]}>
 			<View style={styles.imgWrap}>
 				<Image source={Logo} style={styles.logoImg} />
 			</View>
@@ -34,12 +34,10 @@ const Home = ({ navigation }) => {
 		</SafeAreaView>
 	);
 };
-
 export default Home;
 
 const styles = StyleSheet.create({
 	container: {
-		marginHorizontal: 20,
 		position: "relative",
 	},
 
