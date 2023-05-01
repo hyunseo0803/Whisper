@@ -26,10 +26,11 @@ import cloudy from "../../assets/images/weather/cloudy.png";
 import rain from "../../assets/images/weather/rain.png";
 import snow from "../../assets/images/weather/snow.png";
 import lightning from "../../assets/images/weather/lightning.png";
+import WriteAnalysis from "../pages/write/WriteAnalysis";
 
 // 날짜 선택기를 사용할땐 라이트모드로 봐야한다.. 난 이걸 2시간동안 구글링...
 
-const Write = (props) => {
+const Write = ({ navigation }) => {
 	const [selectedMood, setSelectedMood] = useState("");
 	const [selectedWeather, setSelectedWeather] = useState("");
 	const [selectedDate, setSelectedDate] = useState(new Date());
@@ -54,6 +55,7 @@ const Write = (props) => {
 	};
 	const isBothSelected = !!selectedMood && !!selectedWeather;
 	const handleNextButton = () => {
+		navigation.navigate("WriteAnalysis");
 		console.log(
 			`Mood: ${selectedMood}, Weather: ${selectedWeather}, date:${selectedDate}`
 		);
