@@ -23,7 +23,7 @@ const ExpoDatePicker = (props) => {
 					date={date} //initial date from state
 					mode="date" //The enum of date, datetime and time
 					placeholder="select date"
-					format="YYYY.MM.DD"
+					format="yyyy.MM.DD"
 					minDate="2016-01-01"
 					maxDate={new Date()}
 					confirmBtnText="Confirm"
