@@ -57,7 +57,6 @@ const WriteAnalysis = ({ navigation: { navigate } }) => {
 	};
 
 	return (
-		// TODO to 현서: 이 부분 바로 일기쓰기로 넘어갈건지 사진찍을건지 확인하는 그 페이지로 수정해주세요.
 		<SafeAreaView
 			style={{
 				display: "flex",
@@ -119,10 +118,10 @@ const styles = StyleSheet.create({
 		borderRadius: 15,
 		shadowColor: "#000",
 		shadowOffset: {
-			width: 8,
-			height: 10,
+			width: 6,
+			height: 8,
 		},
-		shadowOpacity: 0.5,
+		shadowOpacity: 0.3,
 		shadowRadius: 8,
 	},
 	text: {
