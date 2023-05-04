@@ -86,6 +86,7 @@ const DiaryView = (props) => {
         setVisible = {setShowDeleteModal}
         wantDelteId = {props.dId}
         wantDelteDate = {props.date}
+        setRedirect = {props.setRedirect}
         />
       }
 
