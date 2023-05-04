@@ -23,6 +23,29 @@ const GlobalStyle = StyleSheet.create({
 		fontFamily: "Diary",
 	},
 
+	bgRED: {
+		backgroundColor: '#E76B5C'
+	},
+	bgBLUE: {
+		backgroundColor: '#4E4981'
+	},
+	bgWHITE: {
+		backgroundColor: '#FFF'
+	},
+
+	fontRED: {
+		color: '#E76B5C'
+	},
+	fontBLUE :{
+		color: '#4E4981'
+	},
+	fontBLACK: {
+		color: '#000'
+	},
+	fontWHITE: {
+		color: '#fff'
+	},
+
 	/**
 	 * safeArea 감싸는 wrap
 	 */
