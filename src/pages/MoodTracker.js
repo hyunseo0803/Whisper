@@ -2,7 +2,7 @@ import { SafeAreaView, StyleSheet, Text, View, Image, Pressable, Alert } from "r
 import React, {useState, useEffect} from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import Header from "../components/calender/Header";
-import { getMoodData } from "../util/firebase/readData";
+import { getMoodData } from "../util/firebase/CRUD";
 import MoodBar from "../components/moodTracker/MoodBar";
 import happy from '../../assets/images/mood/happy.png';
 import disgust from '../../assets/images/mood/disgust.png';

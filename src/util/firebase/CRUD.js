@@ -17,19 +17,16 @@ export const getCalenderData = async(month, year) => {
   const q = query(collection(db, "diary"), 
                 where("u_id", "==", auth.currentUser.uid),
                 orderBy("date"),
-                where("date", ">", new Date(`${year}-${month}-1`)),  // 4월의 첫 날 00시
-                where("date", "<", new Date(`${year}-${month+1}-1`))    // 5월의 첫 날 00시
+                where("date", ">=", new Date(`${year}-${month}-1 0:0:0`)),  // 4월의 첫 날 0시 0분 0초~
+                where("date", "<=", new Date(`${year}-${month+1}-0 23:59:59`))    // 4월의 마지막 날 23시59분59초
               );
 
     const d_data = [];
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      //날짜 convert day+1
-      const year = doc.data().date.toDate().toISOString().split('T')[0].split("-")[0]
-      const month = doc.data().date.toDate().toISOString().split('T')[0].split("-")[1][0] === '0' ? doc.data().date.toDate().toISOString().split('T')[0].split("-")[1][1] : doc.data().date.toDate().toISOString().split('T')[0].split("-")[1]
-      const day = doc.data().date.toDate().toISOString().split('T')[0].split("-")[2][0] === '0' ? doc.data().date.toDate().toISOString().split('T')[0].split("-")[2][1] : doc.data().date.toDate().toISOString().split('T')[0].split("-")[2]
-      // const imgdate = dayPlus(year, 0, month, 0, day, 1)
-      // const imgdate = (year+"-"+month+"-"+day)
+      const fullDate = timestampToDate(doc.data().date)
+      const day = fullDate.split('.')[2][0] === '0' ? fullDate.split('.')[2][1] : fullDate.split('.')[2]
+
       const imgdate = (day*1)
       // 이미지
       const imgUrl = doc.data().image;
@@ -55,15 +52,15 @@ export const getMoodData = async(mood, year, month) => {
       where("u_id", "==", auth.currentUser.uid), 
       where("mood", "==", mood), 
       orderBy("date"),
-      where("date", ">=", Timestamp.fromDate(new Date(`${year}-${month}-1`))), 
-      where("date", "<", Timestamp.fromDate(new Date(`${year}-${month+1}-1`))),
+      where("date", ">=", Timestamp.fromDate(new Date(`${year}-${month}-1 0:0:0`))), 
+      where("date", "<=", Timestamp.fromDate(new Date(`${year}-${month+1}-0 23:59:59`))),
     );
     const snapshot = await getCountFromServer(q);
     const moodCountResult = snapshot.data().count;
     return moodCountResult
   }
   catch(e){
-    console.log(e)
+    console.log("무드트래커 GET 오류", e)
   }
 }
 
@@ -77,19 +74,18 @@ export const getDiaryList = async(month, year) => {
     const q = query(diaryCollection,
       where("u_id", "==", auth.currentUser.uid), 
       orderBy('date'),
-      where("date", ">=", Timestamp.fromDate(new Date(`${year}-${month}-1`))), 
-      where("date", "<", Timestamp.fromDate(new Date(`${year}-${month+1}-1`))),
+      where("date", ">=", Timestamp.fromDate(new Date(`${year}-${month}-1 0:0:0`))), 
+      where("date", "<=", Timestamp.fromDate(new Date(`${year}-${month+1}-0 23:59:59`))),
     );
     const result = await getDocs(q);
     let arr = [];
     result.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
       arr.push(doc.data())
     });
     return arr
   }
   catch(e){
-    console.log(e)
+    console.log("getDiaryList GET 오류", e)
   }
 }
 

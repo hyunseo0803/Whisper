@@ -1,13 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import Header from './Header'
 import Body from './Body'
-import GlobalStyle from '../../globalStyle/GlobalStyle';
-import YMPicker from '../datePicker/YMPicker';
-import { db, auth } from "../../../firebase";
-import { collection, query, where, getDocs, and, orderBy } from "firebase/firestore";
-import { dayPlus } from '../../util/Calender';
-import { getCalenderData } from '../../util/firebase/readData';
+import { getCalenderData } from '../../util/firebase/CRUD';
 
 function Calender() {
 
