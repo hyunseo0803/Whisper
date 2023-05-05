@@ -1,11 +1,12 @@
-import { Alert, StyleSheet, View } from "react-native";
-import React, {useState, useEffect} from "react";
+import { Alert } from "react-native";
+import React, {useState, useEffect, useCallback} from "react";
 import LoginScreen from "./src/pages/login/Login";
 import FindPWScreen from "./src/pages/login/FindPW";
 import SignUpScreen from "./src/pages/login/SignUp";
 import WriteScreen from "./src/pages/Write";
 import HomeScreen from "./src/pages/Home";
-import * as Font from "expo-font";
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import Tabs from './src/components/tabs'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -13,7 +14,11 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from './firebase';
 
 export default function App() {
-	Font.loadAsync({ Diary: require("./assets/fonts/EF_Diary.ttf") });
+
+  const [fontsLoaded] = useFonts({
+    'Diary': require('./assets/fonts/EF_Diary.ttf'),
+  });
+
 	const Stack = createNativeStackNavigator();
   const [islogin, setIsLogin] = useState(false);
 
@@ -22,13 +27,11 @@ export default function App() {
     onAuthStateChanged(auth, (user) => {
       if (user){
         setIsLogin(true);
-        // Alert.alert('로그인 성공!')
-        console.log(islogin)
+        Alert.alert('로그인 성공!')
       }
       else{
         setIsLogin(false);
-        // Alert.alert('로그아웃!!')
-        console.log(islogin)
+        Alert.alert('로그아웃!!')
       }
     })
   }
@@ -37,9 +40,19 @@ export default function App() {
     checkLogin
   }, [islogin]);
 
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   if(islogin){
     return(
-      <NavigationContainer>
+      <NavigationContainer onLayout={onLayoutRootView}>
         <Stack.Navigator>
           <Stack.Screen name="HomeTab" component={Tabs}
             options={{headerShown: false}}
@@ -51,7 +64,7 @@ export default function App() {
     )
   }
   return(
-    <NavigationContainer >
+    <NavigationContainer onLayout={onLayoutRootView}>
       <Stack.Navigator>
         {/* 로그인 화면 */}
         <Stack.Screen name="Login" component={LoginScreen} 
