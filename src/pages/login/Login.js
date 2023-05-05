@@ -31,7 +31,6 @@ export default function Login({ navigation }) {
 		setSaveLogin(!savelogin);
 	};
   
-  console.log(savelogin)
   /**
    * 로그인 버튼 onClick 함수
    */
