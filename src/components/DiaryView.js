@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Text, Image, Pressable} from 'react-native';
+import {View, StyleSheet, Text, Image, Pressable, Alert} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import GlobalStyle from '../globalStyle/GlobalStyle';
 import DeleteMessage from './DeleteMessage';
@@ -35,8 +35,19 @@ const DiaryView = (props) => {
     }
   }
 
+  /**
+   * 삭제 모달 버튼
+   */
   const onClickDelete = () => {
     setShowDeleteModal(true)
+  }
+
+  /**
+   * 음성 녹음 재생 버튼
+   */
+  const onClickVoice = () => {
+    // TODO to emyo : 일기 저장 기능 완료되면 음성 녹음 불러오는 기능 추가 바람.
+    Alert.alert("음성녹음 기능 추가 바람")
   }
 
 
@@ -70,6 +81,7 @@ const DiaryView = (props) => {
           props.voice !== undefined &&
           <Pressable
           style={{marginBottom: 10}}
+          onPress={() => onClickVoice()}
           >
           <Ionicons name="mic-circle" size={40} color='#E76B5C' />
           </Pressable>
