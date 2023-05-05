@@ -58,9 +58,6 @@ export default function YMPicker(props) {
 
 	// }
 
-	console.log(selectMonth);
-	console.log(selectYear);
-
 	/**
 	 * 세글자 월 이름 배열
 	 */

@@ -4,6 +4,7 @@ import {
 	Image,
 	View,
 	SafeAreaView,
+	Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import NameLogo from "../../../assets/images/NameLogo.png";
@@ -41,9 +42,9 @@ export default function SignUp({navigation}) {
 	const handleSignUp = async() => {
     try {
       const user = await SIGNUP_email_password(email, password)
-      console.log('User account created & signed in!');
+      Alert.alert('회원가입 성공!', '회원가입에 성공했습니다! 소곤소곤을 이용해보세요!');
     } catch(error) {
-      console.log(error.message);
+      Alert.alert('회원가입 실패!','회원가입에 실패했습니다. 관리자에게 문의해주세요.');
     }
 	};
 
