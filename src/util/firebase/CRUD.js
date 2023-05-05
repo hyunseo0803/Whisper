@@ -69,11 +69,11 @@ export const getMoodData = async(mood, year, month) => {
  * @param {int} month 
  * @param {int} year 
  */
-export const getDiaryList = async(month, year) => {
+export const getDiaryList = async(month, year, listupType) => {
   try{
     const q = query(diaryCollection,
       where("u_id", "==", auth.currentUser.uid), 
-      orderBy('date'),
+      orderBy('date', listupType),
       where("date", ">=", Timestamp.fromDate(new Date(`${year}-${month}-1 0:0:0`))), 
       where("date", "<=", Timestamp.fromDate(new Date(`${year}-${month+1}-0 23:59:59`))),
     );

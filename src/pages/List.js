@@ -22,42 +22,19 @@ const List = () => {
   const [showModal, setShowModal] = useState(false);
   const [diaryList, setDiaryList] = useState([]);   // 일기 정보 배열
   const [showSortModal, setShowSortModal] = useState(false)     // 정렬 기준 모달 
-  const [howSortDiary, setHowSortDiary] = useState('asc')             // asc(오름차순, 기본), decs(내림차순)
+  const [howSortDiary, setHowSortDiary] = useState('asc')       // asc(오름차순, 기본), decs(내림차순)
   const [redirect, setRedirect] = useState(false);
-  // TODO to emyo : 리스트업 기능 넣어주세요.
-  const [firstDiary, setFirstDiary] = useState({});
-
 
 
   // 데이터를 diaryList에 set해주는 useEffect
   useEffect(() => {
     async function getDiaryListFun() {
-      const result = await getDiaryList(month, year)
+      const result = await getDiaryList(month, year, howSortDiary)
       setDiaryList(result)
-      setFirstDiary(result[0])
     } 
     getDiaryListFun()
     setRedirect(false)
-  }, [month, year, redirect])
-
-  // 데이터 오름차순, 내림차순 변경
-  useEffect(() => {
-    console.log("현재 상태 :", howSortDiary)
-    if(howSortDiary === ''){
-      // 오름차순
-      const result = diaryList.sort(function (a, b) {
-        return a.date.toDate() - b.date.toDate();
-      });
-      setDiaryList(result)
-    }else {
-      // 내림차순
-      const result = diaryList.sort(function (a, b) {
-        return b.date.toDate() - a.date.toDate();
-      });
-      setDiaryList(result)
-    }
-    console.log(diaryList)
-  },[howSortDiary, diaryList])
+  }, [month, year, redirect, howSortDiary])
 
   return (
     <SafeAreaView style={GlobalStyle.safeAreaWrap}>
@@ -116,6 +93,7 @@ const List = () => {
         />
       }
       {
+        // sort modal
         showSortModal &&
         <SortModal
           visible = {showSortModal}

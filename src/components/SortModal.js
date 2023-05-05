@@ -16,9 +16,9 @@ const SortModal = (props) => {
         props.setVisible(false)
         break;
 
-        default:
-        props.setVisible(false)
-        break;
+      default:
+      props.setVisible(false)
+      break;
     }
   }
 
