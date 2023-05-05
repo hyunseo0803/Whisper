@@ -16,7 +16,7 @@ import GlobalStyle from "../../globalStyle/GlobalStyle";
 import LoginInput from "../login/LoginInput";
 import PwSettingSignup from "../login/PwSettingSignup";
 import LoginButton from "../login/LoginButton";
-import { SIGNIN_email_password } from "../../../firebase";
+import { SIGNIN_email_password } from "../../util/firebase/user";
 import { GlobalLoginStyle } from "../../globalStyle/LoginStyle";
 
 export default function Login({ navigation }) {

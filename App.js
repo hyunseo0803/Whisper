@@ -12,6 +12,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from './firebase';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
 
@@ -22,22 +23,30 @@ export default function App() {
 	const Stack = createNativeStackNavigator();
   const [islogin, setIsLogin] = useState(false);
 
-
+  /**
+   * 로그인 되었는지 체크하는 함수
+   */
   const checkLogin = () => {
     onAuthStateChanged(auth, (user) => {
       if (user){
         setIsLogin(true);
-        Alert.alert('로그인 성공!')
       }
       else{
         setIsLogin(false);
-        Alert.alert('로그아웃!!')
       }
     })
   }
-  checkLogin();
+
   useEffect(() => {
-    checkLogin
+    const getSessionFun = async() => {
+      await AsyncStorage.getItem('user', (err, result) => {
+        console.log(result);
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    checkLogin();
   }, [islogin]);
 
   const onLayoutRootView = useCallback(async () => {

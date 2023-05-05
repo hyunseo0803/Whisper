@@ -13,7 +13,7 @@ import { Pressable } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import LoginInput from "../login/LoginInput";
 import SignUpButton from "../login/SignUpButton";
-import { SIGNUP_email_password } from "../../../firebase";
+import { SIGNUP_email_password } from "../../util/firebase/user";
 import { GlobalLoginStyle } from "../../globalStyle/LoginStyle";
 import { Keyboard } from "react-native";
 

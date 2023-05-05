@@ -30,6 +30,7 @@ export default function LoginInput(props) {
 				placeholder="이메일"
 				label="email"
 				onChangeText={props.setEmail}
+        keyboardType="email-address"
 			/>
 			<View
 				style={{

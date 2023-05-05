@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import NameLogo from "../../../assets/images/NameLogo.png";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import { Ionicons } from "@expo/vector-icons";
-import { RESET_password } from "../../../firebase";
+import { RESET_password } from "../../util/firebase/user";
 import { GlobalLoginStyle } from "../../globalStyle/LoginStyle";
 import { Keyboard } from "react-native";
 
@@ -77,6 +77,7 @@ export default function FindPW() {
             placeholder="이메일"
             label="email"
             onChangeText={setEmail}
+            keyboardType="email-address"
           />
         </View>
 
