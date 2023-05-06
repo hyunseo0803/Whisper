@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, SafeAreaView,  } from "react-native";
-import React, {useState, useNativeDriver} from "react";
+import { StyleSheet, Text, View, SafeAreaView, Alert,  } from "react-native";
+import React, {useState, useNativeDriver, useEffect} from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable } from "react-native";
@@ -12,12 +12,13 @@ import DateRangePicker from "../components/datePicker/DateRangePicker";
 const Search = () => {
   const toDay = new Date();
   const [title, setTitle] = useState('');
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [selectedMood, setSelectedMood] = useState(null);         // 선택된 기분
   const [selectedWeather, setSelectedWeather] = useState(null);   // 선택된 날씨
   //modal
-  const [dateModalShow, setDateModalShow] = useState(false)
+  const [dateModalShow, setDateModalShow] = useState(false);
+  const [canPressSearchBtn, setCanPressSearchBtn] = useState(false);
 
   /**
    * mood picker item 요소
@@ -49,17 +50,25 @@ const Search = () => {
     color: '#9EA0A4',
   };
 
-
   /**
-   * 검색 날짜 onChange 함수
-   * @param {e} event 
-   * @param {date} selectedDate 
-   * @param {string} type 
+   * 검색 버튼 onPress 함수
    */
-  const onChangeDate = (event, selectedDate, type) => {
-    const currentDate = selectedDate;
-    type === 'start' ? setStartDate(currentDate) : setEndDate(currentDate);
-  };
+  const searchDiary = () => {
+    // TODO to 현서 : 검색기능 추가해주세요
+    Alert.alert('검색기능 추가바람')
+  }
+
+
+
+  useEffect(() => {
+    if(title.replace(/\s/g, "")!=='' || startDate!=='' || endDate!=='' || selectedMood!==null || selectedWeather!==null){
+      setCanPressSearchBtn(true)
+    }
+    else{
+      setCanPressSearchBtn(false)
+    }
+  }, [title, startDate, endDate, selectedMood, selectedWeather])
+
 
   return (
     <SafeAreaView style={[{position: "relative",}, GlobalStyle.safeAreaWrap]}>
@@ -86,7 +95,13 @@ const Search = () => {
               <Pressable
               onPress={() => setDateModalShow(true)}
               >
-                <Text style={[GlobalStyle.font_body]}>선택없음</Text>
+                {startDate==='' && endDate==='' ?
+                  // 날짜 지정 안해줄 시 -> 전체 일기에서 검색
+                  <Text style={[GlobalStyle.font_body, styles.text_input, {color: '#BDBFC4'}]}>선택없음</Text>
+                :
+                  // 날짜 지정
+                  <Text style={[GlobalStyle.font_body, styles.text_input, {maxWidth: '100%'}]}>{startDate} ~ {endDate}</Text>
+                }
               </Pressable>
               {
                 dateModalShow &&
@@ -98,24 +113,6 @@ const Search = () => {
                   setEndDate={setEndDate}
                 />
               }
-              {/* <DateTimePicker
-                value={startDate}
-                mode={'date'}
-                minimumDate={new Date(2015, 12, 1)}
-                maximumDate={toDay}
-                onChange={(e, date) => onChangeDate(e, date, "start")}
-                themeVariant='light'   // TODO to emyo : 라이트모드(light) 다크모드(dark) 설정 바람
-              />
-              <Text style={[GlobalStyle.font_body]}> ~</Text>
-              <DateTimePicker
-                value={endDate}
-                mode={'date'}
-                minimumDate={startDate}
-                maximumDate={toDay}
-                onChange={(e, date) => onChangeDate(e, date, "end")}
-                style={[GlobalStyle.font_body]}
-                themeVariant='light'  // TODO to emyo : 라이트모드(light) 다크모드(dark) 설정 바람
-              /> */}
             </View>
           </View>
 
@@ -124,6 +121,7 @@ const Search = () => {
             <RNPickerSelect
               placeholder={placeholder}
               onValueChange={(value) => setSelectedMood(value)}
+              value={selectedMood}
               items={mood}
               style={pickerS}
             />
@@ -134,6 +132,7 @@ const Search = () => {
             <RNPickerSelect
               placeholder={placeholder}
               onValueChange={(value) => setSelectedWeather(value)}
+              value={selectedWeather}
               items={weather}
               style={pickerS}
             />
@@ -141,7 +140,10 @@ const Search = () => {
         </View>
 
         <Pressable
-        style={[buttonS.buttonWrap, GlobalStyle.bgRED]}>
+        disabled={!canPressSearchBtn}
+        onPress={() => searchDiary()}
+        style={
+          canPressSearchBtn?[buttonS.buttonWrap, GlobalStyle.bgRED] : [buttonS.buttonWrap, {backgroundColor:'rgba(231, 107, 92, .5)'}]}>
           <Ionicons name="search-outline" size={36} color="#fff"/>
         </Pressable>
 
