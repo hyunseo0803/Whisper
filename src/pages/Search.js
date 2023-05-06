@@ -5,16 +5,49 @@ import { Ionicons } from "@expo/vector-icons";
 import { Pressable } from "react-native";
 import { Keyboard } from "react-native";
 import { TextInput } from "react-native";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {Picker} from '@react-native-picker/picker';
+// import DateTimePicker from '@react-native-community/datetimepicker';
+import RNPickerSelect from 'react-native-picker-select';
+import DateRangePicker from "../components/datePicker/DateRangePicker";
 
 const Search = () => {
   const toDay = new Date();
   const [title, setTitle] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [selectedMood, setSelectedMood] = useState('');
-  const [selectedWeather, setSelectedWeather] = useState('');
+  const [selectedMood, setSelectedMood] = useState(null);         // 선택된 기분
+  const [selectedWeather, setSelectedWeather] = useState(null);   // 선택된 날씨
+  //modal
+  const [dateModalShow, setDateModalShow] = useState(false)
+
+  /**
+   * mood picker item 요소
+   */
+  const mood = [
+    { label: '기쁨', value: 'happy' },
+    { label: '혐오', value: 'disgust' },
+    { label: '놀람', value: 'surprised' },
+    { label: '화남', value: 'angry' },
+    { label: '슬픔', value: 'sad' },
+    { label: '두려움', value: 'fear' },
+    { label: '무표정', value: 'expressionless' },
+  ]
+  /**
+   * weather picker item 요소
+   */
+  const weather = [
+    { label: '맑음', value: 'sunny' },
+    { label: '구름조금', value: 'littleCloud' },
+    { label: '흐림', value: 'cloudy' },
+    { label: '비', value: 'rain' },
+    { label: '눈', value: 'snow' },
+    { label: '천둥', value: 'lightning' },
+  ]
+  // placeholder 세팅값
+  const placeholder = {
+    label: '선택없음',
+    value: null,
+    color: '#9EA0A4',
+  };
 
 
   /**
@@ -32,7 +65,7 @@ const Search = () => {
     <SafeAreaView style={[{position: "relative",}, GlobalStyle.safeAreaWrap]}>
       <Pressable
         style={styles.flexCenter}
-        onPress={() => Keyboard.dismiss()}
+        onPress={() => {Keyboard.dismiss()}}
       >
         <Text style={[{marginBottom: 40}, GlobalStyle.font_caption1]}>Search</Text>
 
@@ -50,7 +83,22 @@ const Search = () => {
           <View style={[styles.text_input_Box,]}>
             <Text style={[GlobalStyle.font_body]}>기간</Text>
             <View style={{display:'flex', flexDirection:'row', alignItems: 'center'}}>
-              <DateTimePicker
+              <Pressable
+              onPress={() => setDateModalShow(true)}
+              >
+                <Text style={[GlobalStyle.font_body]}>선택없음</Text>
+              </Pressable>
+              {
+                dateModalShow &&
+                <DateRangePicker
+                  animationType = 'fade'
+                  visible={dateModalShow}
+                  setVisible={setDateModalShow}
+                  setStartDate={setStartDate}
+                  setEndDate={setEndDate}
+                />
+              }
+              {/* <DateTimePicker
                 value={startDate}
                 mode={'date'}
                 minimumDate={new Date(2015, 12, 1)}
@@ -67,23 +115,27 @@ const Search = () => {
                 onChange={(e, date) => onChangeDate(e, date, "end")}
                 style={[GlobalStyle.font_body]}
                 themeVariant='light'  // TODO to emyo : 라이트모드(light) 다크모드(dark) 설정 바람
-              />
+              /> */}
             </View>
           </View>
 
           <View style={[styles.text_input_Box]}>
             <Text style={[GlobalStyle.font_body]}>기분</Text>
-            <TextInput
-              placeholder="선택없음"
-              style={[GlobalStyle.font_body, styles.text_input]}
+            <RNPickerSelect
+              placeholder={placeholder}
+              onValueChange={(value) => setSelectedMood(value)}
+              items={mood}
+              style={pickerS}
             />
           </View>
 
           <View style={[styles.text_input_Box, {borderBottomColor:'#fff', paddingBottom:0}]}>
             <Text style={[GlobalStyle.font_body]}>날씨</Text>
-            <TextInput
-              placeholder="선택없음"
-              style={[GlobalStyle.font_body, styles.text_input]}
+            <RNPickerSelect
+              placeholder={placeholder}
+              onValueChange={(value) => setSelectedWeather(value)}
+              items={weather}
+              style={pickerS}
             />
           </View>
         </View>
@@ -94,6 +146,7 @@ const Search = () => {
         </Pressable>
 
       </Pressable>
+
     </SafeAreaView>
   );
 }
@@ -120,7 +173,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent :'space-between',
     alignItems: 'center',
-    backgroundColor: 'yellow',
+    paddingHorizontal: 5,
 
     marginTop: 8,
     paddingBottom: 8,
@@ -130,8 +183,8 @@ const styles = StyleSheet.create({
   },
   text_input:{
     textAlign: 'right',
-    backgroundColor: 'red',
     paddingVertical: 7,
+    minWidth: 100,
     maxWidth: '70%',
   }
 });
@@ -146,5 +199,15 @@ const buttonS = StyleSheet.create({
 
     position: 'absolute',
     bottom: 36,
+  }
+})
+
+const pickerS = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    fontFamily: "Diary",
+    textAlign: 'right',
+    paddingVertical: 7,
+    width: 100
   }
 })
