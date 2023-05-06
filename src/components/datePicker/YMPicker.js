@@ -3,7 +3,15 @@ import { View, Text, StyleSheet, Modal, Button, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 
-// 연, 월 picker
+/**
+ * 연, 월 picker
+ * @param year
+ * @param month 
+ * @param animationType "slide", "fade", "none"
+ * @param visible (boolean)
+ * @param setVisible (useState set값)
+ * @returns year,month
+ */
 export default function YMPicker(props) {
 	const [selectYear, setSelectYear] = useState(props.year);
 	const [selectMonth, setSelectMonth] = useState(props.month);
@@ -161,7 +169,7 @@ export default function YMPicker(props) {
 	);
 }
 
-const modalS = StyleSheet.create({
+export const modalS = StyleSheet.create({
 	modalBackground: {
 		flex: 1,
 		justifyContent: "center",
