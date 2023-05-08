@@ -89,6 +89,15 @@ export const getDiaryList = async(month, year, listupType) => {
   }
 }
 
+/**
+ * 일기 검색 결과를 반환해주는 함수
+ * @param {string} title 
+ * @param {string} startDate '2020.01.01'
+ * @param {string} endDate '2020.01.01'
+ * @param {string} mood string/null
+ * @param {string} weather string/null
+ * @returns arr
+ */
 export const getSearchDiary = async(title, startDate, endDate, mood, weather) => {
   /**
    * 검색하려는 감정 배열 반환
@@ -118,9 +127,10 @@ export const getSearchDiary = async(title, startDate, endDate, mood, weather) =>
   }
 
   /**
-   * 
+   * 검색할 날짜 구하는 함수 - 지정하지 않을경우 2010.01.01부터 오늘날짜까지의 일기를 검색
    * @param {date} date startDate, endDate 
    * @param {string} type 'start', 'end'
+   * 
    */
   const searchDate = (date, type) => {
     if(type === 'start'){
