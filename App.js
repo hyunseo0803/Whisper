@@ -13,6 +13,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from './firebase';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import SearchResult from "./src/pages/SearchResult";
+import Search from "./src/pages/Search";
 
 export default function App() {
 
@@ -67,6 +69,12 @@ export default function App() {
             options={{headerShown: false}}
           />
           <Stack.Screen name="Write" component={WriteScreen}
+          options={{headerShown: false}}/>
+          
+          {/* search */}
+          <Stack.Screen name="search" component={Search}
+          options={{headerShown: false}}/>
+          <Stack.Screen name="searchResult" component={SearchResult}
           options={{headerShown: false}}/>
         </Stack.Navigator>
       </NavigationContainer>

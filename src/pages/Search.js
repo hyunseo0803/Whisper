@@ -9,8 +9,11 @@ import { TextInput } from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import DateRangePicker from "../components/datePicker/DateRangePicker";
 import { getSearchDiary } from "../util/firebase/CRUD";
+import { useRouter, Link } from "expo-router";
 
-const Search = () => {
+const Search = ({navigation}) => {
+  // const router = useRouter();
+
   const toDay = new Date();
   const [title, setTitle] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -56,7 +59,7 @@ const Search = () => {
    */
   const searchDiary = async() => {
     const resultArr = await getSearchDiary(title, startDate, endDate, selectedMood, selectedWeather)
-    console.log(resultArr)
+    navigation.navigate('searchResult', {searchedDiarys : resultArr})
   }
 
 
