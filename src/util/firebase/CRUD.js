@@ -1,6 +1,6 @@
 // import { async } from "@firebase/util";
 import { async } from "@firebase/util";
-import { collection, query, where, getDocs, deleteDoc, orderBy, getCountFromServer, doc, startAt, endAt, endBefore, Timestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, deleteDoc, orderBy, getCountFromServer, doc, startAt, endAt, and, Timestamp, limit } from "firebase/firestore";
 import { db, auth } from "../../../firebase";
 import { changeNumberTwoLength } from "../Calender";
 
@@ -82,6 +82,104 @@ export const getDiaryList = async(month, year, listupType) => {
     result.forEach((doc) => {
       arr.push(doc.data())
     });
+    return arr
+  }
+  catch(e){
+    console.log("getDiaryList GET 오류", e)
+  }
+}
+
+export const getSearchDiary = async(title, startDate, endDate, mood, weather) => {
+  /**
+   * 검색하려는 감정 배열 반환
+   * @param {string} mood 
+   * @returns arr
+   */
+  const searchMood = (mood) => {
+    if(mood === null){
+      return ['happy', 'disgust', 'surprised', 'angry', 'sad', 'fear', 'expressionless']
+    }else{
+      return [mood]
+    }
+  }
+
+  /**
+   * 검색하려는 날씨 배열 반환
+   * @param {string} weather 
+   * @returns 
+   */
+  const searchWeather = (weather) => {
+    if(weather === null){
+      return ['sunny', 'littleCloud', 'cloudy', 'rain', 'snow', 'lightning']
+    }
+    else{
+      return [weather]
+    }
+  }
+
+  /**
+   * 
+   * @param {date} date startDate, endDate 
+   * @param {string} type 'start', 'end'
+   */
+  const searchDate = (date, type) => {
+    if(type === 'start'){
+      if(date === ''){
+        return Timestamp.fromDate(new Date(`2010-01-01 0:0:0`))
+      }else{
+        return Timestamp.fromDate(new Date(`${startDate.split('.')[0]}-${startDate.split('.')[1]}-${startDate.split('.')[2]} 0:0:0`))
+      }
+    }
+    else{
+      if(date === ''){
+        const DATE = new Date()
+        return Timestamp.fromDate(new Date(`${DATE.getFullYear()}-${DATE.getMonth()+1}-${DATE.getDate()} 23:59:59`))
+      }else{
+        return Timestamp.fromDate(new Date(`${endDate.split('.')[0]}-${endDate.split('.')[1]}-${endDate.split('.')[2]} 23:59:59`))
+      }
+    }
+  }
+
+  try{
+    const dateQuery = query(diaryCollection,
+      where("u_id", "==", auth.currentUser.uid), 
+      orderBy('date'),
+      where("date", ">=", searchDate(startDate, 'start')), 
+      where("date", "<=", searchDate(endDate, 'end')),
+      )
+    const moodWeatherQuery = query(diaryCollection,
+      where("u_id", "==", auth.currentUser.uid), 
+      where('mood', 'in', searchMood(mood)),
+      where('weather', 'in', searchWeather(weather)),
+      orderBy('date'),
+      where("date", ">=", searchDate(startDate, 'start')), 
+      where("date", "<=", searchDate(endDate, 'end')),
+    );
+
+    let arr = [];
+
+    if(mood!==null || weather!==null){
+      const result = await getDocs(moodWeatherQuery);
+      result.forEach((doc) => {
+        arr.push(doc.data())
+      });
+    }
+    else{
+      const result = await getDocs(dateQuery);
+      result.forEach((doc) => {
+        arr.push(doc.data())
+      });
+    }
+
+    if(title !== ''){
+      // filter를 사용해서 title에 해당 글자가 포함되어 있는 객체만 남김
+      arr = arr.filter((searchText) => {
+        if(searchText.title.includes(title)){
+          return true
+        }
+      })
+    }
+    
     return arr
   }
   catch(e){

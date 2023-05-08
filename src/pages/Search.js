@@ -8,6 +8,7 @@ import { TextInput } from "react-native";
 // import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
 import DateRangePicker from "../components/datePicker/DateRangePicker";
+import { getSearchDiary } from "../util/firebase/CRUD";
 
 const Search = () => {
   const toDay = new Date();
@@ -53,9 +54,9 @@ const Search = () => {
   /**
    * 검색 버튼 onPress 함수
    */
-  const searchDiary = () => {
-    // TODO to 현서 : 검색기능 추가해주세요
-    Alert.alert('검색기능 추가바람')
+  const searchDiary = async() => {
+    const resultArr = await getSearchDiary(title, startDate, endDate, selectedMood, selectedWeather)
+    console.log(resultArr)
   }
 
 
@@ -138,6 +139,8 @@ const Search = () => {
             />
           </View>
         </View>
+        
+        <Text style={[{marginTop: 20 ,color:'#BDBFC4'}, GlobalStyle.font_caption1]}>검색 결과는 최대 30개로 제한됩니다.</Text>
 
         <Pressable
         disabled={!canPressSearchBtn}
