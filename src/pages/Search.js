@@ -143,7 +143,7 @@ const Search = ({navigation}) => {
           </View>
         </View>
         
-        <Text style={[{marginTop: 20 ,color:'#BDBFC4'}, GlobalStyle.font_caption1]}>검색 결과는 최대 30개로 제한됩니다.</Text>
+        <Text style={[{marginTop: 20 ,color:'#BDBFC4'}, GlobalStyle.font_caption1]}>검색 결과가 너무 많을 경우 시간이 지연될 수 있습니다.</Text>
 
         <Pressable
         disabled={!canPressSearchBtn}
