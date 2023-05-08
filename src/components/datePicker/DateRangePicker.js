@@ -93,7 +93,7 @@ const DateRangePicker = (props) => {
             onDayPress={(date) => onPressDate(date)}
             markedDates={betweenMarking(betweenDate)}
             markingType={'period'}
-            maxDate={DATE}
+            maxDate={`${DATE.getFullYear()}-${DATE.getMonth()+1}-${DATE.getDate()}`}
             theme={{
               backgroundColor: '#ffffff',
               calendarBackground: '#ffffff',
