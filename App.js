@@ -15,6 +15,12 @@ import { auth } from './firebase';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SearchResult from "./src/pages/search/SearchResult";
 import Search from "./src/pages/Search";
+import Setting from "./src/pages/Setting";
+import SettingAlert from "./src/pages/setting/settingAlert";
+import SettingContact from "./src/pages/setting/settingContact";
+import SettingContactLog from "./src/pages/setting/settingContactLog";
+import SettingPremium from "./src/pages/setting/settingPremium";
+import SettingWithdrawal from "./src/pages/setting/settingWithdrawal";
 
 export default function App() {
 
@@ -76,6 +82,20 @@ export default function App() {
           options={{headerShown: false}}/>
           <Stack.Screen name="searchResult" component={SearchResult}
           options={{headerShown: false}}/>
+
+          {/* setting */}
+          <Stack.Screen name="setting" component={Setting}
+            options={{headerShown: false}}/>
+          <Stack.Screen name="settingAlert" component={SettingAlert}
+            options={{headerShown: false}}/>
+          <Stack.Screen name="settingContact" component={SettingContact}
+            options={{headerShown: false}}/>
+          <Stack.Screen name="settingcontackLog" component={SettingContactLog}
+            options={{headerShown: false}}/>
+          <Stack.Screen name="settingPremium" component={SettingPremium}
+            options={{headerShown: false}}/>
+          <Stack.Screen name="settingWithdrawal" component={SettingWithdrawal}
+            options={{headerShown: false}}/>
         </Stack.Navigator>
       </NavigationContainer>
     )
