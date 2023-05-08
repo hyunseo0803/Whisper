@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text, SafeAreaView, Pressable, ScrollView} from 'react-native';
-import GlobalStyle from '../globalStyle/GlobalStyle';
+import GlobalStyle from '../../globalStyle/GlobalStyle';
 import { Ionicons } from "@expo/vector-icons";
-import { timestampToDate } from '../util/firebase/CRUD';
-import DiaryView from '../components/DiaryView';
+import { timestampToDate } from '../../util/firebase/CRUD';
+import DiaryView from '../../components/DiaryView';
 
 const SearchResult = ({ navigation, route }) => {
 

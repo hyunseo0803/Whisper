@@ -13,7 +13,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from './firebase';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import SearchResult from "./src/pages/SearchResult";
+import SearchResult from "./src/pages/search/SearchResult";
 import Search from "./src/pages/Search";
 
 export default function App() {
