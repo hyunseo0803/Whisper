@@ -9,7 +9,6 @@ import { TextInput } from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import DateRangePicker from "../components/datePicker/DateRangePicker";
 import { getSearchDiary } from "../util/firebase/CRUD";
-import { useRouter, Link } from "expo-router";
 
 const Search = ({navigation}) => {
   // const router = useRouter();
