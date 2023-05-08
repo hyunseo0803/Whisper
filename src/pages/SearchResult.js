@@ -8,7 +8,6 @@ import DiaryView from '../components/DiaryView';
 const SearchResult = ({ navigation, route }) => {
 
   const Diarys = route.params.searchedDiarys
-  console.log(Diarys)
 
   const [redirect, setRedirect] = useState(false);
 

@@ -219,8 +219,6 @@ export const timestampToDate = (timestamp) => {
  */
 export const deleteDiary = async(dId) => {
   try{
-    console.log(dId)
-    console.log(auth.currentUser.uid)
     await deleteDoc(doc(db, "diary", `${dId}_${auth.currentUser.uid}`));
     return true
   }
