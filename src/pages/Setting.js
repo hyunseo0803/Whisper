@@ -1,7 +1,24 @@
-import { Button, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View, Alert } from "react-native";
 import React from "react";
+import { SIGNOUT } from "../util/firebase/user";
 
 const Setting = ( {navigation }) => {
+
+  const onPressBtnLogout = () => {
+    Alert.alert('로그아웃', '로그아웃하시겠습니까?',
+    [
+      {
+        text:'취소',
+      },
+      {
+        text: '로그아웃',
+        onPress: () => {
+          SIGNOUT()
+        }
+      }
+    ])
+  }
+
   return (
     <View style={styles.container}>
       <Text>SettingPage</Text>
@@ -27,7 +44,7 @@ const Setting = ( {navigation }) => {
       </Pressable>
 
       <Pressable
-      onPress={() => {}}>
+      onPress={() => {onPressBtnLogout()}}>
         <Text>로그아웃</Text>
       </Pressable>
 
