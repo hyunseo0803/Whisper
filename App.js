@@ -90,7 +90,7 @@ export default function App() {
             options={{headerShown: false}}/>
           <Stack.Screen name="settingContact" component={SettingContact}
             options={{headerShown: false}}/>
-          <Stack.Screen name="settingcontackLog" component={SettingContactLog}
+          <Stack.Screen name="settingContactLog" component={SettingContactLog}
             options={{headerShown: false}}/>
           <Stack.Screen name="settingPremium" component={SettingPremium}
             options={{headerShown: false}}/>
