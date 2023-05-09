@@ -49,7 +49,7 @@ const Setting = ( {navigation }) => {
         style={[styles.buttomWrap, styles.justifyContentSB]}
         onPress={() => navigation.navigate('settingContactLog')}>
           <View style={styles.flexDirectionRow}>
-            <Ionicons name="list-circle-outline" size={36} style={{marginLeft:-3}}></Ionicons>
+            <Ionicons name="list-circle-outline" size={36} style={{marginLeft:-2}}></Ionicons>
             <Text style={[GlobalStyle.font_body, {marginLeft:7}]}>문의 기록 보기</Text>
           </View>
           <Ionicons name="chevron-forward-outline" size={25}></Ionicons>
