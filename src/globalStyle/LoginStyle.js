@@ -5,11 +5,11 @@ export const GlobalLoginStyle = StyleSheet.create({
   logo: {
 		width: 200,
 		height: 50,
+		resizeMode: 'contain'
 	},
 
   loginTitle: {
 		justifyContent: "center",
-		color: "#4E4981",
 		textAlign: "center",
 		marginTop: 20,
 	},
@@ -22,9 +22,9 @@ export const GlobalLoginStyle = StyleSheet.create({
 		paddingHorizontal: 8,
 	},
 
-  Googlelogo: {
-		width: 50,
-		height: 50,
-		backgroundColor: "red",
-	},
+//   Googlelogo: {
+// 		width: 50,
+// 		height: 50,
+// 		backgroundColor: "red",
+// 	},
 })

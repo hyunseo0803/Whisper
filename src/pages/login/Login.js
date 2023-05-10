@@ -6,10 +6,11 @@ import {
 	SafeAreaView,
   Alert,
   Keyboard,
+  useColorScheme,
 } from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import NameLogo from "../../../assets/images/NameLogo.png";
+import NameLogo from "../../../assets/images/logo.png";
 import GoogleLogo from "../../../assets/images/GoogleLogo.png";
 import { Pressable } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
@@ -18,8 +19,12 @@ import PwSettingSignup from "../login/PwSettingSignup";
 import LoginButton from "../login/LoginButton";
 import { SIGNIN_email_password } from "../../util/firebase/user";
 import { GlobalLoginStyle } from "../../globalStyle/LoginStyle";
+import { COLOR_DARK_BLUE, COLOR_LIGHT_BLUE } from "../../globalStyle/color";
+import ModeColorStyle from "../../globalStyle/ModeColorStyle";
 
 export default function Login({ navigation }) {
+  const isDark = useColorScheme() === 'dark'
+
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [savelogin, setSaveLogin] = useState(false);
@@ -46,7 +51,6 @@ export default function Login({ navigation }) {
     style={{
       display: 'flex',
       flex: 1,
-      backgroundColor: '#fff'
     }}>
       <SafeAreaView
         style={[GlobalStyle.safeAreaWrap, {marginHorizontal:30}]}>
@@ -59,7 +63,7 @@ export default function Login({ navigation }) {
           }}
         >
           <Image source={NameLogo} style={GlobalLoginStyle.logo} />
-          <Text style={[GlobalLoginStyle.loginTitle, GlobalStyle.font_title2]}>로그인</Text>
+          <Text style={[GlobalLoginStyle.loginTitle, GlobalStyle.font_title2, ModeColorStyle(isDark).font_BLUE]}>로그인</Text>
         </View>
 
         {/* 입력 폼 */}
@@ -68,6 +72,7 @@ export default function Login({ navigation }) {
           setEmail={setEmail}
           password={password}
           setPassword={setPassword}
+          isDark={isDark}
         />
 
         {/* 자동로그인 */}
@@ -80,16 +85,16 @@ export default function Login({ navigation }) {
                 savelogin ? "checkmark-circle-sharp" : "checkmark-circle-outline" 
               }
               size={24}
-              color="#4E4981"
+              color={isDark ? COLOR_DARK_BLUE : COLOR_LIGHT_BLUE}
             />
           </Pressable>
-          <Text style={[styles.autoLogin, GlobalStyle.font_caption1]}>
+          <Text style={[styles.autoLogin, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_BLUE]}>
             자동 로그인
           </Text>
         </View>
 
         {/* 로그인버튼 */}
-        <LoginButton handleLogin={handleLogin} />
+        <LoginButton handleLogin={handleLogin} title='로그인'/>
 
         {/* 비밀번호 재설정 | 회원가입 */}
         <PwSettingSignup navigation={navigation}/>

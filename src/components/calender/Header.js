@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { Pressable, View, Text, StyleSheet, Modal, Button } from "react-native";
+import { Pressable, View, Text, StyleSheet, Modal, Button, useColorScheme } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import YMPicker from "../datePicker/YMPicker";
@@ -7,6 +7,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { changeMonth } from "../../util/Calender.js";
 
 function Header(props) {
+  const isDark = useColorScheme() === 'dark'
+  
 
   // 모달창 show
   const [showModal, setShowModal] = useState(false);

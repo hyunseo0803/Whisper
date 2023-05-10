@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { StyleSheet, Text, View, Image, TouchableOpcity } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpcity, useColorScheme } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import MoodTrackerScreen from '../pages/MoodTracker'
@@ -11,6 +11,9 @@ import SettingScreen from '../pages/Setting'
 const Tab = createBottomTabNavigator();
 
 const Tabs = ({ navigation }) => {
+
+  const isDark = useColorScheme() === 'dark'
+
     return(
         <Tab.Navigator
             screenOptions={{
@@ -20,13 +23,11 @@ const Tabs = ({ navigation }) => {
                   display: 'flex',        // 아이템들의 정렬
                   justifyContent: 'space-between',
                   height: 100,  // 탭 높이 지정
-                  shadowColor: '#D3D5DA', // 그림자
-                  shadowRadius: 10,
-                  shadowOpacity: .7,
                   borderTopWidth: 0,    // 탭 상단 선 제거
-                  backgroundColor: '#fff',
                 },
                 headerShown: false,  // 상단 안내 안보이도록,
+              }}
+              sceneContainerStyle={{
               }}
               initialRouteName='Home'
         >

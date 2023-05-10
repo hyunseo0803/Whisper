@@ -6,16 +6,19 @@ import {
   View,
   SafeAreaView,
   Pressable,
+  useColorScheme,
 } from "react-native";
 import React, { useState } from "react";
-import NameLogo from "../../../assets/images/NameLogo.png";
+import NameLogo from "../../../assets/images/logo.png";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { RESET_password } from "../../util/firebase/user";
 import { GlobalLoginStyle } from "../../globalStyle/LoginStyle";
 import { Keyboard } from "react-native";
+import ModeColorStyle from "../../globalStyle/ModeColorStyle";
 
 export default function FindPW() {
+  const isDark = useColorScheme() === 'dark'
   const [email, setEmail] = useState("");
 
   /**
@@ -30,7 +33,6 @@ export default function FindPW() {
     <Pressable
     onPress={Keyboard.dismiss}
     style={{
-      backgroundColor: '#fff',
       display: 'flex',
       flex: 1
     }}>
@@ -47,7 +49,7 @@ export default function FindPW() {
           }}
         >
           <Image source={NameLogo} style={GlobalLoginStyle.logo} />
-          <Text style={[GlobalLoginStyle.loginTitle, GlobalStyle.font_title2]}>
+          <Text style={[GlobalLoginStyle.loginTitle, GlobalStyle.font_title2, ModeColorStyle(isDark).font_BLUE]}>
             비밀번호 재설정
           </Text>
         </View>
@@ -72,7 +74,7 @@ export default function FindPW() {
           }}
         >
           <TextInput
-            style={[styles.inputbox, GlobalStyle.font_caption1]}
+            style={[styles.inputbox, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_primary]}
             value={email}
             placeholder="이메일"
             label="email"
@@ -84,7 +86,7 @@ export default function FindPW() {
         {/* 메일 보내기 버튼 */}
         <View style={styles.loginButtonWrap}>
           <Pressable
-            style={styles.loginbutton}
+            style={[styles.loginbutton, ModeColorStyle(isDark).bg_RED]}
             onPress={() => {handleFindPw(email)}}
           >
             <Ionicons
@@ -135,7 +137,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		borderRadius: 10,
-		backgroundColor: "#E76B5C",
 		flexDirection: "row",
 	},
 });

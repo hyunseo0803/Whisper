@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, View, Pressable } from "react-native";
+import { SafeAreaView, StyleSheet, View, Pressable, useColorScheme } from "react-native";
 import React from "react";
 import Calender from "../components/calender/Calender";
 import GlobalStyle from "../globalStyle/GlobalStyle";
@@ -8,6 +8,8 @@ import { btnGoWriteScreen } from "../globalStyle/BtnStyle";
 import { Ionicons } from "@expo/vector-icons";
 
 const Home = ({ navigation }) => {
+	const isDark = useColorScheme() === 'dark'
+
 	return (
 		<SafeAreaView style={[GlobalStyle.safeAreaWrap, styles.container]}>
 			<View style={styles.imgWrap}>

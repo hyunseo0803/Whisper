@@ -5,19 +5,23 @@ import {
 	View,
 	SafeAreaView,
 	Alert,
+  useColorScheme,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import NameLogo from "../../../assets/images/NameLogo.png";
+import NameLogo from "../../../assets/images/logo.png";
 import GoogleLogo from "../../../assets/images/GoogleLogo.png";
 import { Pressable } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import LoginInput from "../login/LoginInput";
-import SignUpButton from "../login/SignUpButton";
 import { SIGNUP_email_password } from "../../util/firebase/user";
 import { GlobalLoginStyle } from "../../globalStyle/LoginStyle";
 import { Keyboard } from "react-native";
+import ModeColorStyle from "../../globalStyle/ModeColorStyle";
+import LoginButton from "./LoginButton";
 
 export default function SignUp({navigation}) {
+  const isDark = useColorScheme() === 'dark'
+
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [initializing, setInitializing] = useState(true);
@@ -40,6 +44,7 @@ export default function SignUp({navigation}) {
    * 회원가입 버튼 click함수
    */
 	const handleSignUp = async() => {
+    // TODO to emyo : 회원가입 로직에 문제있음. 수정바람.
     try {
       const user = await SIGNUP_email_password(email, password)
       Alert.alert('회원가입 성공!', '회원가입에 성공했습니다! 소곤소곤을 이용해보세요!');
@@ -53,18 +58,12 @@ export default function SignUp({navigation}) {
 
 	return (
     <Pressable
-      style={{
-        display: 'flex',
-        flex: 1,
-        backgroundColor: '#fff'}}
+      style={{ display: 'flex', flex: 1, }}
       onPress={Keyboard.dismiss}
     >
 
 			<SafeAreaView
-				style={[GlobalStyle.safeAreaWrap, {
-					marginHorizontal: 30,
-				}]}
-			>
+				style={[GlobalStyle.safeAreaWrap, { marginHorizontal: 30, }]}>
 
 				{/* 로고 */}
 				<View
@@ -75,7 +74,7 @@ export default function SignUp({navigation}) {
 					}}
 				>
 					<Image source={NameLogo} style={GlobalLoginStyle.logo} />
-					<Text style={[GlobalLoginStyle.loginTitle, GlobalStyle.font_title2]}>회원가입</Text>
+					<Text style={[GlobalLoginStyle.loginTitle, GlobalStyle.font_title2, ModeColorStyle(isDark).font_BLUE]}>회원가입</Text>
 				</View>
 
 				{/* 입력 폼 */}
@@ -84,10 +83,11 @@ export default function SignUp({navigation}) {
 					setEmail={setEmail}
 					password={password}
 					setPassword={setPassword}
+          isDark={isDark}
 				/>
 
 				{/* 회원가입 버튼 */}
-				<SignUpButton handleLogin={handleSignUp} />
+				<LoginButton handleLogin={handleSignUp} title='회원가입하기' />
 
 			{/* sns로그인 */}
       {/* TODO : 현재 기술 스텍 문제로 인해 SNS 로그인 불가, 추후 추가 예정 */}

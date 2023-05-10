@@ -1,4 +1,5 @@
 import {
+	Pressable,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
@@ -6,27 +7,25 @@ import {
 } from "react-native";
 import React from "react";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
+import ModeColorStyle from "../../globalStyle/ModeColorStyle";
+import { COLOR_DARK_PRIMARY, COLOR_LIGHT_PRIMARY } from "../../globalStyle/color";
 
 export default function LoginButton(props) {
 	return (
 		<View style={styles.loginButtonWrap}>
-			<TouchableOpacity
-				activeOpacity={0.8}
-				style={styles.loginbutton}
+			<Pressable
+				style={[styles.loginbutton, ModeColorStyle(props.isDark).bg_RED]}
 				onPress={props.handleLogin}
 			>
 				<Text
 					style={[
-						{
-							color: "white",
-							fontSize: 20,
-						},
+						{ fontSize: 20, color: COLOR_DARK_PRIMARY },
 						GlobalStyle.font_title2,
 					]}
 				>
-					로그인
+					{props.title}
 				</Text>
-			</TouchableOpacity>
+			</Pressable>
 		</View>
 	);
 }
@@ -44,6 +43,5 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		borderRadius: 10,
-		backgroundColor: "#E76B5C",
 	},
 });
