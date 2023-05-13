@@ -12,6 +12,7 @@ import { COLOR_BLACK, COLOR_DARK_BG, COLOR_DARK_BLUE, COLOR_DARK_FIVTH, COLOR_DA
  * @param animationType "slide", "fade", "none"
  * @param visible (boolean)
  * @param setVisible (useState set값)
+ * @param isDark
  * @returns year,month
  */
 export default function YMPicker(props) {
