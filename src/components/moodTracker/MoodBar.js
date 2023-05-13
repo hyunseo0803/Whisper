@@ -1,20 +1,21 @@
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
+import { COLOR_DARK_BLUE, COLOR_LIGHT_BLUE } from '../../globalStyle/color';
 import GlobalStyle from '../../globalStyle/GlobalStyle';
 
 const MoodBar = (props) => {
 
   return (
-    <View style={moodBarWrapS.barWrap}>
+    <View style={moodBarWrapS(props.isDark).barWrap}>
       {
         [...Array(props.count)].map((_, index) => <View style={moodBarS(index).barElement} key={index}/>)
       }
-      <Text style={[moodBarWrapS.barText, GlobalStyle.font_caption2]}>{props.count}</Text>
+      <Text style={[moodBarWrapS(props.isDark).barText, GlobalStyle.font_caption2]}>{props.count}</Text>
     </View>
   );
 }
 
-const moodBarWrapS = StyleSheet.create({
+const moodBarWrapS = (isDark) => StyleSheet.create({
   barWrap:{
     flexDirection: 'row',
     alignItems: 'center',
@@ -23,7 +24,7 @@ const moodBarWrapS = StyleSheet.create({
   
   barText: {
     marginLeft: 5,
-    color: "#4E4981"
+    color: isDark ? COLOR_DARK_BLUE : COLOR_LIGHT_BLUE
   },
 })
 

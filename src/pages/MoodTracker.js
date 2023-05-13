@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View, Image, Pressable, Alert } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Image, Pressable, Alert, useColorScheme } from "react-native";
 import React, {useState, useEffect} from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import Header from "../components/calender/Header";
@@ -13,9 +13,11 @@ import fear from '../../assets/images/mood/fear.png';
 import expressionless from '../../assets/images/mood/expressionless.png';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { btnGoWriteScreen } from "../globalStyle/BtnStyle";
+import ModeColorStyle from "../globalStyle/ModeColorStyle";
 
 
 const MoodTracker = ({navigation}) => {
+  const isDark = useColorScheme() === 'dark'
 
   const DATE = new Date();
   const YEAR = DATE.getFullYear();
@@ -33,6 +35,7 @@ const MoodTracker = ({navigation}) => {
     expressionless: 0,  // 무표정
   });
 
+  // TODO to emyo: util에 함수 분리해놓기
   /**
    * 다음 달로 이동하는 화살표 버튼 함수
    * @param {int} month 
@@ -109,7 +112,7 @@ const MoodTracker = ({navigation}) => {
 
   return (
       <SafeAreaView  style={styles.container}>
-        <Text style={[styles.headText, GlobalStyle.font_caption1]}>MoodTracker</Text>
+        <Text style={[styles.headText, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_primary]}>MoodTracker</Text>
 
         {/* 상단  날짜 이동 View*/}
         <Header
@@ -119,7 +122,7 @@ const MoodTracker = ({navigation}) => {
           movePrevMonth = {movePrevMonth}
           setMonth = {setMonth}
           setYear = {setYear}
-          style={styles.headerBar}
+          isDark = {isDark}
         />
 
         {/* 무드 트레커 VIEW */}
@@ -130,49 +133,49 @@ const MoodTracker = ({navigation}) => {
               <Image source={happy} style={moodTrackerStyle.emojiStyle}/>
               <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>기쁨</Text>
             </View>
-            <MoodBar count={moodValues.happy}/>
+            <MoodBar count={moodValues.happy} isDark={isDark}/>
           </View>
           <View style={moodTrackerStyle.mainWrap}>
             <View style={moodTrackerStyle.emojiWrap}>
               <Image source={disgust} style={moodTrackerStyle.emojiStyle}/>
               <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>혐오</Text>
             </View>
-            <MoodBar count={moodValues.disgust}/>
+            <MoodBar count={moodValues.disgust} isDark={isDark}/>
           </View>
           <View style={moodTrackerStyle.mainWrap}>
             <View style={moodTrackerStyle.emojiWrap}>
               <Image source={surprised} style={moodTrackerStyle.emojiStyle}/>
               <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>놀람</Text>
             </View>
-            <MoodBar count={moodValues.surprised}/>
+            <MoodBar count={moodValues.surprised} isDark={isDark}/>
           </View>
           <View style={moodTrackerStyle.mainWrap}>
             <View style={moodTrackerStyle.emojiWrap}>
               <Image source={angry} style={moodTrackerStyle.emojiStyle}/>
               <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>화남</Text>
             </View>
-            <MoodBar count={moodValues.angry}/>
+            <MoodBar count={moodValues.angry} isDark={isDark}/>
           </View>
           <View style={moodTrackerStyle.mainWrap}>
             <View style={moodTrackerStyle.emojiWrap}>
               <Image source={sad} style={moodTrackerStyle.emojiStyle}/>
               <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>슬픔</Text>
             </View>
-            <MoodBar count={moodValues.sad}/>
+            <MoodBar count={moodValues.sad} isDark={isDark}/>
           </View>
           <View style={moodTrackerStyle.mainWrap}>
             <View style={moodTrackerStyle.emojiWrap}>
               <Image source={fear} style={moodTrackerStyle.emojiStyle}/>
               <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>두려움</Text>
             </View>
-            <MoodBar count={moodValues.fear}/>
+            <MoodBar count={moodValues.fear} isDark={isDark}/>
           </View>
           <View style={moodTrackerStyle.mainWrap}>
             <View style={moodTrackerStyle.emojiWrap}>
               <Image source={expressionless} style={moodTrackerStyle.emojiStyle}/>
               <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>무표정</Text>
             </View>
-            <MoodBar count={moodValues.expressionless}/>
+            <MoodBar count={moodValues.expressionless} isDark={isDark}/>
           </View>
         </View>
 
