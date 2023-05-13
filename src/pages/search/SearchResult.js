@@ -1,11 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Text, SafeAreaView, Pressable, ScrollView} from 'react-native';
+import {View, StyleSheet, Text, SafeAreaView, Pressable, ScrollView, useColorScheme} from 'react-native';
 import GlobalStyle from '../../globalStyle/GlobalStyle';
 import { Ionicons } from "@expo/vector-icons";
 import { timestampToDate } from '../../util/firebase/CRUD';
 import DiaryView from '../../components/DiaryView';
+import { COLOR_BLACK, COLOR_DARK_WHITE } from '../../globalStyle/color';
+import ModeColorStyle from '../../globalStyle/ModeColorStyle';
 
 const SearchResult = ({ navigation, route }) => {
+  const isDark = useColorScheme() === 'dark'
 
   const Diarys = route.params.searchedDiarys
 
@@ -25,10 +28,10 @@ const SearchResult = ({ navigation, route }) => {
       <View style={styles.headerWrap}>
         <Pressable
         onPress={() => navigation.pop()}>
-          <Ionicons name="arrow-back-outline" size={36} color="#000"/>
+          <Ionicons name="arrow-back-outline" size={36} color={isDark?COLOR_DARK_WHITE : COLOR_BLACK}/>
         </Pressable>
-        <Text style={[GlobalStyle.font_caption1]}>Search</Text>
-        <Ionicons name="arrow-back-outline" size={36} color="#f2f2f2"/>
+        <Text style={[GlobalStyle.font_caption1, ModeColorStyle(isDark).font_DEFALUT]}>Search</Text>
+        <Ionicons name="arrow-back-outline" size={36} color="rgba(0,0,0,0)"/>
       </View>
 
       {/* body */}
@@ -53,6 +56,7 @@ const SearchResult = ({ navigation, route }) => {
             voice = {diary.voice}
             content = {diary.content}
             setRedirect = {setRedirect}
+            isDark={isDark}
           />
         )
         )}
