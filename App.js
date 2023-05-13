@@ -22,6 +22,7 @@ import SettingContactLog from "./src/pages/setting/settingContactLog";
 import SettingPremium from "./src/pages/setting/settingPremium";
 import SettingWithdrawal from "./src/pages/setting/settingWithdrawal";
 import { COLOR_DARK_BG, COLOR_LIGHT_BG } from "./src/globalStyle/color";
+import SettingScreenMode from "./src/pages/setting/settingScreenMode";
 
 export default function App() {
 
@@ -90,6 +91,8 @@ export default function App() {
           <Stack.Screen name="setting" component={Setting}
             options={{headerShown: false}}/>
           <Stack.Screen name="settingAlert" component={SettingAlert}
+            options={{headerShown: false}}/>
+          <Stack.Screen name="settingScreenMode" component={SettingScreenMode}
             options={{headerShown: false}}/>
           <Stack.Screen name="settingContact" component={SettingContact}
             options={{headerShown: false}}/>
