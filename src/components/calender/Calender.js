@@ -62,6 +62,7 @@ function Calender() {
         movePrevMonth = {movePrevMonth}
         setMonth = {setMonth}
         setYear = {setYear}
+        isDark = {isDark}
       />
       <Body
         month = {month}
@@ -69,6 +70,7 @@ function Calender() {
         moveNextMonth = {moveNextMonth}
         movePrevMonth = {movePrevMonth}
         data = {Ddata}
+        isDark = {isDark}
       />
 
     </View>

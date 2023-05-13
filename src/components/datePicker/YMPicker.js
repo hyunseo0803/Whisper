@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, Modal, Button, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
+import ModeColorStyle from "../../globalStyle/ModeColorStyle";
+import { COLOR_DARK_BG, COLOR_DARK_BLUE, COLOR_DARK_FIVTH, COLOR_DARK_PRIMARY, COLOR_DARK_QUATERNARY, COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_DARK_TERTIARY, COLOR_LIGHT_BG, COLOR_LIGHT_BLUE, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY } from "../../globalStyle/color";
 
 /**
  * 연, 월 picker
@@ -13,6 +15,7 @@ import GlobalStyle from "../../globalStyle/GlobalStyle";
  * @returns year,month
  */
 export default function YMPicker(props) {
+	const isDark = props.isDark
 	const [selectYear, setSelectYear] = useState(props.year);
 	const [selectMonth, setSelectMonth] = useState(props.month);
 
@@ -91,21 +94,23 @@ export default function YMPicker(props) {
 			transparent={true}
 			style={modalS.modalBackground}
 		>
+      <Pressable
+      style={{flex:1}}
+      onPress={() => onClickBtnSave()}>
 			<View style={modalS.modalBackground}>
-				<View style={modalS.modalBody}>
+				<View style={[modalS.modalBody, isDark?{backgroundColor: COLOR_DARK_FIVTH,}:{backgroundColor:'#fff'}]}>
 					{/* HEADER */}
 					<View style={pickerS.header}>
 						<Pressable>
 							<Ionicons
 								name="chevron-back-outline"
 								size={35}
-								color="black"
-								style={pickerS.btnArrow}
+								style={[pickerS.btnArrow, ModeColorStyle(isDark).font_primary]}
 								onPress={btnPrevYear}
 							/>
 						</Pressable>
 
-						<Text style={[GlobalStyle.font_title2, { color: "#4E4981" }]}>
+						<Text style={[GlobalStyle.font_title2, ModeColorStyle(isDark).font_primary]}>
 							{selectYear}
 						</Text>
 
@@ -114,7 +119,7 @@ export default function YMPicker(props) {
 								name="chevron-forward-outline"
 								size={35}
 								color="black"
-								style={pickerS.btnArrow}
+								style={[pickerS.btnArrow, ModeColorStyle(isDark).font_primary]}
 								onPress={btnNextYear}
 							/>
 						</Pressable>
@@ -126,7 +131,7 @@ export default function YMPicker(props) {
 							<Pressable
 								style={[
 									pickerS.btnMonth,
-									TextS(index + 1, selectMonth).btnMonthBox,
+									TextS(index + 1, selectMonth, isDark).btnMonthBox,
 								]}
 								key={index}
 								onPress={() => onClickSelectMonth(index + 1)}
@@ -135,7 +140,7 @@ export default function YMPicker(props) {
 									style={[
 										GlobalStyle.font_body,
 										pickerS.monthText,
-										TextS(index + 1, selectMonth).btnMonthText,
+										TextS(index + 1, selectMonth, isDark).btnMonthText,
 									]}
 								>
 									{monthName}
@@ -144,27 +149,9 @@ export default function YMPicker(props) {
 						))}
 					</View>
 
-					{/* FOOTER */}
-					<View style={pickerS.footer}>
-						<Pressable
-							style={[pickerS.btnInFooter, TextS(0).btnSaveCancle]}
-							onPress={onClickBtnCancle}
-						>
-							<Text style={[GlobalStyle.font_body, TextS(0).btnSaveCancleText]}>
-								취 소
-							</Text>
-						</Pressable>
-						<Pressable
-							style={[pickerS.btnInFooter, TextS(1).btnSaveCancle]}
-							onPress={onClickBtnSave}
-						>
-							<Text style={[GlobalStyle.font_body, TextS(1).btnSaveCancleText]}>
-								적 용
-							</Text>
-						</Pressable>
-					</View>
 				</View>
 			</View>
+      </Pressable>
 		</Modal>
 	);
 }
@@ -173,17 +160,16 @@ export const modalS = StyleSheet.create({
 	modalBackground: {
 		flex: 1,
 		justifyContent: "center",
+    alignItems: 'center',
 		backgroundColor: "rgba(0,0,0,0.4)",
 	},
 	modalBody: {
-		marginHorizontal: 50,
-		height: 410,
-		backgroundColor: "#fff",
 		justifyContent: "space-between",
 		display: "flex",
 		gap: 5,
-		padding: 10,
+		padding: 20,
 		borderRadius: 16,
+    maxWidth: 310,
 	},
 });
 
@@ -194,12 +180,10 @@ const pickerS = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		flex: 1,
 	},
 	btnArrow: {
 		justifyContent: "center",
 		alignItems: "center",
-		color: "#4E4981",
 	},
 
 	// 바디
@@ -209,7 +193,6 @@ const pickerS = StyleSheet.create({
 		flexWrap: "wrap",
 		// gap: 10,
 		justifyContent: "space-between",
-		flex: 5,
 	},
 	btnMonth: {
 		width: "33%",
@@ -240,21 +223,19 @@ const pickerS = StyleSheet.create({
 	},
 });
 
-const TextS = (el, month) =>
-	StyleSheet.create({
-		btnMonthBox: {
-			backgroundColor: el === month ? "#4E4981" : "#fff",
-		},
-		btnMonthText: {
-			color: el === month ? "#fff" : "#4E4981",
-		},
-
-		btnSaveCancle: {
-			backgroundColor: el === 0 ? "#fff" : "#E76B5C",
-			borderWidth: 2,
-			borderColor: "#E76B5C",
-		},
-		btnSaveCancleText: {
-			color: el === 0 ? "#E76B5C" : "#fff",
-		},
-	});
+const TextS = (el, month, isDark) => StyleSheet.create({
+	btnMonthBox: {
+		backgroundColor: 
+			el === month ? 
+        isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED
+        : 
+        isDark ? COLOR_DARK_FIVTH : '#fff',
+	},
+	btnMonthText: {
+		color: el === month ? 
+      "#fff"
+      : 
+      isDark ? COLOR_DARK_PRIMARY : COLOR_LIGHT_PRIMARY
+      ,
+	},
+});
