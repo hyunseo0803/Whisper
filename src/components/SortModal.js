@@ -1,8 +1,10 @@
 import React from 'react';
-import {View, StyleSheet, Text, Modal, Pressable, Alert} from 'react-native';
+import {View, StyleSheet, Text, Modal, Pressable, Alert, useColorScheme} from 'react-native';
 import GlobalStyle from '../globalStyle/GlobalStyle'
+import ModeColorStyle from '../globalStyle/ModeColorStyle';
 
 const SortModal = (props) => {
+  const isDark = useColorScheme() ==='dark'
 
   const onClickSort = (how) => {
     switch (how) {
@@ -34,16 +36,16 @@ const SortModal = (props) => {
     }}
     >
       <View style={modalS.background}>
-        <Pressable style={[modalS.button, GlobalStyle.bgWHITE, {marginBottom: 10}]}
+        <Pressable style={[modalS.button, ModeColorStyle(isDark).bg_box, {marginBottom: 10}]}
         onPress={() => onClickSort('asc')}>
-          <Text style={[GlobalStyle.font_title2, GlobalStyle.fontRED]}>오름차순 정렬</Text>
+          <Text style={[GlobalStyle.font_title2, ModeColorStyle(isDark).font_RED]}>오름차순 정렬</Text>
         </Pressable>
-        <Pressable style={[modalS.button, GlobalStyle.bgWHITE, {marginBottom: 20}]}
+        <Pressable style={[modalS.button, ModeColorStyle(isDark).bg_box, {marginBottom: 20}]}
         onPress={() => onClickSort('desc')}>
-          <Text style={[GlobalStyle.font_title2, GlobalStyle.fontRED]}>내림차순 정렬</Text>
+          <Text style={[GlobalStyle.font_title2, ModeColorStyle(isDark).font_RED]}>내림차순 정렬</Text>
         </Pressable>
 
-        <Pressable style={[modalS.button, GlobalStyle.bgRED]}
+        <Pressable style={[modalS.button, ModeColorStyle(isDark).bg_RED]}
         onPress={() => onClickSort('cancle')}
         >
           <Text style={[GlobalStyle.font_title2, GlobalStyle.fontWHITE]}>취 소</Text>
@@ -60,7 +62,7 @@ const modalS = StyleSheet.create({
     alignItems :'center',
     paddingBottom: 40,
     display: 'flex',
-		backgroundColor: "rgba(0,0,0,0.4)",
+		backgroundColor: "rgba(0,0,0,0.5)",
     // backgroundColor: 'red'
   }, 
 
