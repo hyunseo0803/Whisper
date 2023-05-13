@@ -5,7 +5,7 @@ import GlobalStyle from "../../globalStyle/GlobalStyle";
 import YMPicker from "../datePicker/YMPicker";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { changeMonth } from "../../util/Calender.js";
-import { COLOR_DARK_PRIMARY, COLOR_LIGHT_PRIMARY } from "../../globalStyle/color";
+import { COLOR_BLACK, COLOR_DARK_PRIMARY, COLOR_DARK_WHITE, COLOR_LIGHT_PRIMARY } from "../../globalStyle/color";
 import ModeColorStyle from "../../globalStyle/ModeColorStyle";
 
 /**
@@ -30,15 +30,15 @@ function Header(props) {
       <Pressable 
       style={S.btnBox}
       onPress={props.movePrevMonth.bind(this, props.month)}>
-        <Ionicons name="chevron-back" size={40} color={isDark ? COLOR_DARK_PRIMARY : COLOR_LIGHT_PRIMARY} />
+        <Ionicons name="chevron-back" size={40} color={isDark ? COLOR_DARK_WHITE : COLOR_BLACK} />
       </Pressable>
 
       <Pressable style={S.dateContainer}
       onPress={() => {
         setShowModal(true);
       }}>
-        <Text style={[GlobalStyle.font_body, ModeColorStyle(isDark).font_primary]}>{props.year}</Text>
-        <Text style={[GlobalStyle.font_title1, ModeColorStyle(isDark).font_primary]}>
+        <Text style={[GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>{props.year}</Text>
+        <Text style={[GlobalStyle.font_title1, ModeColorStyle(isDark).font_DEFALUT]}>
           {changeMonth(props.month)}
         </Text>
       </Pressable>
@@ -46,7 +46,7 @@ function Header(props) {
       <Pressable 
       style = {S.btnBox}
       onPress={props.moveNextMonth.bind(this, props.month)}>
-        <Ionicons name="chevron-forward" size={40} color={isDark ? COLOR_DARK_PRIMARY : COLOR_LIGHT_PRIMARY} />
+        <Ionicons name="chevron-forward" size={40} color={isDark ? COLOR_DARK_WHITE : COLOR_BLACK} />
       </Pressable>
 
       {

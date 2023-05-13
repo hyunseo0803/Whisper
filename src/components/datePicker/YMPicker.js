@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Modal, Button, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import ModeColorStyle from "../../globalStyle/ModeColorStyle";
-import { COLOR_DARK_BG, COLOR_DARK_BLUE, COLOR_DARK_FIVTH, COLOR_DARK_PRIMARY, COLOR_DARK_QUATERNARY, COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_DARK_TERTIARY, COLOR_LIGHT_BG, COLOR_LIGHT_BLUE, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY } from "../../globalStyle/color";
+import { COLOR_BLACK, COLOR_DARK_BG, COLOR_DARK_BLUE, COLOR_DARK_FIVTH, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_QUATERNARY, COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_DARK_TERTIARY, COLOR_DARK_WHITE, COLOR_LIGHT_BG, COLOR_LIGHT_BLUE, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY } from "../../globalStyle/color";
 
 /**
  * 연, 월 picker
@@ -98,19 +98,19 @@ export default function YMPicker(props) {
       style={{flex:1}}
       onPress={() => onClickBtnSave()}>
 			<View style={modalS.modalBackground}>
-				<View style={[modalS.modalBody, isDark?{backgroundColor: COLOR_DARK_FIVTH,}:{backgroundColor:'#fff'}]}>
+				<View style={[modalS.modalBody, isDark?{backgroundColor: COLOR_DARK_FOURTH,}:{backgroundColor:'#fff'}]}>
 					{/* HEADER */}
 					<View style={pickerS.header}>
 						<Pressable>
 							<Ionicons
 								name="chevron-back-outline"
 								size={35}
-								style={[pickerS.btnArrow, ModeColorStyle(isDark).font_primary]}
+								style={[pickerS.btnArrow, ModeColorStyle(isDark).font_DEFALUT]}
 								onPress={btnPrevYear}
 							/>
 						</Pressable>
 
-						<Text style={[GlobalStyle.font_title2, ModeColorStyle(isDark).font_primary]}>
+						<Text style={[GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}>
 							{selectYear}
 						</Text>
 
@@ -119,7 +119,7 @@ export default function YMPicker(props) {
 								name="chevron-forward-outline"
 								size={35}
 								color="black"
-								style={[pickerS.btnArrow, ModeColorStyle(isDark).font_primary]}
+								style={[pickerS.btnArrow, ModeColorStyle(isDark).font_DEFALUT]}
 								onPress={btnNextYear}
 							/>
 						</Pressable>
@@ -229,13 +229,13 @@ const TextS = (el, month, isDark) => StyleSheet.create({
 			el === month ? 
         isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED
         : 
-        isDark ? COLOR_DARK_FIVTH : '#fff',
+        isDark ? COLOR_DARK_FOURTH : '#fff',
 	},
 	btnMonthText: {
 		color: el === month ? 
       "#fff"
       : 
-      isDark ? COLOR_DARK_PRIMARY : COLOR_LIGHT_PRIMARY
+      isDark ? COLOR_DARK_WHITE : COLOR_BLACK
       ,
 	},
 });

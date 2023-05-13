@@ -112,7 +112,7 @@ const MoodTracker = ({navigation}) => {
 
   return (
       <SafeAreaView  style={styles.container}>
-        <Text style={[styles.headText, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_primary]}>MoodTracker</Text>
+        <Text style={[styles.headText, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_DEFALUT]}>MoodTracker</Text>
 
         {/* 상단  날짜 이동 View*/}
         <Header
