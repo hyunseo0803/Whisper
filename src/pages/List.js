@@ -1,17 +1,17 @@
-import { Button, StyleSheet, Text, View,SafeAreaView, Pressable, ScrollView } from "react-native";
+import { Button, StyleSheet, Text, View,SafeAreaView, Pressable, ScrollView, useColorScheme } from "react-native";
 import React, {useState, useEffect} from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import YMPicker from "../components/datePicker/YMPicker";
-import Calender from "../components/calender/Calender";
-import Header from "../components/calender/Header";
 import { changeNumberTwoLength } from "../util/Calender";
 import { getDiaryList, timestampToDate } from "../util/firebase/CRUD";
 import DiaryView from "../components/DiaryView";
-import DeleteMessage from "../components/DeleteMessage";
 import SortModal from "../components/SortModal";
+import { COLOR_BLACK, COLOR_DARK_BG, COLOR_DARK_PRIMARY, COLOR_DARK_WHITE, COLOR_LIGHT_BG, COLOR_LIGHT_PRIMARY } from "../globalStyle/color";
+import ModeColorStyle from "../globalStyle/ModeColorStyle";
 
 const List = () => {
+  const isDark = useColorScheme() === 'dark'
 
   const DATE = new Date();
   const YEAR = DATE.getFullYear();
@@ -36,25 +36,30 @@ const List = () => {
     setRedirect(false)
   }, [month, year, redirect, howSortDiary])
 
+  /**
+   * 화면 모드에 따라 primary 색으로 변경
+   */
+  const colorPirmary = isDark?COLOR_DARK_WHITE:COLOR_BLACK
+
   return (
     <SafeAreaView style={GlobalStyle.safeAreaWrap}>
       {/* header (datePicker & listup)  */}
       <View style={styles.header}>
         {/* 비율을 맞추기 위해서 존재만 하는 코드 */}
-      <Ionicons name="swap-vertical-outline" size={35} color='#f2f2f2' />
+      <Ionicons name="swap-vertical-outline" size={35} color='rgba(0,0,0,0)' />
         
         <Pressable
         onPress={() => setShowModal(true)}
         style={styles.datePicker}
         >
-          <Text style={[GlobalStyle.font_title2]}>{year}.</Text>
-          <Text style={[GlobalStyle.font_title2, {marginRight:5}]}>{changeNumberTwoLength(month)}</Text>
-          <Ionicons name="chevron-down-outline" size={30} color='black' />
+          <Text style={[GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}>{year}.</Text>
+          <Text style={[GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT, {marginRight:5}]}>{changeNumberTwoLength(month)}</Text>
+          <Ionicons name="chevron-down-outline" size={30} color={colorPirmary} />
         </Pressable>
 
         <Pressable
         onPress={() => setShowSortModal(true)}>
-          <Ionicons name="swap-vertical-outline" size={35} color='black' />
+          <Ionicons name="swap-vertical-outline" size={35} color={colorPirmary} />
         </Pressable>
       </View>
 
@@ -73,6 +78,7 @@ const List = () => {
               voice = {diary.voice}
               content = {diary.content}
               setRedirect = {setRedirect}
+              isDark={isDark}
             />
           ))
         }
@@ -120,7 +126,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f2f2f2',
   },
 
   listMainWrap:{

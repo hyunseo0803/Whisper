@@ -3,8 +3,23 @@ import {View, StyleSheet, Text, Image, Pressable, Alert} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import GlobalStyle from '../globalStyle/GlobalStyle';
 import DeleteMessage from './DeleteMessage';
+import { COLOR_BLACK, COLOR_DARK_BG, COLOR_DARK_FIVTH, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_WHITE, COLOR_LIGHT_BG, COLOR_LIGHT_FOURTH, COLOR_LIGHT_PRIMARY } from '../globalStyle/color';
+import ModeColorStyle from '../globalStyle/ModeColorStyle';
 
-
+/**
+ * 
+ * @param {props} did 
+ * @param {props} date 
+ * @param {props} title 
+ * @param {props} mood 
+ * @param {props} weather 
+ * @param {props} img 
+ * @param {props} voice 
+ * @param {props} content 
+ * @param {props} setRedirect 
+ * @param {props} isDark 
+ * @returns 
+ */
 const DiaryView = (props) => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false) // 삭제 버튼 모달
@@ -52,15 +67,15 @@ const DiaryView = (props) => {
 
 
   return (
-    <View style={styles.mainWrap}>
-      <Text style={[{marginBottom: 5}, GlobalStyle.font_caption2]}>{props.date}</Text>
-      <Text style={[{marginBottom: 5}, GlobalStyle.font_title1]}>{props.title}</Text>
+    <View style={[styles.mainWrap, (props.isDark ? '' : styles.shadow), {backgroundColor : props.isDark ? COLOR_DARK_FOURTH : '#fff'}]}>
+      <Text style={[{marginBottom: 5}, GlobalStyle.font_caption2, ModeColorStyle(props.isDark).font_DEFALUT]}>{props.date}</Text>
+      <Text style={[{marginBottom: 5}, GlobalStyle.font_title1, ModeColorStyle(props.isDark).font_DEFALUT]}>{props.title}</Text>
       
       <Pressable
       style={styles.btnDelete}
       onPress={() => onClickDelete()}
       >
-        <Ionicons name="ellipsis-vertical-outline" size={25} color='#000' />
+        <Ionicons name="ellipsis-vertical-outline" size={25} color={props.isDark ? COLOR_DARK_WHITE : COLOR_BLACK} />
       </Pressable>
       
       <View style={styles.moodWeatherWrap}>
@@ -86,7 +101,7 @@ const DiaryView = (props) => {
           <Ionicons name="mic-circle" size={40} color='#E76B5C' />
           </Pressable>
         }
-        <Text style={[GlobalStyle.font_body, {textAlign: 'center'}]}>{props.content}</Text>
+        <Text style={[GlobalStyle.font_body, {textAlign: 'center'}, ModeColorStyle(props.isDark).font_DEFALUT]}>{props.content}</Text>
       </View>
 
 
@@ -108,7 +123,6 @@ const DiaryView = (props) => {
 
 const styles = StyleSheet.create({
   mainWrap:{
-    backgroundColor: '#fff',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -118,7 +132,8 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
     paddingVertical: 25,
     position: 'relative',
-
+  },
+  shadow:{
     shadowColor: "#4E4981",
     shadowOffset: {
       width: 0,
