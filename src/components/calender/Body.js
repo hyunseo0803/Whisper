@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { View, StyleSheet, Text, Button, Pressable, ImageBackground, useColorScheme } from "react-native";
-import { COLOR_DARK_BG, COLOR_DARK_BLUE, COLOR_DARK_FIVTH, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_RED, COLOR_LIGHT_BLUE, COLOR_LIGHT_FOURTH, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_RED } from "../../globalStyle/color";
+import { COLOR_BLACK, COLOR_DARK_BG, COLOR_DARK_BLUE, COLOR_DARK_FIVTH, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_RED, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_BLUE, COLOR_LIGHT_FOURTH, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_RED, COLOR_LIGHT_THIRD } from "../../globalStyle/color";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import DailyPhotoScreen from "../../pages/home/DailyPhotoScreen";
 
@@ -121,7 +121,7 @@ function Body(props) {
                     }>
                       <ImageBackground 
                       source={{url: FindImg(day) === undefined ? "" : FindImg(day)}}
-                      style={[{width: "100%", height: "100%" }, day===''? {opacity:0} : {opacity: 0.5}, {backgroundColor: isDark ? COLOR_DARK_FOURTH : COLOR_LIGHT_FOURTH}]}
+                      style={[{width: "100%", height: "100%" }, day===''? {opacity:0} : {opacity: 0.6}, {backgroundColor: isDark ? COLOR_DARK_THIRD : COLOR_LIGHT_THIRD}]}
                       />
                       <Text 
                       style={[dayS(index, isDark).dayOfWeek, GlobalStyle.font_body, styles.dateText]}
@@ -205,6 +205,6 @@ const dayS = (el, isDark) => StyleSheet.create({
     ? 
     isDark ? COLOR_DARK_BLUE : COLOR_LIGHT_BLUE
     : 
-    isDark ? COLOR_DARK_PRIMARY : COLOR_LIGHT_PRIMARY,
+    isDark ? COLOR_DARK_WHITE : COLOR_BLACK,
   },
 })
