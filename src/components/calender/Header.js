@@ -8,6 +8,17 @@ import { changeMonth } from "../../util/Calender.js";
 import { COLOR_DARK_PRIMARY, COLOR_LIGHT_PRIMARY } from "../../globalStyle/color";
 import ModeColorStyle from "../../globalStyle/ModeColorStyle";
 
+/**
+ * YMPicker head
+ * @param {props} month useState
+ * @param {props} year useState
+ * @param {props} moveNextMonth 다음달로 이동하는 화살표버튼 함수
+ * @param {props} movePrevMonth 이전달로 이동하는 화살표버튼함수
+ * @param {props} setMonth useState
+ * @param {props} setYear useState
+ * @param {props} isDark(useColorScheme)
+ * @returns calender
+ */
 function Header(props) {
   const isDark = props.isDark
 
