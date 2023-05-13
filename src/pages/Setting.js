@@ -1,10 +1,13 @@
-import { SafeAreaView, Pressable, StyleSheet, Text, View, Alert } from "react-native";
+import { SafeAreaView, Pressable, StyleSheet, Text, View, Alert, useColorScheme } from "react-native";
 import React from "react";
 import { SIGNOUT } from "../util/firebase/user";
 import GlobalStyle from "../globalStyle/GlobalStyle";
-import { Ionicons, AntDesign, Octicons } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
+import ModeColorStyle from "../globalStyle/ModeColorStyle";
+import { COLOR_BLACK, COLOR_DARK_RED, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY } from "../globalStyle/color";
 
 const Setting = ( {navigation }) => {
+  const isDark = useColorScheme() === 'dark'
 
   const onPressBtnLogout = () => {
     Alert.alert('로그아웃', '로그아웃하시겠습니까?',
@@ -21,65 +24,80 @@ const Setting = ( {navigation }) => {
     ])
   }
 
+  /**
+   * 화면 모드에 따른 아이콘 색 변경
+   */
+  const IconColor = isDark ? COLOR_DARK_WHITE : COLOR_BLACK
+
   return (
     <SafeAreaView style={[styles.container, GlobalStyle.safeAreaWrap]}>
       <View style={{width:'100%', alignItems: 'center', marginTop: -30}}>
-      <Text style={[GlobalStyle.font_title1, {marginBottom: 66}]}>SETTING</Text>
+      <Text style={[GlobalStyle.font_title1, {marginBottom: 66}, ModeColorStyle(isDark).font_DEFALUT]}>SETTING</Text>
         <Pressable
-        style={[styles.buttomWrap, styles.justifyContentSB]}
+        style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
         onPress={() => navigation.navigate('settingAlert')}>
           <View style={styles.flexDirectionRow}>
-          <Ionicons name="notifications-circle-outline" size={36} style={{marginLeft:-2}}/>
-            <Text style={[GlobalStyle.font_body, {marginLeft:7}]}>알림시간설정</Text>
+          <Ionicons name="notifications-circle-outline" size={36} style={{marginLeft:-2}} color={IconColor}/>
+            <Text style={[GlobalStyle.font_body, {marginLeft:7}, ModeColorStyle(isDark).font_DEFALUT]}>알림시간설정</Text>
           </View>
-          <Ionicons name="chevron-forward-outline" size={25}></Ionicons>
+          <Ionicons name="chevron-forward-outline" size={25} color={IconColor}></Ionicons>
         </Pressable>
 
         <Pressable
-        style={[styles.buttomWrap, styles.justifyContentSB]}
+        style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
+        onPress={() => navigation.navigate('settingScreenMode')}>
+          <View style={styles.flexDirectionRow}>
+          <Ionicons name="contrast" size={34} style={{marginLeft:-2, marginRight:2}} color={IconColor}/>
+            <Text style={[GlobalStyle.font_body, {marginLeft:7}, ModeColorStyle(isDark).font_DEFALUT]}>화면</Text>
+          </View>
+          <Ionicons name="chevron-forward-outline" size={25} color={IconColor}></Ionicons>
+        </Pressable>
+
+        <Pressable
+        style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
         onPress={() => navigation.navigate('settingContact')}>
           <View style={styles.flexDirectionRow}>
-            <AntDesign name="questioncircleo" size={30} color="black" />
-            <Text style={[GlobalStyle.font_body, {marginLeft:10}]}>문의하기</Text>
+            <AntDesign name="questioncircleo" size={30} color={IconColor} />
+            <Text style={[GlobalStyle.font_body, {marginLeft:10}, ModeColorStyle(isDark).font_DEFALUT]}>문의하기</Text>
           </View>
-          <Ionicons name="chevron-forward-outline" size={25}></Ionicons>
+          <Ionicons name="chevron-forward-outline" size={25} color={IconColor}></Ionicons>
         </Pressable>
 
         <Pressable
-        style={[styles.buttomWrap, styles.justifyContentSB]}
+        style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
         onPress={() => navigation.navigate('settingContactLog')}>
           <View style={styles.flexDirectionRow}>
-            <Ionicons name="list-circle-outline" size={36} style={{marginLeft:-2}}></Ionicons>
-            <Text style={[GlobalStyle.font_body, {marginLeft:7}]}>문의 기록 보기</Text>
+            <Ionicons name="list-circle-outline" size={36} style={{marginLeft:-2}} color={IconColor}></Ionicons>
+            <Text style={[GlobalStyle.font_body, {marginLeft:7}, ModeColorStyle(isDark).font_DEFALUT]}>문의 기록 보기</Text>
           </View>
-          <Ionicons name="chevron-forward-outline" size={25}></Ionicons>
+          <Ionicons name="chevron-forward-outline" size={25} color={IconColor}></Ionicons>
         </Pressable>
 
         <Pressable
-        style={[styles.buttomWrap, styles.justifyContentSB]}
+        style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
         onPress={() => navigation.navigate('settingPremium')}>
           <View style={styles.flexDirectionRow}>
-            <AntDesign name="staro" size={30} color="black" />
-            <Text style={[GlobalStyle.font_body, {marginLeft:10}]}>소곤소곤 프리미엄 가입</Text>
+            <AntDesign name="staro" size={30} color={IconColor} />
+            <Text style={[GlobalStyle.font_body, {marginLeft:10}, ModeColorStyle(isDark).font_DEFALUT]}>소곤소곤 프리미엄 가입</Text>
           </View>
-          <Ionicons name="chevron-forward-outline" size={25}></Ionicons>
+          <Ionicons name="chevron-forward-outline" size={25} color={IconColor}></Ionicons>
         </Pressable>
 
         <Pressable
-        style={[styles.buttomWrap, styles.justifyContentSB]}
+        style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
         onPress={() => {onPressBtnLogout()}}>
           <View style={styles.flexDirectionRow}>
-            <AntDesign name="logout" size={30} color="#E76B5C" />
-            <Text style={[GlobalStyle.fontRED, GlobalStyle.font_body, {marginLeft:10}]}>로그아웃</Text>
+            <AntDesign name="logout" size={30} color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED} />
+            <Text style={[GlobalStyle.font_body, {marginLeft:10}, ModeColorStyle(isDark).font_RED]}>로그아웃</Text>
           </View>
         </Pressable>
 
         <Pressable
-        style={[styles.buttomWrap, styles.justifyContentSB, {borderBottomWidth:1}]}
+        style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark), {borderBottomWidth:1}]}
         onPress={() => navigation.navigate('settingWithdrawal')}>
           <View style={styles.flexDirectionRow}>
-            <AntDesign name="closecircleo" size={30} color="#E76B5C" />
-            <Text style={[GlobalStyle.fontRED, GlobalStyle.font_body, {marginLeft:10}]}>회원탈퇴</Text>
+            <AntDesign name="closecircleo" size={30} color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED} />
+            <Text style={[GlobalStyle.font_body, {marginLeft:10}, ModeColorStyle(isDark).font_RED]}>회원탈퇴</Text>
           </View>
         </Pressable>
       </View>
@@ -102,8 +120,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
-    borderTopWidth: 1,
-    borderColor: '#BDBFC4',
+
   },
   justifyContentSB:{
     justifyContent: 'space-between'
@@ -113,3 +130,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 });
+
+const borderStyle = (isDark) => StyleSheet.create({
+  borderTopWidth: 1,
+  borderColor: isDark ? COLOR_DARK_THIRD : COLOR_LIGHT_SECONDARY,
+})
