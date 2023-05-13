@@ -88,7 +88,7 @@ const List = () => {
         // datePicker Modal
         showModal &&
         <YMPicker 
-          animationType = 'slide'
+          animationType = 'fade'
           visible={true}
   
           setShowModal = {setShowModal}
@@ -96,6 +96,8 @@ const List = () => {
           setMonth = {setMonth}
           year = {year}
           setYear = {setYear}
+          
+          isDark = {isDark}
         />
       }
       {
