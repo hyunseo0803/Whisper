@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from "react";
-import { View, StyleSheet, Text, Button, Pressable, ImageBackground } from "react-native";
+import { View, StyleSheet, Text, Button, Pressable, ImageBackground, useColorScheme } from "react-native";
+import { COLOR_DARK_BG, COLOR_DARK_BLUE, COLOR_DARK_FIVTH, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_RED, COLOR_LIGHT_BLUE, COLOR_LIGHT_FOURTH, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_RED } from "../../globalStyle/color";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import DailyPhotoScreen from "../../pages/home/DailyPhotoScreen";
 
 function Body(props) {
+  const isDark = useColorScheme() === 'dark'
 
   const [totalDays, setTotalDays] = useState([]);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
@@ -91,7 +93,7 @@ function Body(props) {
       <View style={styles.weekDayWrap}>
         {weekDays.map((day, index) => (
           <View style={styles.weekDayBox} key={index}>
-            <Text style={[dayS(index).dayOfWeek, GlobalStyle.font_caption1]} key={index}>
+            <Text style={[dayS(index, isDark).dayOfWeek, GlobalStyle.font_caption1]} key={index}>
               {day}
             </Text>
           </View>
@@ -119,10 +121,10 @@ function Body(props) {
                     }>
                       <ImageBackground 
                       source={{url: FindImg(day) === undefined ? "" : FindImg(day)}}
-                      style={[{width: "100%", height: "100%" }, day===''? {opacity:0} : {opacity: 0.45}, {backgroundColor: '#D3D5DA'}]}
+                      style={[{width: "100%", height: "100%" }, day===''? {opacity:0} : {opacity: 0.5}, {backgroundColor: isDark ? COLOR_DARK_FOURTH : COLOR_LIGHT_FOURTH}]}
                       />
                       <Text 
-                      style={[dayS(index).dayOfWeek, GlobalStyle.font_body, styles.dateText]}
+                      style={[dayS(index, isDark).dayOfWeek, GlobalStyle.font_body, styles.dateText]}
                       >{day}</Text>
                     </Pressable>)
                 )
@@ -194,8 +196,15 @@ const styles = StyleSheet.create({
   }
 })
 
-const dayS = (el) => StyleSheet.create({
+const dayS = (el, isDark) => StyleSheet.create({
   dayOfWeek: {
-    color: el === 0 ? '#E76B5C' : el === 6 ? '#4E4981' : '#000',
+    color: el === 0 ? 
+    isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED 
+    : 
+    el === 6 
+    ? 
+    isDark ? COLOR_DARK_BLUE : COLOR_LIGHT_BLUE
+    : 
+    isDark ? COLOR_DARK_PRIMARY : COLOR_LIGHT_PRIMARY,
   },
 })
