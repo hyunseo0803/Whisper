@@ -13,6 +13,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import WriteAnalysis from "./src/pages/write/WriteAnalysis";
 import AnalysisResultScreen from "./src/pages/write/AnalysisResultScreen";
+import WriteContent from "./src/pages/write/WriteContent";
 
 export default function App() {
 	Font.loadAsync({ Diary: require("./assets/fonts/EF_Diary.ttf") });
@@ -59,6 +60,11 @@ export default function App() {
 					<Stack.Screen
 						name="AnalysisResultScreen"
 						component={AnalysisResultScreen}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="WriteContent"
+						component={WriteContent}
 						options={{ headerShown: false }}
 					/>
 				</Stack.Navigator>
