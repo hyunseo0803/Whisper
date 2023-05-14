@@ -7,6 +7,8 @@ import {
 	SafeAreaView,
 	Image,
 	Button,
+	TouchableOpacity,
+	ScrollView,
 } from "react-native";
 import { getGoogleVisionResult, moodAnalysis } from "../../util/writeDiary";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
@@ -24,15 +26,41 @@ setupURLPolyfill();
 const AnalysisResultScreen = ({ navigation, route }) => {
 	const [analysisMood, setAnalysisMood] = useState("");
 	const [subject, setSubject] = useState("");
+	const [selectedTopic, setSelectedTopic] = useState([]);
+
+	const { params } = route;
+	const selectedMood = params ? params.selectedMood : null;
+	const selectedWeather = params ? params.selectedWeather : null;
 
 	const { Configuration, OpenAIApi } = require("openai");
 
 	const config = new Configuration({
-		apiKey: "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",
+		apiKey: "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",
 	});
 
 	const openai = new OpenAIApi(config);
 
+	const handelTopicPress = (topic) => {
+		if (selectedTopic.includes(topic)) {
+			setSelectedTopic(selectedTopic.filter((t) => t !== topic));
+		} else {
+			setSelectedTopic([...selectedTopic, topic]);
+		}
+	};
+	const isSelected = !!selectedTopic;
+	const handleNextButton = () => {
+		navigation.navigate("WriteContent", {
+			selectedTopic: selectedTopic,
+			selectedMood: selectedMood,
+			selectedWeather: selectedWeather,
+		});
+		console.log(`AnalysisMood: ${analysisMood}, topic: ${selectedTopic}`);
+		console.log(typeof selectedTopic);
+		console.log(typeof selectedWeather);
+		console.log(typeof selectedMood);
+	};
+
+	// console.log(selectedTopic);
 	useEffect(() => {
 		const getGoogleVisionResultFun = async () => {
 			try {
@@ -55,37 +83,37 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 			let prompt = "";
 			if (analysisMood === "happy") {
 				prompt = `{
-			"Q": "기쁜 감정을 더욱 즐길 수 있는 창의적이고 재미있는 일기 주제 10가지 추천해줘.",
+			"Q": "기쁜 감정일때 쓰기좋은 재미있는 일기 topic 10가지 추천해줘.",
 			"A": ""
 		  }`;
 			} else if (analysisMood === "sad") {
 				prompt = `{
-			"Q": "슬픈감정을 기쁜 감정으로 바꾸고 극복하는데 도움이 되는 창의적이고 재미있는 일기 주제 10가지 추천해줘.
+			"Q": "슬픈 감정일때 쓰기좋은 재미있는 일기 topic 10가지 추천해줘."
 			"A": ""
 		  }`;
 			} else if (analysisMood === "fear") {
 				prompt = `{
-			"Q": "두려움이나 불안감을 느낄때 극복 할 수 있는 창의적이고 재미있는 일기 주제 10가지 추천해줘.
+			"Q": "두려움이나 불안감을 느낄때 쓰기 좋은 재미있는 일기 주제 10가지 추천해줘.
 			"A": ""
 		  }`;
 			} else if (analysisMood === "angry") {
 				prompt = `{
-			"Q": "화나는 감정을 조절하고 진정시키는데 도움이 되는 창의적이고 재미있는 일기 주제 10가지 추천해줘.
+			"Q": "화났을때 쓰기 좋은 재미있는 일기 주제 10가지 추천해줘.
 			"A": ""
 		  }`;
 			} else if (analysisMood === "surprised") {
 				prompt = `{
-			"Q": "놀란 마음을 진정시키고 안정을 찾을 수 있는 창의적이고 재미있는 일기 주제 10가지 추천해줘.
+			"Q": "놀랐을때 쓰기 좋은 재미있는 일기 주제 10가지 추천해줘.
 			"A": ""
 		  }`;
 			} else if (analysisMood === "disgust") {
 				prompt = `{
-			"Q": "혐오감을 극복하고 올바르게 감정을 표현하며 내 마음을 안정시킬 수 있는 창의적이고 재미있는 일기 주제 10가지 추천해줘.
+			"Q": "혐오감을 느낄때 쓰기 좋은 재미있는 일기 주제 10가지 추천해줘.
 			"A": ""
 		  }`;
 			} else if (analysisMood === "expressionless") {
 				prompt = `{
-			"Q": "독특하고 재미있는 일기 주제 10가지 추천해줘.
+			"Q": "재미있는 일기 주제 10가지 추천해줘.
 			"A": ""
 		  }`;
 			}
@@ -101,9 +129,9 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 
 					try {
 						const answer = response.data.choices[0].text;
-						const a = answer.split("\n");
-						const subject = a
-							.map((item) => item.replace(/^\d+\.\s/, "# "))
+						const subject = answer
+							.split("\n")
+							.map((item) => item.replace(/^\s*\d+\.\s*/, "# "))
 							.filter((item) => item);
 
 						setSubject(subject);
@@ -122,72 +150,115 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	}, [analysisMood]);
 
 	return (
-		<SafeAreaView
-			style={{
-				display: "flex",
-				alignItems: "center",
-				marginHorizontal: "10%",
-				marginVertical: "10%",
-				height: "90%",
-				// backgroundColor: "red",
-			}}
-		>
-			<View style={styles.container}>
-				<Text style={GlobalStyle.font_caption1}>Write Diary</Text>
-			</View>
-			<Text style={styles.title}>나의 감정 분석 결과</Text>
-			{
-				// 분석된 감정이 공백이 아니면 분석감정 출력
-				analysisMood !== "" &&
-					(analysisMood === "happy" ? (
-						<View style={styles.analysis}>
-							<Image source={happy} style={styles.icon}></Image>
-							<Text style={GlobalStyle.font_title2}>기쁨</Text>
-						</View>
-					) : analysisMood === "sad" ? (
-						<View style={styles.analysis}>
-							<Image source={sad} style={styles.icon}></Image>
-							<Text style={GlobalStyle.font_title2}>슬픔</Text>
-						</View>
-					) : analysisMood === "disgust" ? (
-						<View style={styles.analysis}>
-							<Image source={disgust} style={styles.icon}></Image>
-							<Text style={GlobalStyle.font_title2}>혐오</Text>
-						</View>
-					) : analysisMood === "surprised" ? (
-						<View style={styles.analysis}>
-							<Image source={surprised} style={styles.icon}></Image>
-							<Text style={GlobalStyle.font_title2}>놀라움</Text>
-						</View>
-					) : analysisMood === "angry" ? (
-						<View style={styles.analysis}>
-							<Image source={angry} style={styles.icon}></Image>
-							<Text style={GlobalStyle.font_title2}>화남</Text>
-						</View>
-					) : analysisMood === "fear" ? (
-						<View style={styles.analysis}>
-							<Image source={fear} style={styles.icon}></Image>
-							<Text style={GlobalStyle.font_title2}>두려움</Text>
-						</View>
-					) : analysisMood === "expressionless" ? (
-						<View style={styles.analysis}>
-							<Image source={expressionless} style={styles.icon}></Image>
-							<Text style={GlobalStyle.font_title2}>무표정</Text>
-						</View>
-					) : null)
-			}
-
-			<View style={styles.subject}>
-				{subject &&
-					subject.map((item, index) => {
-						return (
-							<View style={styles.buttonContainer} key={index}>
-								<Button title={item} onPress={() => {}} />
+		<ScrollView>
+			<SafeAreaView
+				style={{
+					display: "flex",
+					alignItems: "center",
+					marginHorizontal: "5%",
+					marginVertical: "10%",
+					height: "90%",
+					// backgroundColor: "red",
+				}}
+			>
+				<View style={styles.container}>
+					<Text style={GlobalStyle.font_caption1}>Write Diary</Text>
+				</View>
+				<Text style={styles.title}>나의 감정 분석 결과</Text>
+				{
+					// 분석된 감정이 공백이 아니면 분석감정 출력
+					analysisMood !== "" &&
+						(analysisMood === "happy" ? (
+							<View style={styles.analysis}>
+								<Image source={happy} style={styles.icon}></Image>
+								<Text style={GlobalStyle.font_title2}>기쁨</Text>
 							</View>
-						);
-					})}
-			</View>
-		</SafeAreaView>
+						) : analysisMood === "sad" ? (
+							<View style={styles.analysis}>
+								<Image source={sad} style={styles.icon}></Image>
+								<Text style={GlobalStyle.font_title2}>슬픔</Text>
+							</View>
+						) : analysisMood === "disgust" ? (
+							<View style={styles.analysis}>
+								<Image source={disgust} style={styles.icon}></Image>
+								<Text style={GlobalStyle.font_title2}>혐오</Text>
+							</View>
+						) : analysisMood === "surprised" ? (
+							<View style={styles.analysis}>
+								<Image source={surprised} style={styles.icon}></Image>
+								<Text style={GlobalStyle.font_title2}>놀라움</Text>
+							</View>
+						) : analysisMood === "angry" ? (
+							<View style={styles.analysis}>
+								<Image source={angry} style={styles.icon}></Image>
+								<Text style={GlobalStyle.font_title2}>화남</Text>
+							</View>
+						) : analysisMood === "fear" ? (
+							<View style={styles.analysis}>
+								<Image source={fear} style={styles.icon}></Image>
+								<Text style={GlobalStyle.font_title2}>두려움</Text>
+							</View>
+						) : analysisMood === "expressionless" ? (
+							<View style={styles.analysis}>
+								<Image source={expressionless} style={styles.icon}></Image>
+								<Text style={GlobalStyle.font_title2}>무표정</Text>
+							</View>
+						) : null)
+				}
+
+				<View style={styles.subject}>
+					{subject &&
+						subject.map((item, index) => {
+							return (
+								<View style={styles.buttonContainer} key={index}>
+									<TouchableOpacity
+										// title={item}
+										onPress={() => handelTopicPress(item)}
+										style={[
+											styles.touchable,
+											selectedTopic.includes(item) && styles.selectedTouchable,
+										]}
+									>
+										<Text
+											style={[
+												styles.topic,
+												GlobalStyle.font_body,
+												selectedTopic.includes(item) && styles.selectedText,
+											]}
+										>
+											{item}
+										</Text>
+									</TouchableOpacity>
+								</View>
+							);
+						})}
+				</View>
+				<View style={styles.button}>
+					<TouchableOpacity
+						style={[
+							styles.buttonTouchable,
+							{
+								backgroundColor: isSelected
+									? "#E76B5C"
+									: "rgba(231, 107, 92, 0.5)",
+							},
+						]}
+						onPress={handleNextButton}
+						disabled={!isSelected}
+					>
+						<Text
+							style={[
+								styles.buttonText,
+								GlobalStyle.font_title2,
+								{ color: isSelected ? "white" : "#CCCCCC" },
+							]}
+						>
+							다음
+						</Text>
+					</TouchableOpacity>
+				</View>
+			</SafeAreaView>
+		</ScrollView>
 	);
 };
 
@@ -221,8 +292,47 @@ const styles = StyleSheet.create({
 		resizeMode: "contain",
 		// alignSelf: "center",
 	},
+
 	subject: {
-		backgroundColor: "yellow",
+		width: "100%",
+		display: "flex",
+		flexDirection: "row",
+		// backgroundColor: "red",
+		flexWrap: "wrap",
+		marginTop: 50,
+	},
+	touchable: {
+		height: 30,
+		width: "auto",
+		borderRadius: 15,
+		borderWidth: 1,
+		borderColor: "black",
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "transparent",
+		marginVertical: 5,
+		marginHorizontal: 5,
+	},
+	selectedTouchable: {
+		backgroundColor: "black",
+	},
+	topic: {
+		color: "black",
+		marginHorizontal: 10,
+	},
+	selectedText: {
+		color: "white",
+	},
+	buttonTouchable: {
+		width: 250,
+		height: 50,
+		borderRadius: 50,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	buttonText: {
+		textAlign: "center",
+		lineHeight: 55,
 	},
 });
 
