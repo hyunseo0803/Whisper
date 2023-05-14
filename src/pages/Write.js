@@ -55,7 +55,10 @@ const Write = ({ navigation }) => {
 	};
 	const isBothSelected = !!selectedMood && !!selectedWeather;
 	const handleNextButton = () => {
-		navigation.navigate("WriteAnalysis");
+		navigation.navigate("WriteAnalysis", {
+			selectedMood: selectedMood,
+			selectedWeather: selectedWeather,
+		});
 		console.log(
 			`Mood: ${selectedMood}, Weather: ${selectedWeather}, date:${selectedDate}`
 		);
