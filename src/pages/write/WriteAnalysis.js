@@ -15,7 +15,11 @@ import GlobalStyle from "../../globalStyle/GlobalStyle";
 import camera from "../../../assets/images/camera.png";
 import write from "../../../assets/images/write.png";
 
-const WriteAnalysis = ({ navigation: { navigate } }) => {
+const WriteAnalysis = ({ navigation: { navigate }, route }) => {
+	const { params } = route;
+	const selectedMood = params ? params.selectedMood : null;
+	const selectedWeather = params ? params.selectedWeather : null;
+
 	/**
 	 * 카메라 접근권한 확인
 	 * @returns {boolean}true
@@ -50,6 +54,8 @@ const WriteAnalysis = ({ navigation: { navigate } }) => {
 			// 사진 다 찍고 next누르면 base64 파라미터와 함께 페이지 이동
 			navigate("AnalysisResultScreen", {
 				imageBase64: result.assets[0].base64,
+				selectedMood: selectedMood,
+				selectedWeather: selectedWeather,
 			});
 		}
 		// }
