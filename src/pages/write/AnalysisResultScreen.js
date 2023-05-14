@@ -20,6 +20,7 @@ import fear from "../../../assets/images/mood/fear.png";
 import expressionless from "../../../assets/images/mood/expressionless.png";
 import surprised from "../../../assets/images/mood/surprised.png";
 import { setupURLPolyfill } from "react-native-url-polyfill";
+import { Openai_Api_KEY } from "@env";
 
 setupURLPolyfill();
 
@@ -35,7 +36,7 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	const { Configuration, OpenAIApi } = require("openai");
 
 	const config = new Configuration({
-		apiKey: "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",
+		apiKey: Openai_Api_KEY,
 	});
 
 	const openai = new OpenAIApi(config);
@@ -82,40 +83,20 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 		const runPrompt = async () => {
 			let prompt = "";
 			if (analysisMood === "happy") {
-				prompt = `{
-			"Q": "기쁜 감정일때 쓰기좋은 재미있는 일기 topic 10가지 추천해줘.",
-			"A": ""
-		  }`;
+				prompt = "기쁜 감정일때 쓰기좋은 재미있는 일기 주제 6가지 추천해줘.";
 			} else if (analysisMood === "sad") {
-				prompt = `{
-			"Q": "슬픈 감정일때 쓰기좋은 재미있는 일기 topic 10가지 추천해줘."
-			"A": ""
-		  }`;
+				prompt = "슬픈 감정일때 쓰기좋은 재미있는 일기 주제 6가지 추천해줘.";
 			} else if (analysisMood === "fear") {
-				prompt = `{
-			"Q": "두려움이나 불안감을 느낄때 쓰기 좋은 재미있는 일기 주제 10가지 추천해줘.
-			"A": ""
-		  }`;
+				prompt =
+					"두려움이나 불안감을 느낄때 쓰기 좋은 재미있는 일기 주제 6가지 추천해줘.";
 			} else if (analysisMood === "angry") {
-				prompt = `{
-			"Q": "화났을때 쓰기 좋은 재미있는 일기 주제 10가지 추천해줘.
-			"A": ""
-		  }`;
+				prompt = "화났을때 쓰기 좋은 재미있는 일기 주제 6가지 추천해줘.";
 			} else if (analysisMood === "surprised") {
-				prompt = `{
-			"Q": "놀랐을때 쓰기 좋은 재미있는 일기 주제 10가지 추천해줘.
-			"A": ""
-		  }`;
+				prompt = "놀랐을때 쓰기 좋은 재미있는 일기 주제 6가지 추천해줘.";
 			} else if (analysisMood === "disgust") {
-				prompt = `{
-			"Q": "혐오감을 느낄때 쓰기 좋은 재미있는 일기 주제 10가지 추천해줘.
-			"A": ""
-		  }`;
+				prompt = "혐오감을 느낄때 쓰기 좋은 재미있는 일기 주제 6가지 추천해줘.";
 			} else if (analysisMood === "expressionless") {
-				prompt = `{
-			"Q": "재미있는 일기 주제 10가지 추천해줘.
-			"A": ""
-		  }`;
+				prompt = "재미있는 일기 주제 6가지 추천해줘.";
 			}
 
 			if (prompt !== "") {
@@ -136,7 +117,7 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 
 						setSubject(subject);
 
-						console.log(subject);
+						console.log(answer);
 						// console.log(answer);
 					} catch (error) {
 						console.error(error);
@@ -171,7 +152,7 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 						(analysisMood === "happy" ? (
 							<View style={styles.analysis}>
 								<Image source={happy} style={styles.icon}></Image>
-								<Text style={GlobalStyle.font_title2}>기쁨</Text>
+								<Text style={GlobalStyle.font_body}>기쁨</Text>
 							</View>
 						) : analysisMood === "sad" ? (
 							<View style={styles.analysis}>
@@ -205,6 +186,9 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 							</View>
 						) : null)
 				}
+				<Text style={[GlobalStyle.font_title2, styles.topicTitle]}>
+					이런 주제는 어때요?
+				</Text>
 
 				<View style={styles.subject}>
 					{subject &&
@@ -299,7 +283,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		// backgroundColor: "red",
 		flexWrap: "wrap",
-		marginTop: 50,
+		marginTop: 10,
 	},
 	touchable: {
 		height: 30,
@@ -316,12 +300,21 @@ const styles = StyleSheet.create({
 	selectedTouchable: {
 		backgroundColor: "black",
 	},
+	topicTitle: {
+		width: "100%",
+		marginTop: 40,
+		alignItems: "flex-start",
+		justifyContent: "flex-start",
+	},
 	topic: {
 		color: "black",
 		marginHorizontal: 10,
 	},
 	selectedText: {
 		color: "white",
+	},
+	button: {
+		marginVertical: 50,
 	},
 	buttonTouchable: {
 		width: 250,
