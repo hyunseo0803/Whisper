@@ -1,5 +1,5 @@
 import { Alert, useColorScheme } from "react-native";
-import React, {useState, useEffect, useCallback} from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import LoginScreen from "./src/pages/login/Login";
 import FindPWScreen from "./src/pages/login/FindPW";
 import SignUpScreen from "./src/pages/login/SignUp";
@@ -7,11 +7,14 @@ import WriteScreen from "./src/pages/Write";
 import HomeScreen from "./src/pages/Home";
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import Tabs from './src/components/tabs'
-import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Tabs from "./src/components/tabs";
+import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from './firebase';
+import { auth } from "./firebase";
+import WriteAnalysis from "./src/pages/write/WriteAnalysis";
+import AnalysisResultScreen from "./src/pages/write/AnalysisResultScreen";
+import WriteContent from "./src/pages/write/WriteContent";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SearchResult from "./src/pages/search/SearchResult";
 import Search from "./src/pages/Search";
@@ -31,35 +34,25 @@ export default function App() {
   });
 
 	const Stack = createNativeStackNavigator();
-  const [islogin, setIsLogin] = useState(false);
+	const [islogin, setIsLogin] = useState(false);
 
-  const isDark = useColorScheme() === 'dark'
-
-  /**
-   * 로그인 되었는지 체크하는 함수
-   */
-  const checkLogin = () => {
-    onAuthStateChanged(auth, (user) => {
-      if (user){
-        setIsLogin(true);
-      }
-      else{
-        setIsLogin(false);
-      }
-    })
-  }
-
-  useEffect(() => {
-    const getSessionFun = async() => {
-      await AsyncStorage.getItem('user', (err, result) => {
-        console.log(result);
-      })
-    }
-  }, [])
-
-  useEffect(() => {
-    checkLogin();
-  }, [islogin]);
+	const checkLogin = () => {
+		onAuthStateChanged(auth, (user) => {
+			if (user) {
+				setIsLogin(true);
+				// Alert.alert('로그인 성공!')
+				console.log(islogin);
+			} else {
+				setIsLogin(false);
+				// Alert.alert('로그아웃!!')
+				console.log(islogin);
+			}
+		});
+	};
+	checkLogin();
+	useEffect(() => {
+		checkLogin;
+	}, [islogin]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -78,8 +71,16 @@ export default function App() {
           <Stack.Screen name="HomeTab" component={Tabs}
             options={{headerShown: false}}
           />
+
+          {/* Write */}
           <Stack.Screen name="Write" component={WriteScreen}
           options={{headerShown: false}}/>
+          <Stack.Screen name="WriteAnalysis" component={WriteAnalysis}
+						options={{ headerShown: false }} />
+					<Stack.Screen name="AnalysisResultScreen" component={AnalysisResultScreen}
+						options={{ headerShown: false }} />
+					<Stack.Screen name="WriteContent" component={WriteContent}
+						options={{ headerShown: false }} />
           
           {/* search */}
           <Stack.Screen name="search" component={Search}
@@ -102,6 +103,7 @@ export default function App() {
             options={{headerShown: false}}/>
           <Stack.Screen name="settingWithdrawal" component={SettingWithdrawal}
             options={{headerShown: false}}/>
+
         </Stack.Navigator>
       </NavigationContainer>
     )
