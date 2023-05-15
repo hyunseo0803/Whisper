@@ -65,15 +65,7 @@ const Write = ({ navigation }) => {
 	};
 	return (
 		<SafeAreaView
-			style={{
-				display: "flex",
-				alignItems: "center",
-				marginHorizontal: "10%",
-				marginVertical: "10%",
-				height: "90%",
-				// backgroundColor: "red",
-			}}
-		>
+			style={[GlobalStyle.safeAreaWrap, {alignItems:'center', justifyContent:'center'}]}>
 			<View style={styles.container}>
 				<View className="writeDiary">
 					<Text style={[styles.writeDiaryText, GlobalStyle.font_caption1]}>
@@ -81,7 +73,6 @@ const Write = ({ navigation }) => {
 					</Text>
 				</View>
 				<ExpoDatePicker
-					// style={{ width: "100%", height: "100%" }}
 					date={selectedDate}
 					onDateChange={handleDateChange}
 				/>
