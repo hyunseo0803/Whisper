@@ -28,10 +28,14 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	const [analysisMood, setAnalysisMood] = useState("");
 	const [subject, setSubject] = useState("");
 	const [selectedTopic, setSelectedTopic] = useState([]);
+	// const [analysisloading, setAnalysisLoading] = useState(true);
+	// const [openailoading, setOpenaiLoading] = useState(true);
+	// const [isloding, setIsloding] = useState(true);
 
 	const { params } = route;
 	const selectedMood = params ? params.selectedMood : null;
 	const selectedWeather = params ? params.selectedWeather : null;
+	const selectedDate = params.selectedDate;
 
 	const { Configuration, OpenAIApi } = require("openai");
 
@@ -40,6 +44,15 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	});
 
 	const openai = new OpenAIApi(config);
+
+	// useEffect(() => {
+	// 	if (analysisloading && openailoading) {
+	// 		setIsloding(true);
+	// 	}
+	// 	if (analysisloading === false && openailoading === false) {
+	// 		setIsloding(false);
+	// 	}
+	// });
 
 	const handelTopicPress = (topic) => {
 		if (selectedTopic.includes(topic)) {
@@ -63,6 +76,8 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	useEffect(() => {
 		const getGoogleVisionResultFun = async () => {
 			try {
+				// setAnalysisLoading(true);
+
 				const result = await getGoogleVisionResult(route.params.imageBase64);
 				setAnalysisMood(result);
 			} catch (error) {
@@ -70,6 +85,7 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 			}
 		};
 		getGoogleVisionResultFun();
+		// setAnalysisLoading(false);
 	}, [analysisMood]);
 
 	/* TODO 1. 일기 주제 더 간결하게 추출하기 
@@ -79,6 +95,8 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 
 	useEffect(() => {
 		const runPrompt = async () => {
+			// setOpenaiLoading(true);
+
 			let prompt = "";
 			if (analysisMood === "happy") {
 				prompt = "기쁜 감정일때 쓰기좋은 재미있는 일기 주제 6가지 추천해줘.";
@@ -126,6 +144,7 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 			}
 		};
 		runPrompt();
+		// setOpenaiLoading(false);
 	}, [analysisMood]);
 
 	return (
@@ -140,10 +159,13 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 					// backgroundColor: "red",
 				}}
 			>
+				{/* {isloding === false ? ( */}
+				{/* <View> */}
 				<View style={styles.container}>
 					<Text style={GlobalStyle.font_caption1}>Write Diary</Text>
 				</View>
 				<Text style={styles.title}>나의 감정 분석 결과</Text>
+
 				{
 					// 분석된 감정이 공백이 아니면 분석감정 출력
 					analysisMood !== "" &&
@@ -239,6 +261,10 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 						</Text>
 					</TouchableOpacity>
 				</View>
+				{/* </View> */}
+				{/* ) : (
+					<Text>준비중</Text>
+				)} */}
 			</SafeAreaView>
 		</ScrollView>
 	);
