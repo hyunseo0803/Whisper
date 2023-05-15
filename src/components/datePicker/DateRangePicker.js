@@ -1,13 +1,17 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Modal, Pressable, Text} from 'react-native';
+import {View, StyleSheet, Modal, Pressable, Text, useColorScheme} from 'react-native';
 import YMPicker, { modalS } from './YMPicker';
 import {Calendar} from 'react-native-calendars';
 import { getDate, toDate } from 'date-fns';
 import { getDatesStartToLast } from '../../util/Calender';
 import GlobalStyle from '../../globalStyle/GlobalStyle';
+import {COLOR_DARK_FOURTH, COLOR_WHITE, COLOR_DARK_BLUE, COLOR_LIGHT_BLUE, COLOR_LIGHT_RED, COLOR_DARK_RED, COLOR_DARK_WHITE, COLOR_BLACK,
+  COLOR_DARK_SECONDARY, COLOR_LIGHT_SECONDARY, COLOR_DARK_PRIMARY} from '../../globalStyle/color'
 
 
 const DateRangePicker = (props) => {
+  const isDark = useColorScheme() === 'dark'
+
   const DATE = new Date()
   const [selected, setSelected] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -87,40 +91,40 @@ const DateRangePicker = (props) => {
       transparent={true}
       style={{flex:1}}>
         <Pressable
-        style={{flex:1, backgroundColor:"rgba(0,0,0,0.4)", justifyContent:'center', alignItems: 'center'}}>
-          <View style={[modalS.modalBody, {height:'auto', boxSizing: 'border-box', paddingHorizontal: 30, paddingVertical: 20}]}>
+        onPress={() => closeModal('nosave')}
+        style={{flex:1, backgroundColor:"rgba(0,0,0,0.5)", justifyContent:'center', alignItems: 'center'}}>
+          <View style={[modalS.modalBody, 
+            {height:'auto', boxSizing: 'border-box', paddingHorizontal: 30, paddingVertical: 20},
+            {backgroundColor: isDark?COLOR_DARK_FOURTH:COLOR_WHITE}
+          ]}>
           <Calendar
             onDayPress={(date) => onPressDate(date)}
             markedDates={betweenMarking(betweenDate)}
             markingType={'period'}
-            maxDate={`${DATE.getFullYear()}-${DATE.getMonth()+1}-${DATE.getDate()}`}
+            maxDate={`${DATE.getFullYear()}-${DATE.getMonth()+1}-${DATE.getDate()-1}`}
             theme={{
-              backgroundColor: '#ffffff',
-              calendarBackground: '#ffffff',
-              textSectionTitleColor: '#b6c1cd',
+              backgroundColor: isDark?COLOR_DARK_FOURTH:COLOR_WHITE,
+              calendarBackground: 'rgba(0,0,0,0)',
+              textSectionTitleColor: isDark?COLOR_DARK_PRIMARY:COLOR_LIGHT_SECONDARY,   // 요일
               selectedDayTextColor: '#ffffff',
-              todayTextColor: '#E76B5C',
-              dayTextColor: '#2d4150',
+              dayTextColor:isDark?COLOR_DARK_WHITE:COLOR_BLACK,
+              textDisabledColor:isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY,
+              todayTextColor: isDark?COLOR_DARK_RED:COLOR_LIGHT_RED,
+              monthTextColor: isDark?COLOR_DARK_WHITE:COLOR_LIGHT_BLUE,
               textDayFontFamily: 'Diary',
               textMonthFontSize: 16,
               textDayFontSize: 15,
               textDayHeaderFontSize: 10,
               textMonthFontFamily: 'Diary',
-              arrowColor: '#4E4981',
+              arrowColor: isDark?COLOR_DARK_BLUE:COLOR_LIGHT_BLUE,
             }}
           />
           
           <View style={styles.buttonWrap}>
             <Pressable
-            onPress={() => closeModal('nosave')}
-            style={[styles.button, GlobalStyle.bgWHITE,]}>
-              <Text style={[GlobalStyle.fontRED, GlobalStyle.font_body]}>취소</Text>
-            </Pressable>
-
-            <Pressable
             onPress={() => closeModal('save')}
             style={[styles.button, GlobalStyle.bgRED]}>
-              <Text style={[GlobalStyle.fontWHITE, GlobalStyle.font_body]}>저장</Text>
+              <Text style={[GlobalStyle.fontWHITE, GlobalStyle.font_body, {backgroundColor:isDark?COLOR_DARK_RED:COLOR_LIGHT_RED}]}>저장</Text>
             </Pressable>
           </View>
           </View>
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   button:{
-    width: '47%',
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     height: 45,

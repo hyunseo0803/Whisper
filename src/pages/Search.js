@@ -88,7 +88,7 @@ const Search = ({navigation}) => {
             <Text style={[GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>제목</Text>
             <TextInput
               placeholder="선택없음"
-              style={[GlobalStyle.font_body, styles.text_input]}
+              style={[GlobalStyle.font_body, styles.text_input, {color:isDark?COLOR_DARK_WHITE:COLOR_BLACK}]}
               value={title}
               onChangeText={text => setTitle(text)}
             />
@@ -105,7 +105,7 @@ const Search = ({navigation}) => {
                   <Text style={[GlobalStyle.font_body, styles.text_input, {color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.25)'}]}>선택없음</Text>
                 :
                   // 날짜 지정
-                  <Text style={[GlobalStyle.font_body, styles.text_input, {maxWidth: '100%'}]}>{startDate} ~ {endDate}</Text>
+                  <Text style={[GlobalStyle.font_body, styles.text_input, {maxWidth: '100%', color:isDark?COLOR_DARK_WHITE:COLOR_BLACK}]}>{startDate} ~ {endDate}</Text>
                 }
               </Pressable>
               {
