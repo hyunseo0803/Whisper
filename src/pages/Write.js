@@ -63,6 +63,7 @@ const Write = ({ navigation }) => {
 		navigation.navigate("WriteAnalysis", {
 			selectedMood: selectedMood,
 			selectedWeather: selectedWeather,
+			selectedDate: selectedDate,
 		});
 	};
 
