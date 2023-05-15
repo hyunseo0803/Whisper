@@ -20,6 +20,7 @@ import fear from "../../../assets/images/mood/fear.png";
 import expressionless from "../../../assets/images/mood/expressionless.png";
 import surprised from "../../../assets/images/mood/surprised.png";
 import { setupURLPolyfill } from "react-native-url-polyfill";
+import { loading } from "../../../assets/images/opener-loading.gif";
 import { Openai_Api_KEY } from "@env";
 
 setupURLPolyfill();
@@ -45,14 +46,15 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 
 	const openai = new OpenAIApi(config);
 
-	// useEffect(() => {
-	// 	if (analysisloading && openailoading) {
-	// 		setIsloding(true);
-	// 	}
-	// 	if (analysisloading === false && openailoading === false) {
-	// 		setIsloding(false);
-	// 	}
-	// });
+	useEffect(() => {
+		setIsLoding(false);
+		if (analysisLoding && openaiLoding) {
+			setIsLoding(false);
+		}
+		if (analysisLoding === true && openaiLoding === true) {
+			setIsLoding(true);
+		}
+	});
 
 	const handelTopicPress = (topic) => {
 		if (selectedTopic.includes(topic)) {
@@ -75,9 +77,11 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	// console.log(selectedTopic);
 	useEffect(() => {
 		const getGoogleVisionResultFun = async () => {
+			setAnalysisIsLoding(false);
 			try {
 				const result = await getGoogleVisionResult(route.params.imageBase64);
 				setAnalysisMood(result);
+				setAnalysisIsLoding(true);
 			} catch (error) {
 				console.error(error);
 			}
@@ -92,6 +96,7 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 
 	useEffect(() => {
 		const runPrompt = async () => {
+			setOpenaiLoding(false);
 			let prompt = "";
 			if (analysisMood === "happy") {
 				prompt = "기쁜 감정일때 쓰기좋은 재미있는 일기 주제 6가지 추천해줘.";
@@ -133,6 +138,7 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 					} catch (error) {
 						console.error(error);
 					}
+					setOpenaiLoding(true);
 				} catch (error) {
 					console.error(error);
 				}
@@ -146,6 +152,8 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 			<SafeAreaView
 				style={{
 					display: "flex",
+					// flex: 1,
+					// justifyContent: "center",
 					alignItems: "center",
 					marginHorizontal: "5%",
 					marginVertical: "10%",
@@ -153,105 +161,119 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 					// backgroundColor: "red",
 				}}
 			>
-				<View style={styles.container}>
-					<Text style={GlobalStyle.font_caption1}>Write Diary</Text>
-				</View>
-				<Text style={styles.title}>나의 감정 분석 결과</Text>
-				{
-					// 분석된 감정이 공백이 아니면 분석감정 출력
-					analysisMood !== "" &&
-						(analysisMood === "happy" ? (
-							<View style={styles.analysis}>
-								<Image source={happy} style={styles.icon}></Image>
-								<Text style={GlobalStyle.font_body}>기쁨</Text>
-							</View>
-						) : analysisMood === "sad" ? (
-							<View style={styles.analysis}>
-								<Image source={sad} style={styles.icon}></Image>
-								<Text style={GlobalStyle.font_title2}>슬픔</Text>
-							</View>
-						) : analysisMood === "disgust" ? (
-							<View style={styles.analysis}>
-								<Image source={disgust} style={styles.icon}></Image>
-								<Text style={GlobalStyle.font_title2}>혐오</Text>
-							</View>
-						) : analysisMood === "surprised" ? (
-							<View style={styles.analysis}>
-								<Image source={surprised} style={styles.icon}></Image>
-								<Text style={GlobalStyle.font_title2}>놀라움</Text>
-							</View>
-						) : analysisMood === "angry" ? (
-							<View style={styles.analysis}>
-								<Image source={angry} style={styles.icon}></Image>
-								<Text style={GlobalStyle.font_title2}>화남</Text>
-							</View>
-						) : analysisMood === "fear" ? (
-							<View style={styles.analysis}>
-								<Image source={fear} style={styles.icon}></Image>
-								<Text style={GlobalStyle.font_title2}>두려움</Text>
-							</View>
-						) : analysisMood === "expressionless" ? (
-							<View style={styles.analysis}>
-								<Image source={expressionless} style={styles.icon}></Image>
-								<Text style={GlobalStyle.font_title2}>무표정</Text>
-							</View>
-						) : null)
-				}
-				<Text style={[GlobalStyle.font_title2, styles.topicTitle]}>
-					이런 주제는 어때요?
-				</Text>
-
-				<View style={styles.subject}>
-					{subject &&
-						subject.map((item, index) => {
-							return (
-								<View style={styles.buttonContainer} key={index}>
-									<TouchableOpacity
-										// title={item}
-										onPress={() => handelTopicPress(item)}
-										style={[
-											styles.touchable,
-											selectedTopic.includes(item) && styles.selectedTouchable,
-										]}
-									>
-										<Text
-											style={[
-												styles.topic,
-												GlobalStyle.font_body,
-												selectedTopic.includes(item) && styles.selectedText,
-											]}
-										>
-											{item}
-										</Text>
-									</TouchableOpacity>
-								</View>
-							);
-						})}
-				</View>
-				<View style={styles.button}>
-					<TouchableOpacity
-						style={[
-							styles.buttonTouchable,
-							{
-								backgroundColor: isSelected
-									? "#E76B5C"
-									: "rgba(231, 107, 92, 0.5)",
-							},
-						]}
-						onPress={handleNextButton}
-						disabled={!isSelected}
-					>
-						<Text
-							style={[
-								styles.buttonText,
-								GlobalStyle.font_title2,
-								{ color: isSelected ? "white" : "#CCCCCC" },
-							]}
-						>
-							다음
+				{isLoding ? (
+					<View style={styles.result}>
+						<View style={styles.container}>
+							<Text style={GlobalStyle.font_caption1}>Write Diary</Text>
+						</View>
+						<Text style={styles.title}>나의 감정 분석 결과</Text>
+						{
+							// 분석된 감정이 공백이 아니면 분석감정 출력
+							analysisMood !== "" &&
+								(analysisMood === "happy" ? (
+									<View style={styles.analysis}>
+										<Image source={happy} style={styles.icon}></Image>
+										<Text style={GlobalStyle.font_body}>기쁨</Text>
+									</View>
+								) : analysisMood === "sad" ? (
+									<View style={styles.analysis}>
+										<Image source={sad} style={styles.icon}></Image>
+										<Text style={GlobalStyle.font_title2}>슬픔</Text>
+									</View>
+								) : analysisMood === "disgust" ? (
+									<View style={styles.analysis}>
+										<Image source={disgust} style={styles.icon}></Image>
+										<Text style={GlobalStyle.font_title2}>혐오</Text>
+									</View>
+								) : analysisMood === "surprised" ? (
+									<View style={styles.analysis}>
+										<Image source={surprised} style={styles.icon}></Image>
+										<Text style={GlobalStyle.font_title2}>놀라움</Text>
+									</View>
+								) : analysisMood === "angry" ? (
+									<View style={styles.analysis}>
+										<Image source={angry} style={styles.icon}></Image>
+										<Text style={GlobalStyle.font_title2}>화남</Text>
+									</View>
+								) : analysisMood === "fear" ? (
+									<View style={styles.analysis}>
+										<Image source={fear} style={styles.icon}></Image>
+										<Text style={GlobalStyle.font_title2}>두려움</Text>
+									</View>
+								) : analysisMood === "expressionless" ? (
+									<View style={styles.analysis}>
+										<Image source={expressionless} style={styles.icon}></Image>
+										<Text style={GlobalStyle.font_title2}>무표정</Text>
+									</View>
+								) : null)
+						}
+						<Text style={[GlobalStyle.font_title2, styles.topicTitle]}>
+							이런 주제는 어때요?
 						</Text>
-					</TouchableOpacity>
-				</View>
+
+						<View style={styles.subject}>
+							{subject &&
+								subject.map((item, index) => {
+									return (
+										<View style={styles.buttonContainer} key={index}>
+											<TouchableOpacity
+												// title={item}
+												onPress={() => handelTopicPress(item)}
+												style={[
+													styles.touchable,
+													selectedTopic.includes(item) &&
+														styles.selectedTouchable,
+												]}
+											>
+												<Text
+													style={[
+														styles.topic,
+														GlobalStyle.font_body,
+														selectedTopic.includes(item) && styles.selectedText,
+													]}
+												>
+													{item}
+												</Text>
+											</TouchableOpacity>
+										</View>
+									);
+								})}
+						</View>
+						<View style={styles.button}>
+							<TouchableOpacity
+								style={[
+									styles.buttonTouchable,
+									{
+										backgroundColor: isSelected
+											? "#E76B5C"
+											: "rgba(231, 107, 92, 0.5)",
+									},
+								]}
+								onPress={handleNextButton}
+								disabled={!isSelected}
+							>
+								<Text
+									style={[
+										styles.buttonText,
+										GlobalStyle.font_title2,
+										{ color: isSelected ? "white" : "#CCCCCC" },
+									]}
+								>
+									다음
+								</Text>
+							</TouchableOpacity>
+						</View>
+					</View>
+				) : (
+					<View style={styles.result}>
+						<View style={styles.container}>
+							<Image
+								source={require("../../../assets/images/opener-loading.gif")}
+								style={styles.loading}
+							/>
+						</View>
+					</View>
+				)}
 			</SafeAreaView>
 		</ScrollView>
 	);
@@ -262,12 +284,33 @@ const styles = StyleSheet.create({
 		width: "100%",
 		justifyContent: "center",
 		alignItems: "center",
+		backgroundColor: "yellow",
+	},
+	loading_wrapper: {
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "yellow",
+	},
+	loading: {
+		width: 500,
+		height: 500,
+		// backgroundColor: "red",
+	},
+	result: {
+		width: "100%",
+		justifyContent: "center",
+		alignContent: "center",
+		textAlign: "center",
 		// backgroundColor: "yellow",
 	},
+
 	title: {
 		marginVertical: 40,
 		fontSize: 30,
 		fontWeight: 800,
+		justifyContent: "center",
+		alignContent: "center",
+		textAlign: "center",
 	},
 	analysis: {
 		width: "100%",
@@ -326,6 +369,8 @@ const styles = StyleSheet.create({
 	},
 	button: {
 		marginVertical: 50,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	buttonTouchable: {
 		width: 250,
@@ -333,10 +378,12 @@ const styles = StyleSheet.create({
 		borderRadius: 50,
 		justifyContent: "center",
 		alignItems: "center",
+		textAlign: "center",
 	},
 	buttonText: {
 		textAlign: "center",
 		lineHeight: 55,
+		// textAlign: "center",
 	},
 });
 
