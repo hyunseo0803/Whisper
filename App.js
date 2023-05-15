@@ -28,6 +28,7 @@ import { COLOR_DARK_BG, COLOR_LIGHT_BG } from "./src/globalStyle/color";
 import SettingScreenMode from "./src/pages/setting/settingScreenMode";
 
 export default function App() {
+  const isDark = useColorScheme() === 'dark'
 
   const [fontsLoaded] = useFonts({
     'Diary': require('./assets/fonts/EF_Diary.ttf'),
