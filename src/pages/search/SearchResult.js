@@ -15,8 +15,8 @@ const SearchResult = ({ navigation, route }) => {
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
-    if(redirect === true){
-      setRedirect(false)
+    if(redirect){
+      navigation.pop()
     }
   }, [redirect]);
 
