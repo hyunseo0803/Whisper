@@ -80,7 +80,9 @@ export const getDiaryList = async(month, year, listupType) => {
     const result = await getDocs(q);
     let arr = [];
     result.forEach((doc) => {
-      arr.push(doc.data())
+      var finDoc = doc.data()
+      finDoc.d_id = doc.id
+      arr.push(finDoc)
     });
     return arr
   }
@@ -171,13 +173,17 @@ export const getSearchDiary = async(title, startDate, endDate, mood, weather) =>
     if(mood!==null || weather!==null){
       const result = await getDocs(moodWeatherQuery);
       result.forEach((doc) => {
-        arr.push(doc.data())
+        var finDoc = doc.data()
+        finDoc.d_id = doc.id
+        arr.push(finDoc)
       });
     }
     else{
       const result = await getDocs(dateQuery);
       result.forEach((doc) => {
-        arr.push(doc.data())
+        var finDoc = doc.data()
+        finDoc.d_id = doc.id
+        arr.push(finDoc)
       });
     }
 
@@ -219,7 +225,7 @@ export const timestampToDate = (timestamp) => {
  */
 export const deleteDiary = async(dId) => {
   try{
-    await deleteDoc(doc(db, "diary", `${dId}_${auth.currentUser.uid}`));
+    await deleteDoc(doc(db, "diary", dId));
     return true
   }
   catch(e) {
