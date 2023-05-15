@@ -32,6 +32,7 @@ const WriteContent = ({ navigation, route }) => {
 	const [dSubject, setDSubject] = useState([]); // 일기 주제
 	const [dMood, setDMood] = useState("");
 	const [dWeather, setDWeather] = useState("");
+	const [dDate, setDDate] = useState("");
 	const [dTitle, setDTitle] = useState(""); // 일기 제목
 	const [dContent, setDContent] = useState(""); // 일기 내용
 	const [contentLength, setContentLength] = useState(0);
@@ -51,9 +52,11 @@ const WriteContent = ({ navigation, route }) => {
 		const selectedTopic = params.selectedTopic;
 		const selectedMood = params.selectedMood;
 		const selectedWeather = params.selectedWeather;
+		const selectedDate = params.selectedDate;
 		setDSubject(selectedTopic);
 		setDMood(selectedMood);
 		setDWeather(selectedWeather);
+		setDDate(selectedDate);
 	}, []);
 
 	useEffect(() => {
@@ -105,7 +108,7 @@ const WriteContent = ({ navigation, route }) => {
 		content: dContent,
 		u_id: u_id,
 		d_id: "d_id",
-		date: new Date(),
+		date: dDate,
 		image: selectedImage,
 		mood: dMood,
 		weather: dWeather,
