@@ -58,8 +58,12 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 				selectedWeather: selectedWeather,
 			});
 		}
-		// }
-		// }
+	};
+	const Gowrite = async () => {
+		navigate("WriteContent", {
+			selectedMood: selectedMood,
+			selectedWeather: selectedWeather,
+		});
 	};
 
 	return (
@@ -90,7 +94,12 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 						</Text>
 					</View>
 				</Pressable>
-				<Pressable style={styles.presszone} onPress={() => {}}>
+				<Pressable
+					style={styles.presszone}
+					onPress={() => {
+						Gowrite();
+					}}
+				>
 					<View style={styles.inline}>
 						<Image source={write} style={styles.icon}></Image>
 						<Text style={styles.text}>일기 쓰기</Text>
