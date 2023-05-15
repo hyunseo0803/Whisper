@@ -19,6 +19,7 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 	const { params } = route;
 	const selectedMood = params ? params.selectedMood : null;
 	const selectedWeather = params ? params.selectedWeather : null;
+	const selectedDate = params ? params.selectedDate : null;
 
 	/**
 	 * 카메라 접근권한 확인
