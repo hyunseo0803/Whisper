@@ -28,10 +28,14 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	const [analysisMood, setAnalysisMood] = useState("");
 	const [subject, setSubject] = useState("");
 	const [selectedTopic, setSelectedTopic] = useState([]);
+	const [isLoding, setIsLoding] = useState(false);
+	const [analysisLoding, setAnalysisIsLoding] = useState(false);
+	const [openaiLoding, setOpenaiLoding] = useState(false);
 
 	const { params } = route;
 	const selectedMood = params ? params.selectedMood : null;
 	const selectedWeather = params ? params.selectedWeather : null;
+	const selectedDate = params.selectedDate;
 
 	const { Configuration, OpenAIApi } = require("openai");
 
@@ -40,6 +44,15 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	});
 
 	const openai = new OpenAIApi(config);
+
+	// useEffect(() => {
+	// 	if (analysisloading && openailoading) {
+	// 		setIsloding(true);
+	// 	}
+	// 	if (analysisloading === false && openailoading === false) {
+	// 		setIsloding(false);
+	// 	}
+	// });
 
 	const handelTopicPress = (topic) => {
 		if (selectedTopic.includes(topic)) {
@@ -54,11 +67,9 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 			selectedTopic: selectedTopic,
 			selectedMood: selectedMood,
 			selectedWeather: selectedWeather,
+			selectedDate: selectedDate,
 		});
 		console.log(`AnalysisMood: ${analysisMood}, topic: ${selectedTopic}`);
-		console.log(typeof selectedTopic);
-		console.log(typeof selectedWeather);
-		console.log(typeof selectedMood);
 	};
 
 	// console.log(selectedTopic);
