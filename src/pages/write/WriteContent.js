@@ -88,7 +88,7 @@ const WriteContent = ({ navigation, route }) => {
 
 	const handleSave = async () => {
 		const diaryRef = collection(db, "diary");
-		const newDiaryRef = doc(diaryRef, `${doc(diaryRef).id}_${u_id}`);
+		const newDiaryRef = doc(diaryRef, `${doc(diaryRef).id}`);
 		try {
 			const res = await setDoc(newDiaryRef, data);
 			console.log("성공---------------------!");
@@ -107,7 +107,6 @@ const WriteContent = ({ navigation, route }) => {
 		title: dTitle,
 		content: dContent,
 		u_id: u_id,
-		d_id: "d_id",
 		date: dDate,
 		image: selectedImage,
 		mood: dMood,
