@@ -58,6 +58,7 @@ const Write = ({ navigation }) => {
 		navigation.navigate("WriteAnalysis", {
 			selectedMood: selectedMood,
 			selectedWeather: selectedWeather,
+			selectedDate: selectedDate,
 		});
 		console.log(
 			`Mood: ${selectedMood}, Weather: ${selectedWeather}, date:${selectedDate}`

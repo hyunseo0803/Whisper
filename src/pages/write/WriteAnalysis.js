@@ -56,6 +56,7 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 				imageBase64: result.assets[0].base64,
 				selectedMood: selectedMood,
 				selectedWeather: selectedWeather,
+				selectedDate: selectedDate,
 			});
 		}
 	};
@@ -63,6 +64,7 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 		navigate("WriteContent", {
 			selectedMood: selectedMood,
 			selectedWeather: selectedWeather,
+			selectedDate: selectedDate,
 		});
 	};
 

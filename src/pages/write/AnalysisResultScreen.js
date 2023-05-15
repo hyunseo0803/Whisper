@@ -54,6 +54,7 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 			selectedTopic: selectedTopic,
 			selectedMood: selectedMood,
 			selectedWeather: selectedWeather,
+			selectedDate: selectedDate,
 		});
 		console.log(`AnalysisMood: ${analysisMood}, topic: ${selectedTopic}`);
 	};
