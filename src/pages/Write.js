@@ -9,6 +9,7 @@ import {
 	TouchableOpacity,
 	ActionSheetIOS,
   Pressable,
+  useColorScheme,
 } from "react-native";
 import React, { useState } from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
@@ -31,8 +32,12 @@ import lightning from "../../assets/images/weather/lightning.png";
 import WriteAnalysis from "../pages/write/WriteAnalysis";
 import DatePicker from "../components/datePicker/DatePicker";
 import { changeNumberTwoLength } from "../util/Calender";
+import ModeColorStyle from "../globalStyle/ModeColorStyle";
+import { COLOR_BLACK, COLOR_DARK_PRIMARY, COLOR_DARK_WHITE, COLOR_LIGHT_SECONDARY, COLOR_LIGHT_THIRD } from "../globalStyle/color";
 
 const Write = ({ navigation }) => {
+  const isDark = useColorScheme() === 'dark'
+
 	const [selectedMood, setSelectedMood] = useState("");
 	const [selectedWeather, setSelectedWeather] = useState("");
 	const [selectedDate, setSelectedDate] = useState(new Date());
@@ -59,9 +64,6 @@ const Write = ({ navigation }) => {
 			selectedMood: selectedMood,
 			selectedWeather: selectedWeather,
 		});
-		console.log(
-			`Mood: ${selectedMood}, Weather: ${selectedWeather}, date:${selectedDate}`
-		);
 	};
 
 	return (
@@ -69,7 +71,7 @@ const Write = ({ navigation }) => {
 			style={[GlobalStyle.safeAreaWrap, {alignItems:'center', justifyContent:'center'}]}>
 			<View style={styles.container}>
 				<View className="writeDiary">
-					<Text style={[styles.writeDiaryText, GlobalStyle.font_caption1]}>
+					<Text style={[styles.writeDiaryText, GlobalStyle.font_caption2, ModeColorStyle(isDark).font_DEFALUT]}>
 						Write Diary
 					</Text>
 				</View>
@@ -77,13 +79,13 @@ const Write = ({ navigation }) => {
         <Pressable
         style={[{display:'flex', flexDirection:'row', marginTop: 40, alignItems:'center', justifyContent:'center'}]}
         onPress={() => setDatepickerShow(true)}>
-          <Text style={[GlobalStyle.font_title1]}>
+          <Text style={[GlobalStyle.font_title1, ModeColorStyle(isDark).font_DEFALUT]}>
             {`${selectedDate.getFullYear()}.${changeNumberTwoLength(selectedDate.getMonth()+1)}.${changeNumberTwoLength(selectedDate.getDate())}`}
           </Text>
           <Ionicons
 							name="caret-down-outline"
 							size={30}
-							color="black"
+							color={isDark?COLOR_DARK_WHITE : COLOR_BLACK}
 							style={{ marginLeft: 10 }}
 					/>
         </Pressable>
@@ -104,6 +106,7 @@ const Write = ({ navigation }) => {
 							{ justifyContent: "center", textAlign: "center" },
 							GlobalStyle.font_title2,
 							GlobalStyle.font_title2,
+              ModeColorStyle(isDark).font_DEFALUT
 						]}
 					>
 						기분
@@ -191,6 +194,7 @@ const Write = ({ navigation }) => {
 						style={[
 							{ justifyContent: "center", textAlign: "center" },
 							GlobalStyle.font_title2,
+              ModeColorStyle(isDark).font_DEFALUT
 						]}
 					>
 						날씨
@@ -279,7 +283,7 @@ const Write = ({ navigation }) => {
 						style={[
 							styles.buttonText,
 							GlobalStyle.font_title2,
-							{ color: isBothSelected ? "white" : "#CCCCCC" },
+							{ color: isBothSelected ? "white" : 'rgba(255,255,255,0.5)' },
 						]}
 					>
 						다음
@@ -296,31 +300,22 @@ const styles = StyleSheet.create({
 	container: {
 		width: "100%",
 		justifyContent: "center",
-		// marginVertical: 10,
-		// backgroundColor: "yellow",
 	},
 	chooseEmotion: {
 		width: "100%",
-		// height: 50,
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
 		textAlign: "center",
-		// marginTop: 5,
-		// marginBottom: 60,
-		// backgroundColor: "black",
 	},
 	chooseWeather: {
 		width: "100%",
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		// backgroundColor: "blue",
 	},
 	writeDiary: {
-		// backgroundColor: "red",
 		width: "100%",
-		// height: 50,
 		justifyContent: "center",
 		alignItems: "center",
 	},
@@ -331,21 +326,16 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		width: "100%",
-		// marginTop: 0,
 		marginBottom: 40,
-		// backgroundColor: "red",
 	},
 	choose: {
 		display: "flex",
 		flexDirection: "row",
 		marginTop: 5,
-		// backgroundColor: "yellow",
 	},
 	emotion: {
 		width: 36,
 		height: 36,
-		// marginVertical: 10,
-		// marginHorizontal: 15,
 		borderRadius: 18,
 		resizeMode: "contain",
 	},
@@ -363,12 +353,10 @@ const styles = StyleSheet.create({
 		marginHorizontal: 15,
 		justifyContent: "center",
 		alignItems: "center",
-		// padding: 10,
 	},
 	button: {
 		marginTop: 50,
 		marginVertical: 10,
-		// marginHorizontal: 30,
 	},
 	buttonTouchable: {
 		width: 250,
