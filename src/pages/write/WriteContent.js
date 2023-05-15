@@ -90,10 +90,11 @@ const WriteContent = ({ navigation, route }) => {
 		const diaryRef = collection(db, "diary");
 		const newDiaryRef = doc(diaryRef, `${doc(diaryRef).id}`);
 		try {
-			const res = await setDoc(newDiaryRef, data);
+			await setDoc(newDiaryRef, data);
 			console.log("성공---------------------!");
 			navigation.navigate("HomeTab");
 		} catch (error) {
+			console.log(data);
 			console.error(
 				`Error message: ${error.message}\nStack trace: ${error.stack}`
 			);
