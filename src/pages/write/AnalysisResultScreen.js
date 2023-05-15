@@ -56,9 +56,6 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 			selectedWeather: selectedWeather,
 		});
 		console.log(`AnalysisMood: ${analysisMood}, topic: ${selectedTopic}`);
-		console.log(typeof selectedTopic);
-		console.log(typeof selectedWeather);
-		console.log(typeof selectedMood);
 	};
 
 	// console.log(selectedTopic);
