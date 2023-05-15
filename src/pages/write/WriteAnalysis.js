@@ -9,13 +9,18 @@ import {
 	Text,
 	Pressable,
 	Image,
+	useColorScheme,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import camera from "../../../assets/images/camera.png";
 import write from "../../../assets/images/write.png";
+import ModeColorStyle from "../../globalStyle/ModeColorStyle";
+import { Ionicons } from '@expo/vector-icons';
+import { COLOR_DARK_BLUE, COLOR_DARK_FOURTH, COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_BLUE, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY, COLOR_WHITE } from "../../globalStyle/color";
 
 const WriteAnalysis = ({ navigation: { navigate }, route }) => {
+	const isDark = useColorScheme() === 'dark'
 	const { params } = route;
 	const selectedMood = params ? params.selectedMood : null;
 	const selectedWeather = params ? params.selectedWeather : null;
@@ -38,6 +43,7 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 			return true;
 		}
 	};
+
 	/**
 	 * 사진 찍고 base64값 받는 함수
 	 */
@@ -63,6 +69,8 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 		// }
 		// }
 	};
+
+
 	const Gowrite = async () => {
 		navigate("WriteContent", {
 			selectedMood: selectedMood,
@@ -83,31 +91,31 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 			}}
 		>
 			<View style={styles.container}>
-				<Text style={GlobalStyle.font_caption1}>Write Diary</Text>
+				<Text style={[GlobalStyle.font_caption2, ModeColorStyle(isDark).font_DEFALUT]}>Write Diary</Text>
 			</View>
-			<View style={styles.presswrap}>
+			<View style={[styles.presswrap]}>
 				<Pressable
-					style={styles.presszone}
+					style={[styles.presszone, !isDark?styles.shadow : {}, {borderColor:isDark?COLOR_DARK_RED:COLOR_LIGHT_RED, backgroundColor:isDark?COLOR_DARK_FOURTH:COLOR_WHITE}]}
 					onPress={() => {
 						pickImage();
 					}}
 				>
-					<View style={styles.inline}>
-						<Image source={camera} style={styles.icon}></Image>
-						<Text style={styles.text}>
+					<View style={[styles.inline]}>
+            <Ionicons name="camera-outline" size={50} color={isDark?COLOR_WHITE:COLOR_LIGHT_BLUE} />
+						<Text style={[styles.text, {color: isDark?COLOR_DARK_WHITE:COLOR_LIGHT_BLUE}, GlobalStyle.font_title2]}>
 							감정 분석하고 {"\n"}일기 주제 추천 받기
 						</Text>
 					</View>
 				</Pressable>
 				<Pressable
-					style={styles.presszone}
+					style={[styles.presszone, !isDark?styles.shadow : {}, {borderColor:isDark?COLOR_DARK_RED:COLOR_LIGHT_RED, backgroundColor:isDark?COLOR_DARK_FOURTH:COLOR_WHITE}]}
 					onPress={() => {
 						Gowrite();
 					}}
 				>
-					<View style={styles.inline}>
-						<Image source={write} style={styles.icon}></Image>
-						<Text style={styles.text}>일기 쓰기</Text>
+					<View style={[styles.inline]}>
+            <Ionicons name="create-outline" size={50} color={isDark?COLOR_WHITE:COLOR_LIGHT_BLUE} />
+						<Text style={[styles.text, {color: isDark?COLOR_DARK_WHITE:COLOR_LIGHT_BLUE}, GlobalStyle.font_title2]}>일기 쓰기</Text>
 					</View>
 				</Pressable>
 			</View>
@@ -120,11 +128,9 @@ const styles = StyleSheet.create({
 		width: "100%",
 		justifyContent: "center",
 		alignItems: "center",
-		// backgroundColor: "yellow",
 	},
 	presswrap: {
 		marginTop: 75,
-		// backgroundColor: "blue",
 		width: "100%",
 	},
 	presszone: {
@@ -133,23 +139,23 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 		marginVertical: 30,
 		justifyContent: "center",
-		borderColor: "#E76B5C",
 		borderWidth: 2,
 		borderRadius: 15,
-		shadowColor: "#000",
+	},
+  shadow:{
+		shadowColor: COLOR_LIGHT_BLUE,
 		shadowOffset: {
 			width: 6,
 			height: 8,
 		},
-		shadowOpacity: 0.3,
+		shadowOpacity: 0.2,
 		shadowRadius: 8,
-	},
+  },
 	text: {
-		marginTop: 10,
+		marginTop: 15,
 		alignItems: "center",
 		textAlign: "center",
 		fontSize: 20,
-		color: "#4E4981",
 		fontWeight: 800,
 	},
 	inline: {
@@ -157,7 +163,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		marginVertical: 15,
-		// backgroundColor: "red",
 	},
 	icon: {
 		width: 40,

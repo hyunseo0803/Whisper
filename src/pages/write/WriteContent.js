@@ -11,6 +11,7 @@ import {
 	Keyboard,
 	Image,
 	Alert,
+	useColorScheme,
 } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 // import ImagePicker from "react-native-image-picker";
@@ -27,8 +28,12 @@ import {
 	doc,
 	Firestore,
 } from "firebase/firestore";
+import ModeColorStyle from "../../globalStyle/ModeColorStyle";
+import { COLOR_BLACK, COLOR_DARK_RED, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_RED, COLOR_LIGHT_THIRD } from "../../globalStyle/color";
 
 const WriteContent = ({ navigation, route }) => {
+	const isDark = useColorScheme() === 'dark'
+
 	const [dSubject, setDSubject] = useState([]); // 일기 주제
 	const [dMood, setDMood] = useState("");
 	const [dWeather, setDWeather] = useState("");
@@ -39,7 +44,7 @@ const WriteContent = ({ navigation, route }) => {
 	const [img1, setImg1] = useState(""); // 오늘의 사진
 	const [img2, setImg2] = useState(""); // 프리미엄 유저부터 2번 3번 활성화
 	const [img3, setImg3] = useState("");
-	const [canSave, setCanSave] = useState("#BDBFC4");
+	const [canSave, setCanSave] = useState(isDark? COLOR_DARK_THIRD : COLOR_LIGHT_THIRD);
 	const [u_id, setU_id] = useState("");
 	const [selectedImage, setSelectedImage] = useState("");
 	// const user = auth.currentUser;
@@ -185,9 +190,10 @@ const WriteContent = ({ navigation, route }) => {
 			dContent.replace(/\s/g, "") === "" ||
 			dTitle.replace(/\s/g, "") === ""
 		) {
-			setCanSave("#BDBFC4");
+      isDark ? setCanSave(COLOR_DARK_THIRD) : setCanSave(COLOR_LIGHT_THIRD)
+			;
 		} else {
-			setCanSave("#E76B5C");
+      isDark ? setCanSave(COLOR_DARK_RED) : setCanSave(COLOR_LIGHT_RED)
 		}
 	}, [dContent, dTitle]);
 
@@ -214,9 +220,9 @@ const WriteContent = ({ navigation, route }) => {
 								);
 							}}
 						>
-							<Ionicons name="arrow-back-outline" size={40} color="black" />
+							<Ionicons name="arrow-back-outline" size={40} color={isDark ? COLOR_DARK_WHITE : COLOR_BLACK} />
 						</Pressable>
-						<Text style={[GlobalStyle.font_caption1]}>Write Diary</Text>
+						<Text style={[GlobalStyle.font_caption2, ModeColorStyle(isDark).font_DEFALUT]}>Write Diary</Text>
 						<Pressable
 							onPress={() =>
 								Alert.alert(
@@ -268,7 +274,7 @@ const WriteContent = ({ navigation, route }) => {
 								value={dTitle}
 								onChangeText={(text) => setDTitle(text)}
 								placeholder="일기에 제목을 붙여주세요"
-								style={[BodyStyle.titleInput, GlobalStyle.font_title2]}
+								style={[BodyStyle.titleInput, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}
 							/>
 						</View>
 						{/* 음성녹음 버튼 */}
@@ -276,7 +282,7 @@ const WriteContent = ({ navigation, route }) => {
 							style={BodyStyle.btnMic}
 							onPress={() => voiceRecording()}
 						>
-							<Ionicons name="mic-circle" size={45} color="#E76B5C"></Ionicons>
+							<Ionicons name="mic-circle" size={45} color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}></Ionicons>
 						</Pressable>
 						{/* 본문 textInput */}
 						<TextInput
@@ -288,7 +294,7 @@ const WriteContent = ({ navigation, route }) => {
 							multiline
 							maxLength={textLength(premium)} // 프리미엄 회원이 맞으면 true, 아니면 false
 							textAlign="center"
-							style={[BodyStyle.contentInput, GlobalStyle.font_body]}
+							style={[BodyStyle.contentInput, GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}
 						/>
 
 						<View style={BodyStyle.textCountWrap}>
@@ -444,7 +450,8 @@ const BodyStyle = StyleSheet.create({
 	contentInput: {
 		width: "100%",
 		marginTop: 5,
-		height: 400,
+		minHeight: 250,
+    maxHeight: 500
 	},
 
 	textCountWrap: {
