@@ -45,7 +45,7 @@ const WriteContent = ({ navigation, route }) => {
 
 	// TODO to 현서 : 프리미엄 회원 구분해주세요
 	const premium = false; // 프리미엄 회원 임시
-
+	console.log(dSubject);
 	useEffect(() => {
 		const { params } = route;
 		const selectedTopic = params.selectedTopic;
@@ -239,7 +239,7 @@ const WriteContent = ({ navigation, route }) => {
 					<ScrollView style={BodyStyle.mainWrap}>
 						{
 							// 일기 주제가 하나라도 있다면 실행
-							dSubject.length !== 0 && (
+							dSubject !== undefined && (
 								<ScrollView style={headerStyle.subjectWrap} horizontal>
 									{dSubject.map((subjectElement, index) => (
 										<Pressable
