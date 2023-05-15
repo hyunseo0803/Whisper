@@ -8,10 +8,12 @@ import {
 	Touchable,
 	TouchableOpacity,
 	ActionSheetIOS,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
-import ExpoDatePicker from "../components/ExpoDatePicker/ExpoDatePicker";
 import GlobalStyle from "../globalStyle/GlobalStyle";
+import { Ionicons } from "@expo/vector-icons";
+
 import happy from "../../assets/images/mood/happy.png";
 import disgust from "../../assets/images/mood/disgust.png";
 import surprised from "../../assets/images/mood/surprised.png";
@@ -27,13 +29,14 @@ import rain from "../../assets/images/weather/rain.png";
 import snow from "../../assets/images/weather/snow.png";
 import lightning from "../../assets/images/weather/lightning.png";
 import WriteAnalysis from "../pages/write/WriteAnalysis";
-
-// 날짜 선택기를 사용할땐 라이트모드로 봐야한다.. 난 이걸 2시간동안 구글링...
+import DatePicker from "../components/datePicker/DatePicker";
+import { changeNumberTwoLength } from "../util/Calender";
 
 const Write = ({ navigation }) => {
 	const [selectedMood, setSelectedMood] = useState("");
 	const [selectedWeather, setSelectedWeather] = useState("");
 	const [selectedDate, setSelectedDate] = useState(new Date());
+	const [datepickershow, setDatepickerShow] = useState(false) 
 
 	const handleMoodPress = (mood) => {
 		if (selectedMood === mood) {
@@ -50,9 +53,6 @@ const Write = ({ navigation }) => {
 			setSelectedWeather(weather);
 		}
 	};
-	const handleDateChange = (date) => {
-		setSelectedDate(date);
-	};
 	const isBothSelected = !!selectedMood && !!selectedWeather;
 	const handleNextButton = () => {
 		navigation.navigate("WriteAnalysis", {
@@ -63,6 +63,7 @@ const Write = ({ navigation }) => {
 			`Mood: ${selectedMood}, Weather: ${selectedWeather}, date:${selectedDate}`
 		);
 	};
+
 	return (
 		<SafeAreaView
 			style={[GlobalStyle.safeAreaWrap, {alignItems:'center', justifyContent:'center'}]}>
@@ -72,10 +73,29 @@ const Write = ({ navigation }) => {
 						Write Diary
 					</Text>
 				</View>
-				<ExpoDatePicker
-					date={selectedDate}
-					onDateChange={handleDateChange}
-				/>
+
+        <Pressable
+        style={[{display:'flex', flexDirection:'row', marginTop: 40, alignItems:'center', justifyContent:'center'}]}
+        onPress={() => setDatepickerShow(true)}>
+          <Text style={[GlobalStyle.font_title1]}>
+            {`${selectedDate.getFullYear()}.${changeNumberTwoLength(selectedDate.getMonth()+1)}.${changeNumberTwoLength(selectedDate.getDate())}`}
+          </Text>
+          <Ionicons
+							name="caret-down-outline"
+							size={30}
+							color="black"
+							style={{ marginLeft: 10 }}
+					/>
+        </Pressable>
+				{
+					datepickershow &&
+					<DatePicker
+						visible = {datepickershow}
+						setVisible = {setDatepickerShow}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+					/>
+				}
 			</View>
 			<View style={styles.chooseEmotion}>
 				<View style={styles.title}>
