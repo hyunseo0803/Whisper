@@ -11,7 +11,7 @@ import {
   Pressable,
   useColorScheme,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -33,16 +33,22 @@ import WriteAnalysis from "../pages/write/WriteAnalysis";
 import DatePicker from "../components/datePicker/DatePicker";
 import { changeNumberTwoLength } from "../util/Calender";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
-import { COLOR_BLACK, COLOR_DARK_PRIMARY, COLOR_DARK_WHITE, COLOR_LIGHT_SECONDARY, COLOR_LIGHT_THIRD } from "../globalStyle/color";
+import { COLOR_BLACK, COLOR_DARK_PRIMARY, COLOR_DARK_WHITE, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_SECONDARY, COLOR_LIGHT_THIRD } from "../globalStyle/color";
+import { getDiaryDate } from "../util/firebase/CRUD";
 
 const Write = ({ navigation }) => {
   const isDark = useColorScheme() === 'dark'
 
 	const [selectedMood, setSelectedMood] = useState("");
 	const [selectedWeather, setSelectedWeather] = useState("");
-	const [selectedDate, setSelectedDate] = useState(new Date());
+	const [selectedDate, setSelectedDate] = useState("");
 	const [datepickershow, setDatepickerShow] = useState(false) 
+  const [disabledDate, setDisabledDate] = useState(false)
 
+  /**
+   * mood onPress 함수
+   * @param {string} mood 
+   */
 	const handleMoodPress = (mood) => {
 		if (selectedMood === mood) {
 			setSelectedMood("");
@@ -51,6 +57,10 @@ const Write = ({ navigation }) => {
 		}
 	};
 
+  /**
+   * 날씨 onPress 함수
+   * @param {string} weather 
+   */
 	const handleWeatherPress = (weather) => {
 		if (selectedWeather === weather) {
 			setSelectedWeather("");
@@ -58,14 +68,28 @@ const Write = ({ navigation }) => {
 			setSelectedWeather(weather);
 		}
 	};
-	const isBothSelected = !!selectedMood && !!selectedWeather;
-	const handleNextButton = () => {
+
+	const isBothSelected = !!selectedMood && !!selectedWeather && selectedDate!=='';
+	
+  /**
+   * next 버튼 onPress 함수
+   */
+  const handleNextButton = () => {
 		navigation.navigate("WriteAnalysis", {
 			selectedMood: selectedMood,
 			selectedWeather: selectedWeather,
 			selectedDate: selectedDate,
 		});
 	};
+
+  // 화면이 뜨고 한 번만 실행
+  useEffect(() => {
+    // 일기를 쓸 수 없는 날짜 배열 찾는 함수
+    async function getDiaryDateFun() {
+      setDisabledDate(await getDiaryDate())
+    } 
+    getDiaryDateFun()
+  }, []);
 
 	return (
 		<SafeAreaView
@@ -77,11 +101,15 @@ const Write = ({ navigation }) => {
 					</Text>
 				</View>
 
+        {/* datepicker */}
         <Pressable
         style={[{display:'flex', flexDirection:'row', marginTop: 40, alignItems:'center', justifyContent:'center'}]}
         onPress={() => setDatepickerShow(true)}>
-          <Text style={[GlobalStyle.font_title1, ModeColorStyle(isDark).font_DEFALUT]}>
-            {`${selectedDate.getFullYear()}.${changeNumberTwoLength(selectedDate.getMonth()+1)}.${changeNumberTwoLength(selectedDate.getDate())}`}
+          <Text style={[, ModeColorStyle(isDark).font_DEFALUT,
+          selectedDate===''?({color:isDark?COLOR_DARK_PRIMARY:COLOR_LIGHT_PRIMARY, fontSize:16, fontFamily:'Diary'}):(GlobalStyle.font_title1)]}>
+            {
+              selectedDate === '' ? '이곳을 눌러 날짜를 선택해주세요' : selectedDate.replace(/\-/g, '.')
+            }
           </Text>
           <Ionicons
 							name="caret-down-outline"
@@ -95,8 +123,9 @@ const Write = ({ navigation }) => {
 					<DatePicker
 						visible = {datepickershow}
 						setVisible = {setDatepickerShow}
-            selectedDate={selectedDate}
+            // selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
+            disabledDate={disabledDate}
 					/>
 				}
 			</View>

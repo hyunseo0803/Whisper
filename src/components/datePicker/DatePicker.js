@@ -20,16 +20,23 @@ const DatePicker = (props) => {
   const isDark = useColorScheme() === 'dark'
   const DATE = new Date()
   
+  const [selected, setSelected] = useState(``)
   
-  const [selected, setSelected] = useState(`${props.selectedDate.getFullYear()}-${props.selectedDate.getMonth()+1}-${props.selectedDate.getDate()}`)
-  
-  console.log(selected)
   /**
    * 모달창 닫는 함수
    */
   const closeModal = () => {
-    props.setSelectedDate(new Date(selected))
+    props.setSelectedDate(selected)
     props.setVisible(false)
+  }
+
+  const disableMark = (selected) => {
+    let marking = {};
+    (props.disabledDate).forEach(element => {
+      marking[`${element}`] = {disabled:true, disableTouchEvent:true}
+    });
+    marking[`${selected}`] = {selected: true, disableTouchEvent: true}
+    return marking
   }
 
   return (
@@ -50,10 +57,12 @@ const DatePicker = (props) => {
           {/* 달력 */}
           <Calendar
             onDayPress={day => setSelected(day.dateString)}
-            markedDates={
-              { [selected]: {selected: true, disableTouchEvent: true} }
+            markedDates={disableMark(selected)
+              // { 
+              //   [selected]: {selected: true, disableTouchEvent: true},
+              // }
             }
-            maxDate={`${DATE.getFullYear()}-${DATE.getMonth()+1}-${DATE.getDate()-1}`}
+            maxDate={`${DATE.getFullYear()}-${DATE.getMonth()+1}-${DATE.getDate()-1}`}  // 선택가능한 최대 날짜(오늘)
             theme={{
               calendarBackground: 'rgba(0,0,0,0)',
               textSectionTitleColor: isDark?COLOR_DARK_PRIMARY:COLOR_LIGHT_SECONDARY,   // 요일

@@ -16,7 +16,6 @@ import {
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 // import ImagePicker from "react-native-image-picker";
 import { Ionicons, Feather } from "@expo/vector-icons";
-import { async } from "@firebase/util";
 import btnAddImg from "../../../assets/images/btnAddImg.png";
 import { auth, db } from "../../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -37,7 +36,7 @@ const WriteContent = ({ navigation, route }) => {
 	const [dSubject, setDSubject] = useState([]); // 일기 주제
 	const [dMood, setDMood] = useState("");
 	const [dWeather, setDWeather] = useState("");
-	const [dDate, setDDate] = useState("");
+	const [dDate, setDDate] = useState(new Date());
 	const [dTitle, setDTitle] = useState(""); // 일기 제목
 	const [dContent, setDContent] = useState(""); // 일기 내용
 	const [contentLength, setContentLength] = useState(0);
@@ -61,7 +60,7 @@ const WriteContent = ({ navigation, route }) => {
 		setDSubject(selectedTopic);
 		setDMood(selectedMood);
 		setDWeather(selectedWeather);
-		setDDate(selectedDate);
+		setDDate(new Date(selectedDate));
 	}, []);
 
 	useEffect(() => {
@@ -96,7 +95,6 @@ const WriteContent = ({ navigation, route }) => {
 		const newDiaryRef = doc(diaryRef, `${doc(diaryRef).id}`);
 		try {
 			await setDoc(newDiaryRef, data);
-			console.log("성공---------------------!");
 			navigation.navigate("HomeTab");
 		} catch (error) {
 			console.log(data);

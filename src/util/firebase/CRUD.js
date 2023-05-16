@@ -65,6 +65,28 @@ export const getMoodData = async(mood, year, month) => {
 }
 
 /**
+ * (firebase)일기 쓴 날짜 GET 함수
+ */
+export const getDiaryDate = async() => {
+  try{
+    const q = query(diaryCollection,
+      where("u_id", "==", auth.currentUser.uid), 
+      orderBy('date')
+    )
+    const result = await getDocs(q);
+    let arr = [];
+    result.forEach((doc) => {
+      arr.push(timestampToDate(doc.data().date).replace(/\./g, '-'))
+      
+    });
+    return arr
+  }
+  catch(e){
+    console.log("getDiaryDate GET 오류", e)
+  }
+}
+
+/**
  * (firebase)일기 배열 GET 함수
  * @param {int} month 
  * @param {int} year 
