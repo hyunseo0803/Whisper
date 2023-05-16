@@ -1,10 +1,15 @@
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Text, Modal, Animated, TouchableWithoutFeedback, Dimensions, PanResponder, Image } from 'react-native';
+import { View, StyleSheet, Text, Modal, Animated, TouchableWithoutFeedback, Dimensions, PanResponder, Image, useColorScheme } from 'react-native';
 import LogoBlack from '../../../assets/images/Logo-black.png'
+import LogoRed from '../../../assets/images/logo.png'
+import { COLOR_DARK_FOURTH, COLOR_WHITE } from '../../globalStyle/color';
 import GlobalStyle from '../../globalStyle/GlobalStyle';
+import ModeColorStyle from '../../globalStyle/ModeColorStyle';
 import {changeMonth} from '../../util/Calender'
 
 function DailyPhotoScreen(props) {
+  const isDark = useColorScheme() === 'dark'
+
     const { showPhotoModal, setShowPhotoModal } = props;
     const screenHeight = Dimensions.get("screen").height;
     const panY = useRef(new Animated.Value(screenHeight)).current;
@@ -77,20 +82,25 @@ function DailyPhotoScreen(props) {
                 <TouchableWithoutFeedback
                     onPress={closeModal}
                 >
-                    <View style={styles.background}/>
+                    <View style={[styles.background]}/>
                 </TouchableWithoutFeedback>
                 <Animated.View
-                    style={{...styles.modalContainer, transform: [{ translateY: translateY }]}}
+                    style={[{...styles.modalContainer, transform: [{ translateY: translateY }]}, {backgroundColor:isDark?COLOR_DARK_FOURTH:COLOR_WHITE}]}
                     {...panResponders.panHandlers}
                 >
                   <View style={modalS.topWrap}>
-                    <Image source={LogoBlack} style={modalS.logo}></Image>
-                    <Text style={[modalS.yearText, GlobalStyle.font_body]}>{props.year}</Text>
+                    {
+                      isDark?
+                      <Image source={LogoRed} style={[modalS.logo, {resizeMode:'contain'}]}></Image>
+                      :
+                      <Image source={LogoBlack} style={[modalS.logo, {resizeMode:'contain'}]}></Image>
+                    }
+                    <Text style={[modalS.yearText, GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>{props.year}</Text>
                   </View>
 
                   <View style={modalS.DateWrap}>
-                    <Text style={[modalS.dateMonth, GlobalStyle.font_title2]}>{changeMonth(props.month)}</Text>
-                    <Text style={[modalS.dateDay, GlobalStyle.font_title1]}>{props.day}</Text>
+                    <Text style={[modalS.dateMonth, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}>{changeMonth(props.month)}</Text>
+                    <Text style={[modalS.dateDay, GlobalStyle.font_title1, ModeColorStyle(isDark).font_DEFALUT]}>{props.day}</Text>
                   </View>
 
                   <View style={modalS.ImgWrap}>
@@ -119,7 +129,6 @@ const styles = StyleSheet.create({
       height: Dimensions.get("screen").height-50,
       justifyContent: "flex-start",
       alignItems: "center",
-      backgroundColor: "white",
       borderTopLeftRadius: 15,
       borderTopRightRadius: 15,
       paddingHorizontal: 20,
