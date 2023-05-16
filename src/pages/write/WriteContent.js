@@ -28,7 +28,7 @@ import {
 	Firestore,
 } from "firebase/firestore";
 import ModeColorStyle from "../../globalStyle/ModeColorStyle";
-import { COLOR_BLACK, COLOR_DARK_RED, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_RED, COLOR_LIGHT_THIRD } from "../../globalStyle/color";
+import { COLOR_BLACK, COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY, COLOR_LIGHT_THIRD } from "../../globalStyle/color";
 import HeaderText from "../../components/Header";
 
 const WriteContent = ({ navigation, route }) => {
@@ -291,6 +291,7 @@ const WriteContent = ({ navigation, route }) => {
 							value={dContent}
 							placeholder="음성 인식 기능(녹음시작)을 활용하거나 직접 입력하여 일기를 기록해 보세요! 
             여러분의 이야기를 기록해드릴게요. 오늘은 어떤 하루였나요? :)"
+            placeholderTextColor={isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY}
 							editable
 							multiline
 							maxLength={textLength(premium)} // 프리미엄 회원이 맞으면 true, 아니면 false
@@ -413,6 +414,7 @@ const headerStyle = StyleSheet.create({
 		flexWrap: "nowrap",
 	},
 	subjectBox: {
+    boxSizing:'border-box',
 		backgroundColor: "#4E4981",
 		paddingHorizontal: 15,
 		paddingVertical: 10,
