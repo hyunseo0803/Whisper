@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import {View, StyleSheet, Modal, Pressable, useColorScheme, Text} from 'react-native';
+import {View, Modal, Pressable, useColorScheme, Text} from 'react-native';
 import { COLOR_BLACK, COLOR_DARK_BLUE, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_RED, COLOR_DARK_WHITE, COLOR_LIGHT_BLUE, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY, COLOR_WHITE,
 COLOR_DARK_SECONDARY } from '../../globalStyle/color';
 import { modalS } from './YMPicker';
 import {Calendar} from 'react-native-calendars';
-import ModeColorStyle from '../../globalStyle/ModeColorStyle';
-import GlobalStyle from '../../globalStyle/GlobalStyle';
 
 /**
  * Datepicker 컴포넌트
@@ -30,12 +28,17 @@ const DatePicker = (props) => {
     props.setVisible(false)
   }
 
-  const disableMark = (selected) => {
+  /**
+   * 마킹될 날짜들 객체 생성
+   * @param {day} selected 
+   * @returns 선택된날짜 & 선택불가능한 날짜
+   */
+  const markingDates = (selected) => {
     let marking = {};
     (props.disabledDate).forEach(element => {
-      marking[`${element}`] = {disabled:true, disableTouchEvent:true}
+      marking[`${element}`] = {disabled:true, disableTouchEvent:true} // 이미 일기가 있는 날 disabled설정
     });
-    marking[`${selected}`] = {selected: true, disableTouchEvent: true}
+    marking[`${selected}`] = {selected: true, disableTouchEvent: true}  // 선택한 일기 마킹
     return marking
   }
 
@@ -56,28 +59,24 @@ const DatePicker = (props) => {
         ]}>
           {/* 달력 */}
           <Calendar
-            onDayPress={day => setSelected(day.dateString)}
-            markedDates={disableMark(selected)
-              // { 
-              //   [selected]: {selected: true, disableTouchEvent: true},
-              // }
-            }
+            onDayPress={day => setSelected(day.dateString)} // 날짜 onPress 이벤트
+            markedDates={markingDates(selected)}  // 마킹될 날짜들
             maxDate={`${DATE.getFullYear()}-${DATE.getMonth()+1}-${DATE.getDate()-1}`}  // 선택가능한 최대 날짜(오늘)
             theme={{
-              calendarBackground: 'rgba(0,0,0,0)',
-              textSectionTitleColor: isDark?COLOR_DARK_PRIMARY:COLOR_LIGHT_SECONDARY,   // 요일
-              selectedDayTextColor: '#ffffff',
-              selectedDayBackgroundColor: isDark?COLOR_DARK_RED:COLOR_LIGHT_RED,
-              dayTextColor:isDark?COLOR_DARK_WHITE:COLOR_BLACK,
-              textDisabledColor:isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY,
-              todayTextColor: isDark?COLOR_DARK_RED:COLOR_LIGHT_RED,
+              calendarBackground: 'rgba(0,0,0,0)',                                      // 달력 배경(투명으로 설정)
+              textSectionTitleColor: isDark?COLOR_DARK_PRIMARY:COLOR_LIGHT_SECONDARY,   // 요일 글자색
+              selectedDayTextColor: '#ffffff',                                          // 선택된 날짜의 글자색
+              selectedDayBackgroundColor: isDark?COLOR_DARK_RED:COLOR_LIGHT_RED,        // 선택된 날짜의 배경색
+              dayTextColor:isDark?COLOR_DARK_WHITE:COLOR_BLACK,                         // 선택되지 않은 날짜의 글자색
+              textDisabledColor:isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY,      // 선택 불가능한 날짜색
+              todayTextColor: isDark?COLOR_DARK_RED:COLOR_LIGHT_RED,                    // 오늘 날짜의 글자색
               monthTextColor: isDark?COLOR_DARK_WHITE:COLOR_LIGHT_BLUE,
               textDayFontFamily: 'Diary',
               textMonthFontSize: 16,
               textDayFontSize: 15,
               textDayHeaderFontSize: 10,
               textMonthFontFamily: 'Diary',
-              arrowColor: isDark?COLOR_DARK_BLUE:COLOR_LIGHT_BLUE,
+              arrowColor: isDark?COLOR_DARK_BLUE:COLOR_LIGHT_BLUE,                      // 화살표 색
             }}
           />
         </View>
