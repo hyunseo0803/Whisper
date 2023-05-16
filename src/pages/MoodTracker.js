@@ -156,8 +156,8 @@ const MoodTracker = ({navigation}) => {
         {/* 무드 트레커 VIEW */}
         <View style={styles.moodTrackerContainer}>
         {
-          moodArr.map((el) => (
-            <View style={moodTrackerStyle.mainWrap}>
+          moodArr.map((el, index) => (
+            <View style={moodTrackerStyle.mainWrap} key={index}>
               <View style={moodTrackerStyle.emojiWrap}>
                 <Image source={MoodWeatherFile(el)} style={moodTrackerStyle.emojiStyle}/>
                 <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>{moodEngToKr(el)}</Text>
