@@ -112,7 +112,7 @@ function Body(props) {
                     onPress={() => {
                       if(day !== ''){
                         // 날짜에 이미지가 있음
-                        if(FindImg(day) !== undefined){
+                        if(FindImg(day) !== undefined && FindImg(day) !== ''){
                           setModalImg(FindImg(day))
                           setShowPhotoModal(true)
                           setModalDay(day)

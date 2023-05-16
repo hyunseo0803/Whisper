@@ -65,7 +65,6 @@ const DiaryView = (props) => {
     Alert.alert("음성녹음 기능 추가 바람")
   }
 
-
   return (
     <View style={[styles.mainWrap, (props.isDark ? '' : styles.shadow), {backgroundColor : props.isDark ? COLOR_DARK_FOURTH : '#fff'}]}>
       <Text style={[{marginBottom: 5}, GlobalStyle.font_caption2, ModeColorStyle(props.isDark).font_DEFALUT]}>{props.date}</Text>
@@ -84,7 +83,7 @@ const DiaryView = (props) => {
       </View>
       {
         // 이미지가 없으면 자리차지 없도록 설정
-        props.img !== undefined &&
+        props.img !== '' &&
         (<View style={styles.imgWrap}>
           <Image source={imgUrl} style={styles.imgBox}/>
         </View>)
