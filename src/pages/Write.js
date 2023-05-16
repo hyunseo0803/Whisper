@@ -35,6 +35,7 @@ import { changeNumberTwoLength } from "../util/Calender";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
 import { COLOR_BLACK, COLOR_DARK_PRIMARY, COLOR_DARK_WHITE, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_SECONDARY, COLOR_LIGHT_THIRD } from "../globalStyle/color";
 import { getDiaryDate } from "../util/firebase/CRUD";
+import HeaderText from "../components/Header";
 
 const Write = ({ navigation }) => {
   const isDark = useColorScheme() === 'dark'
@@ -96,14 +97,12 @@ const Write = ({ navigation }) => {
 			style={[GlobalStyle.safeAreaWrap, {alignItems:'center', justifyContent:'center'}]}>
 			<View style={styles.container}>
 				<View className="writeDiary">
-					<Text style={[styles.writeDiaryText, GlobalStyle.font_caption2, ModeColorStyle(isDark).font_DEFALUT]}>
-						Write Diary
-					</Text>
+					<HeaderText headerText='WriteDiary'/>
 				</View>
 
         {/* datepicker */}
         <Pressable
-        style={[{display:'flex', flexDirection:'row', marginTop: 40, alignItems:'center', justifyContent:'center'}]}
+        style={[{display:'flex', flexDirection:'row', marginTop: 20, alignItems:'center', justifyContent:'center'}]}
         onPress={() => setDatepickerShow(true)}>
           <Text style={[, ModeColorStyle(isDark).font_DEFALUT,
           selectedDate===''?({color:isDark?COLOR_DARK_PRIMARY:COLOR_LIGHT_PRIMARY, fontSize:16, fontFamily:'Diary'}):(GlobalStyle.font_title1)]}>

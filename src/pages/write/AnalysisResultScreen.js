@@ -22,6 +22,7 @@ import surprised from "../../../assets/images/mood/surprised.png";
 import { setupURLPolyfill } from "react-native-url-polyfill";
 import { loading } from "../../../assets/images/opener-loading.gif";
 import { Openai_Api_KEY } from "@env";
+import HeaderText from "../../components/Header";
 
 setupURLPolyfill();
 
@@ -164,7 +165,7 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 				{isLoding ? (
 					<View style={styles.result}>
 						<View style={styles.container}>
-							<Text style={GlobalStyle.font_caption1}>Write Diary</Text>
+							<HeaderText headerText='Wirte Diary' />
 						</View>
 						<Text style={styles.title}>나의 감정 분석 결과</Text>
 						{

@@ -29,6 +29,7 @@ import {
 } from "firebase/firestore";
 import ModeColorStyle from "../../globalStyle/ModeColorStyle";
 import { COLOR_BLACK, COLOR_DARK_RED, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_RED, COLOR_LIGHT_THIRD } from "../../globalStyle/color";
+import HeaderText from "../../components/Header";
 
 const WriteContent = ({ navigation, route }) => {
 	const isDark = useColorScheme() === 'dark'
@@ -220,7 +221,9 @@ const WriteContent = ({ navigation, route }) => {
 						>
 							<Ionicons name="arrow-back-outline" size={40} color={isDark ? COLOR_DARK_WHITE : COLOR_BLACK} />
 						</Pressable>
-						<Text style={[GlobalStyle.font_caption2, ModeColorStyle(isDark).font_DEFALUT]}>Write Diary</Text>
+            <View style={{marginTop:20}}>
+							<HeaderText headerText='Write Diary'/>
+            </View>
 						<Pressable
 							onPress={() =>
 								Alert.alert(

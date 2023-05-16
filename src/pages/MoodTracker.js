@@ -15,6 +15,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { btnGoWriteScreen } from "../globalStyle/BtnStyle";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
 import { useIsFocused } from "@react-navigation/native";
+import HeaderText from "../components/Header";
 
 
 const MoodTracker = ({navigation}) => {
@@ -78,6 +79,7 @@ const MoodTracker = ({navigation}) => {
     "fear",            // 두려움
     "expressionless",  // 무표정
   ]
+
   /**
    * 영어로된 감정을 한글로 바꿔주는 함수
    * @param {string} moodEng 
@@ -102,6 +104,30 @@ const MoodTracker = ({navigation}) => {
     }
   }
 
+    /**
+   * 이미지의 로컬 경로를 리턴하는 함수
+   * @param {string} moodWeather 
+   * @returns require(url)
+   */
+  const MoodWeatherFile = (moodWeather) => {
+    switch (moodWeather) {
+      case 'sunny': return require('../../assets/images/weather/sunny.png')
+      case 'littleCloud': return require('../../assets/images/weather/littleCloud.png')
+      case 'cloudy': return require('../../assets/images/weather/cloudy.png')
+      case 'lightning': return require('../../assets/images/weather/lightning.png')
+      case 'rain': return require('../../assets/images/weather/rain.png')
+      case 'snow': return require('../../assets/images/weather/snow.png')
+      case 'sunny': return require('../../assets/images/weather/sunny.png')
+      case 'angry': return require('../../assets/images/mood/angry.png')
+      case 'disgust': return require('../../assets/images/mood/disgust.png')
+      case 'expressionless': return require('../../assets/images/mood/expressionless.png')
+      case 'fear': return require('../../assets/images/mood/fear.png')
+      case 'happy': return require('../../assets/images/mood/happy.png')
+      case 'sad': return require('../../assets/images/mood/sad.png')
+      case 'surprised': return require('../../assets/images/mood/surprised.png')
+    }
+  }
+
   /**
    * 무드트레커 정보 받아와서 useState로 관리
    */
@@ -114,7 +140,7 @@ const MoodTracker = ({navigation}) => {
 
   return (
       <SafeAreaView  style={styles.container}>
-        <Text style={[styles.headText, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_DEFALUT]}>MoodTracker</Text>
+        <HeaderText headerText='MoodTracker'/>
 
         {/* 상단  날짜 이동 View*/}
         <Header
@@ -129,56 +155,18 @@ const MoodTracker = ({navigation}) => {
 
         {/* 무드 트레커 VIEW */}
         <View style={styles.moodTrackerContainer}>
-          {/* TODO: 시간 날 때 간단하게 합칠 수 있는 방법 찾아볼 것 */}
-          <View style={moodTrackerStyle.mainWrap}>
-            <View style={moodTrackerStyle.emojiWrap}>
-              <Image source={happy} style={moodTrackerStyle.emojiStyle}/>
-              <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>기쁨</Text>
+        {
+          moodArr.map((el) => (
+            <View style={moodTrackerStyle.mainWrap}>
+              <View style={moodTrackerStyle.emojiWrap}>
+                <Image source={MoodWeatherFile(el)} style={moodTrackerStyle.emojiStyle}/>
+                <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>{moodEngToKr(el)}</Text>
+              </View>
+              
+              <MoodBar count={moodValues[`${el}`]} isDark={isDark}/>
             </View>
-            <MoodBar count={moodValues.happy} isDark={isDark}/>
-          </View>
-          <View style={moodTrackerStyle.mainWrap}>
-            <View style={moodTrackerStyle.emojiWrap}>
-              <Image source={disgust} style={moodTrackerStyle.emojiStyle}/>
-              <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>혐오</Text>
-            </View>
-            <MoodBar count={moodValues.disgust} isDark={isDark}/>
-          </View>
-          <View style={moodTrackerStyle.mainWrap}>
-            <View style={moodTrackerStyle.emojiWrap}>
-              <Image source={surprised} style={moodTrackerStyle.emojiStyle}/>
-              <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>놀람</Text>
-            </View>
-            <MoodBar count={moodValues.surprised} isDark={isDark}/>
-          </View>
-          <View style={moodTrackerStyle.mainWrap}>
-            <View style={moodTrackerStyle.emojiWrap}>
-              <Image source={angry} style={moodTrackerStyle.emojiStyle}/>
-              <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>화남</Text>
-            </View>
-            <MoodBar count={moodValues.angry} isDark={isDark}/>
-          </View>
-          <View style={moodTrackerStyle.mainWrap}>
-            <View style={moodTrackerStyle.emojiWrap}>
-              <Image source={sad} style={moodTrackerStyle.emojiStyle}/>
-              <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>슬픔</Text>
-            </View>
-            <MoodBar count={moodValues.sad} isDark={isDark}/>
-          </View>
-          <View style={moodTrackerStyle.mainWrap}>
-            <View style={moodTrackerStyle.emojiWrap}>
-              <Image source={fear} style={moodTrackerStyle.emojiStyle}/>
-              <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>두려움</Text>
-            </View>
-            <MoodBar count={moodValues.fear} isDark={isDark}/>
-          </View>
-          <View style={moodTrackerStyle.mainWrap}>
-            <View style={moodTrackerStyle.emojiWrap}>
-              <Image source={expressionless} style={moodTrackerStyle.emojiStyle}/>
-              <Text style={[moodTrackerStyle.moodText, GlobalStyle.font_caption1]}>무표정</Text>
-            </View>
-            <MoodBar count={moodValues.expressionless} isDark={isDark}/>
-          </View>
+          ))
+        }
         </View>
 
         {/* 일기쓰러가기 버튼 */}

@@ -10,6 +10,7 @@ import DateRangePicker from "../components/datePicker/DateRangePicker";
 import { getSearchDiary } from "../util/firebase/CRUD";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
 import { COLOR_BLACK, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_SECONDARY, COLOR_LIGHT_THIRD, COLOR_WHITE } from "../globalStyle/color";
+import HeaderText from "../components/Header";
 
 const Search = ({navigation}) => {
   // const router = useRouter();
@@ -81,7 +82,7 @@ const Search = ({navigation}) => {
         style={styles.flexCenter}
         onPress={() => {Keyboard.dismiss()}}
       >
-        <Text style={[{marginBottom: 40}, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_DEFALUT]}>Search</Text>
+        <HeaderText headerText='search'/>
 
         <View style={[styles.searchWrap, {backgroundColor : (isDark ? COLOR_DARK_FOURTH : COLOR_WHITE)}]}>
           <View style={[styles.text_input_Box, {marginTop:0}, borderBottom(isDark)]}>
@@ -172,6 +173,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 10,
 
+    marginTop: 20,
     boxSizing: 'borderBox',
     paddingHorizontal: 17,
     paddingVertical: 22,
