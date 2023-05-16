@@ -9,9 +9,11 @@ import DiaryView from "../components/DiaryView";
 import SortModal from "../components/SortModal";
 import { COLOR_BLACK, COLOR_DARK_BG, COLOR_DARK_PRIMARY, COLOR_DARK_WHITE, COLOR_LIGHT_BG, COLOR_LIGHT_PRIMARY } from "../globalStyle/color";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
+import { useIsFocused } from "@react-navigation/native";
 
 const List = () => {
   const isDark = useColorScheme() === 'dark'
+  const isFocused = useIsFocused()
 
   const DATE = new Date();
   const YEAR = DATE.getFullYear();
@@ -33,8 +35,10 @@ const List = () => {
       setDiaryList(result)
     } 
     getDiaryListFun()
-    setRedirect(false)
-  }, [month, year, redirect, howSortDiary])
+    if(redirect){
+      setRedirect(false)
+    }
+  }, [month, year, redirect, howSortDiary, isFocused])
 
   /**
    * 화면 모드에 따라 primary 색으로 변경

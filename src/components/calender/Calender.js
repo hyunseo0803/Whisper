@@ -3,11 +3,11 @@ import { View, Text, StyleSheet, useColorScheme } from 'react-native';
 import Header from './Header'
 import Body from './Body'
 import { getCalenderData } from '../../util/firebase/CRUD';
-import { DarkTheme, DefaultTheme } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, useIsFocused } from '@react-navigation/native';
 
 function Calender() {
 	const isDark = useColorScheme() === 'dark'
-
+  const isFocused = useIsFocused()
 
   const DATE = new Date();
   const YEAR = DATE.getFullYear();
@@ -51,7 +51,7 @@ function Calender() {
       setDdata(result)
     }
     getCalenderDataFun(month, year)
-  }, [month, year]);
+  }, [month, year, isFocused]);
 
   return(
     <View style={S.calenderContainer} theme={isDark ? DarkTheme : DefaultTheme}>

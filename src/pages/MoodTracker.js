@@ -14,10 +14,12 @@ import expressionless from '../../assets/images/mood/expressionless.png';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { btnGoWriteScreen } from "../globalStyle/BtnStyle";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
+import { useIsFocused } from "@react-navigation/native";
 
 
 const MoodTracker = ({navigation}) => {
   const isDark = useColorScheme() === 'dark'
+  const isFocused = useIsFocused()
 
   const DATE = new Date();
   const YEAR = DATE.getFullYear();
@@ -108,7 +110,7 @@ const MoodTracker = ({navigation}) => {
       const countMoodData = await getMoodData(mood, year, month);
         setMoodValues((prevState) => {return{...prevState, [mood] : countMoodData}})
     });
-  }, [month, year])
+  }, [month, year, isFocused])
 
   return (
       <SafeAreaView  style={styles.container}>
