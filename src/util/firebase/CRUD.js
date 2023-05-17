@@ -30,10 +30,12 @@ export const getCalenderData = async(month, year) => {
       const imgdate = (day*1)
       // 이미지
       const imgUrl = doc.data().image;
+      const content = doc.data().content;
 
       const imageCalenderData = {
         date : imgdate,
-        imgUrl : imgUrl
+        imgUrl : imgUrl,
+        content: content
       }
       d_data.push(imageCalenderData)
     });

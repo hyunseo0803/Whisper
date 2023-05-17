@@ -11,6 +11,7 @@ function Body(props) {
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [modalImg, setModalImg] = useState('');
   const [modalDay, setModalDay] = useState();
+  const [modalContent, setModalContent] = useState('');
   const DATA = props.data;
 
   /**
@@ -83,6 +84,16 @@ function Body(props) {
     let img = DATA.find(data => data.date === day)
     return img?.imgUrl
   }
+  
+  /**
+   * 해당 날짜의 일기 내용을 찾아주는 함수
+   * @param {int} day 
+   * @returns {string}content
+   */
+  const FindContent = (day) => {
+    let content = DATA.find(data => data.date === day)
+    return content?.content
+  }
 
   // 요일 날짜 배열
   const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
@@ -114,8 +125,9 @@ function Body(props) {
                         // 날짜에 이미지가 있음
                         if(FindImg(day) !== undefined && FindImg(day) !== ''){
                           setModalImg(FindImg(day))
-                          setShowPhotoModal(true)
                           setModalDay(day)
+                          setModalContent(FindContent(day))
+                          setShowPhotoModal(true)
                         }
                       }}
                     }>
@@ -147,6 +159,7 @@ function Body(props) {
         month={props.month}
         year = {props.year}
         day={modalDay}
+        content={modalContent}
         />
       }
     </View>
