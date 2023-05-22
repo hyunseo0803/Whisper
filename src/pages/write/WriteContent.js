@@ -23,6 +23,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import * as Speech from "expo-speech";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
 	getFirestore,
@@ -54,6 +55,7 @@ const WriteContent = ({ navigation, route }) => {
 	const [recordingUri, setRecordingUri] = useState("");
 	const [permissionResponse, requestPermission] = Audio.usePermissions();
 	const [sound, setSound] = React.useState();
+	const [audioData, setAudioData] = React.useState({});
 	let [results, setResults] = useState([]);
 
 	// TODO to 현서 : 프리미엄 회원 구분해주세요
@@ -129,10 +131,30 @@ const WriteContent = ({ navigation, route }) => {
 	/**
 	 * 음성 녹음 / stt 관련 함수
 	 */
-	// useEffect(() => {
-	// 	const checkspeech = Speech.isSpeakingAsync();
-	// 	setIsRecording(checkspeech);
-	// }, []);
+	const recordingOptions = {
+		android: {
+			extension: ".m4a",
+			outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
+			audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
+			sampleRate: 44100,
+			numberOfChannels: 2,
+			bitRate: 128000,
+		},
+		ios: {
+			extension: ".wav",
+			audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_HIGH,
+			sampleRate: 44100,
+			numberOfChannels: 1,
+			bitRate: 128000,
+			linearPCMBitDepth: 16,
+			linearPCMIsBigEndian: false,
+			linearPCMIsFloat: false,
+		},
+	};
+
+	React.useEffect(() => {
+		getData();
+	}, []);
 
 	const stopRecording = async () => {
 		console.log("Stopping recording..");
@@ -142,11 +164,16 @@ const WriteContent = ({ navigation, route }) => {
 		setRecording(undefined);
 		// if (recording) {
 		await recording.stopAndUnloadAsync();
-		await Audio.setAudioModeAsync({
-			allowsRecordingIOS: false,
-		});
-		const uri = recording.getURI();
-		console.log("Recording stopped and stored at", uri);
+		const { sound, status } = await recording.createNewLoadedSoundAsync();
+
+		const audio = {
+			sound: sound,
+			file: recording.getURI(),
+			status: status,
+		};
+
+		//스토리지 저장
+		await AsyncStorage.setItem("audio", JSON.stringify(audio));
 		const result = "녹음 완료 ";
 		setResults(result);
 		// setRecording(undefined);
@@ -203,28 +230,23 @@ const WriteContent = ({ navigation, route }) => {
 	/**
 	 * 녹음 재생
 	 */
-	async function playSound() {
-		console.log("Loading Sound");
-		await Audio.requestPermissionsAsync();
-		await Audio.setAudioModeAsync({
-			allowsRecordingIOS: true,
-			playsInSilentModeIOS: true,
-		});
-		const { sound } = await Audio.Sound.createAsync({ uri: recordingUri });
-		setSound(sound);
+	const getData = async () => {
+		try {
+			const audio = await AsyncStorage.getItem("audio");
+			if (audio) {
+				setAudioData(JSON.parse(audio));
+			}
+		} catch (e) {
+			console.log(e);
+		}
+	};
 
+	const playAudio = async () => {
+		const sound = new Audio.Sound();
+		await sound.loadAsync({ uri: audioData.file, shouldPlay: true });
 		console.log("Playing Sound");
 		await sound.playAsync();
-	}
-
-	useEffect(() => {
-		return sound
-			? () => {
-					console.log("Unloading Sound");
-					sound.unloadAsync();
-			  }
-			: undefined;
-	}, [sound]);
+	};
 
 	/**
 	 * 프리미엄 유저인지 확인해서 글자 최대값 리턴
@@ -385,7 +407,7 @@ const WriteContent = ({ navigation, route }) => {
 							{/* <Ionicons name="mic-circle" size={45} color="#E76B5C"></Ionicons> */}
 						</Pressable>
 						{recordingUri ? <Text>Recording URI: {recordingUri}</Text> : null}
-						<Pressable onPress={playSound}>
+						<Pressable onPress={playAudio}>
 							<Text>녹음 내용 다시듣기</Text>
 						</Pressable>
 						{/* 본문 textInput */}
