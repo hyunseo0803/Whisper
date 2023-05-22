@@ -20,6 +20,10 @@ import btnAddImg from "../../../assets/images/btnAddImg.png";
 import { auth, db } from "../../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import * as ImagePicker from "expo-image-picker";
+import { Audio } from "expo-av";
+import * as FileSystem from "expo-file-system";
+import * as Speech from "expo-speech";
+
 import {
 	getFirestore,
 	collection,
@@ -43,6 +47,14 @@ const WriteContent = ({ navigation, route }) => {
 	const [u_id, setU_id] = useState("");
 	const [selectedImage, setSelectedImage] = useState("");
 	// const user = auth.currentUser;
+
+	const [isRecording, setIsRecording] = useState(false);
+	// const [recognizedText, setRecognizedText] = useState("");
+	const [recording, setRecording] = React.useState();
+	const [recordingUri, setRecordingUri] = useState("");
+	const [permissionResponse, requestPermission] = Audio.usePermissions();
+	const [sound, setSound] = React.useState();
+	let [results, setResults] = useState([]);
 
 	// TODO to 현서 : 프리미엄 회원 구분해주세요
 	const premium = false; // 프리미엄 회원 임시
@@ -117,9 +129,102 @@ const WriteContent = ({ navigation, route }) => {
 	/**
 	 * 음성 녹음 / stt 관련 함수
 	 */
-	const voiceRecording = async () => {
-		alert("음성 녹음 기능을 넣어주세요");
+	// useEffect(() => {
+	// 	const checkspeech = Speech.isSpeakingAsync();
+	// 	setIsRecording(checkspeech);
+	// }, []);
+
+	const stopRecording = async () => {
+		console.log("Stopping recording..");
+		// await SpeechToText.stopSpeech();
+		// Speech.stop();
+		setIsRecording(false);
+		setRecording(undefined);
+		// if (recording) {
+		await recording.stopAndUnloadAsync();
+		await Audio.setAudioModeAsync({
+			allowsRecordingIOS: false,
+		});
+		const uri = recording.getURI();
+		console.log("Recording stopped and stored at", uri);
+		const result = "녹음 완료 ";
+		setResults(result);
+		// setRecording(undefined);
+		// }
 	};
+
+	const startRecording = async () => {
+		setIsRecording(true);
+		try {
+			console.log("Requesting permissions..");
+			await Audio.requestPermissionsAsync();
+			await Audio.setAudioModeAsync({
+				allowsRecordingIOS: true,
+				playsInSilentModeIOS: true,
+			});
+
+			console.log("Starting recording..");
+			const { recording } = await Audio.Recording.createAsync(
+				Audio.RecordingOptionsPresets.HIGH_QUALITY
+			);
+			setRecording(recording);
+			console.log("Recording started");
+			// await recoding.startAsync();
+			// setIsRecording(true);
+			// const initialText = "음성 인식을 시작합니다";
+			// Speech.speak(initialText, {
+			// 	language: "ko",
+			// 	pitch: 1,
+			// 	rate: 1,
+			// });
+		} catch (error) {
+			console.error("음성 인식 및 녹음을 시작할 수 없습니다:", error);
+		}
+	};
+
+	// useEffect(() => {
+	// 	const recognitionListener = Speech.getAvailableVoicesAsync(
+	// 		({ error, results }) => {
+	// 			if (error) {
+	// 				console.error("음성 인식 중 오류 발생:", error);
+	// 				return;
+	// 			}
+
+	// 			const [text] = results;
+	// 			setDContent(text);
+	// 		}
+	// 	);
+
+	// 	return () => {
+	// 		recognitionListener.remove();
+	// 	};
+	// }, []);
+
+	/**
+	 * 녹음 재생
+	 */
+	async function playSound() {
+		console.log("Loading Sound");
+		await Audio.requestPermissionsAsync();
+		await Audio.setAudioModeAsync({
+			allowsRecordingIOS: true,
+			playsInSilentModeIOS: true,
+		});
+		const { sound } = await Audio.Sound.createAsync({ uri: recordingUri });
+		setSound(sound);
+
+		console.log("Playing Sound");
+		await sound.playAsync();
+	}
+
+	useEffect(() => {
+		return sound
+			? () => {
+					console.log("Unloading Sound");
+					sound.unloadAsync();
+			  }
+			: undefined;
+	}, [sound]);
 
 	/**
 	 * 프리미엄 유저인지 확인해서 글자 최대값 리턴
@@ -274,14 +379,20 @@ const WriteContent = ({ navigation, route }) => {
 						{/* 음성녹음 버튼 */}
 						<Pressable
 							style={BodyStyle.btnMic}
-							onPress={() => voiceRecording()}
+							onPress={() => (recording ? stopRecording() : startRecording())}
 						>
-							<Ionicons name="mic-circle" size={45} color="#E76B5C"></Ionicons>
+							<Text>{recording ? "Stop Recording" : "Start Recording"} </Text>
+							{/* <Ionicons name="mic-circle" size={45} color="#E76B5C"></Ionicons> */}
+						</Pressable>
+						{recordingUri ? <Text>Recording URI: {recordingUri}</Text> : null}
+						<Pressable onPress={playSound}>
+							<Text>녹음 내용 다시듣기</Text>
 						</Pressable>
 						{/* 본문 textInput */}
+
 						<TextInput
 							onChangeText={(text) => setDContent(text)}
-							value={dContent}
+							value={isRecording ? results + dContent : dContent}
 							placeholder="음성 인식 기능(녹음시작)을 활용하거나 직접 입력하여 일기를 기록해 보세요! 
             여러분의 이야기를 기록해드릴게요. 오늘은 어떤 하루였나요? :)"
 							editable
