@@ -63,7 +63,7 @@ function Body(props) {
    * @param {int} day 
    * @returns true,false
    */
-  const isDiary = (day) => {
+  const haveDiary = (day) => {
     let datas = DATA.find(data => data.date === day)
     if(datas?.title === '' || datas?.title === undefined) {
       return false
@@ -77,16 +77,9 @@ function Body(props) {
    * 해당 날짜의 modal values find
    * @param {int} day 
    */
-  const FindModalIn = (day) => {
+  const findModalValue = (day) => {
     let datas = DATA.find(data => data.date === day)
-    
-    if(datas?.title === '' || datas?.title === undefined) {
-      return false
-    }
-    else{
-      setModalValue({...ModalValue, day:day, imguri:datas?.imgUrl, title:datas?.title, content:datas?.content})
-      return true
-    }
+    setModalValue({...ModalValue, day:day, imguri:datas?.imgUrl, title:datas?.title, content:datas?.content})
   }
 
   // 요일 날짜 배열
@@ -122,7 +115,8 @@ function Body(props) {
                     key={index}
                     onPress={() => {
                       if(day !== ''){
-                        if(FindModalIn(day)){
+                        if(haveDiary(day)){
+                          findModalValue(day)
                           setShowPhotoModal(true)
                         }
                         else{
@@ -132,7 +126,7 @@ function Body(props) {
                     }>
                       <ImageBackground 
                       source={{url: FindImg(day) === undefined ? "" : FindImg(day)}}
-                      style={[{width: "100%", height: "100%" }, day===''? {opacity:0} : {opacity: 0.6}, {backgroundColor: isDiary(day) ? isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY : isDark ? COLOR_DARK_THIRD : COLOR_LIGHT_THIRD}]}
+                      style={[{width: "100%", height: "100%" }, day===''? {opacity:0} : {opacity: 0.6}, {backgroundColor: haveDiary(day) ? isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY : isDark ? COLOR_DARK_THIRD : COLOR_LIGHT_THIRD}]}
                       />
                       <Text 
                       style={[dayS(index, isDark).dayOfWeek, GlobalStyle.font_body, styles.dateText]}
