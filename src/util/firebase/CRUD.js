@@ -31,11 +31,13 @@ export const getCalenderData = async(month, year) => {
       // 이미지
       const imgUrl = doc.data().image;
       const content = doc.data().content;
+      const title = doc.data().title;
 
       const imageCalenderData = {
         date : imgdate,
         imgUrl : imgUrl,
-        content: content
+        content: content,
+        title: title 
       }
       d_data.push(imageCalenderData)
     });

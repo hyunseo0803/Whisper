@@ -1,78 +1,51 @@
-import React, {useEffect, useState} from "react";
-import { View, StyleSheet, Text, Button, Pressable, ImageBackground, useColorScheme } from "react-native";
-import { COLOR_BLACK, COLOR_DARK_BG, COLOR_DARK_BLUE, COLOR_DARK_FIVTH, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_RED, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_BLUE, COLOR_LIGHT_FOURTH, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_RED, COLOR_LIGHT_THIRD } from "../../globalStyle/color";
+import React, {useEffect, useState, useRef} from "react";
+import { View, StyleSheet, Text, Pressable, ImageBackground, useColorScheme, Modal, Alert } from "react-native";
+import { COLOR_BLACK, COLOR_DARK_BLUE, COLOR_DARK_FOURTH, COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_BLUE, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY, COLOR_LIGHT_THIRD } from "../../globalStyle/color";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
-import DailyPhotoScreen from "../../pages/home/DailyPhotoScreen";
+import DailyDiaryScreen from "../../pages/home/DailyDiaryScreen";
+import BottomSheet from 'reanimated-bottom-sheet';
+import { getMonthDays } from "../../util/Calender";
+
 
 function Body(props) {
   const isDark = useColorScheme() === 'dark'
 
+  // props 데이터들
+  const {
+    year,
+    month,
+    data,
+  } = props;
+
+  // modal에 들어가는 values
+  const [ModalValue, setModalValue] = useState({
+    title: '',
+    content: '',
+    day: 0,
+    imguri: '',
+  });
   const [totalDays, setTotalDays] = useState([]);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
-  const [modalImg, setModalImg] = useState('');
-  const [modalDay, setModalDay] = useState();
-  const [modalContent, setModalContent] = useState('');
-  const DATA = props.data;
+  const DATA = data;
 
-  /**
-   * 배열을 일주일 단위로 나누는 함수
-   * @param {array} arr 
-   * @param {int} n 
-   * @returns arr/n
-   */
-  const division = (arr, n) => {
-    const length = arr.length;
-    const divide = Math.floor(length / n) + (Math.floor( length % n ) > 0 ? 1 : 0);
-    const newArray = [];
-  
-    for (let i = 0; i < divide; i++) {
-      // 배열 0부터 n 잘라 새 배열에 넣기
-      newArray.push(arr.splice(0, n)); 
-    }
+  const ModalSheetRef = useRef(null);
+  const renderContent = () => (
+    <DailyDiaryScreen
+      year = {year}
+      month = {month}
+      day = {ModalValue.day}
+      modalImg ={ModalValue.imguri}
+      content = {ModalValue.content}
+      title = {ModalValue.title}
+      isDark ={isDark}
+    />
+  );
 
-    if(newArray[newArray.length - 1].length !== 7){
-      while (newArray[newArray.length - 1].length !== 7) {
-        newArray[newArray.length - 1].push("")
-      }
-    }
-  
-    return newArray;
-  }
-
-  /**
-   * 한 달 구하는 함수
-   * @param {int} year 
-   * @param {int} month 
-   */
-  const getMonthDays = (year, month) => {
-    const monthLength = new Date(year, month, 0).getDate()  // 현재 달이 몇일 까지인지
-    const monthStartDay = (new Date(year, month-1, 0).getDay()) +1  // 저번 달이 몇 요일까지인지
-
-    // 저번 달 마지막 날들 배열
-    const lastMonth = Array.from(
-      {length: monthStartDay },
-      (v, i) => '',
-    )
-
-    // 이번달 배열
-    const thisDays = Array.from(
-      { length: monthLength },
-      (v, i) => i + 1,
-    );
-
-    if(lastMonth.toString() === ['', '', '', '', '', '', ''].toString()){
-      setTotalDays(division(thisDays, 7))
-    }
-    else{
-      calenderDate = lastMonth.concat(thisDays)
-      setTotalDays(division(calenderDate, 7))
-    }
-  }
 
   // 연, 월 이 바뀔 때마다 한 번씩만 실행
   useEffect(() => {
-    getMonthDays(props.year, props.month)
-  }, [props.year, props.month])
+    setTotalDays(getMonthDays(year, month))
+  }, [year, month])
 
 
   /**
@@ -84,19 +57,46 @@ function Body(props) {
     let img = DATA.find(data => data.date === day)
     return img?.imgUrl
   }
+
+  /**
+   * 해당 날짜에 일기가 있는지 검색
+   * @param {int} day 
+   * @returns true,false
+   */
+  const isDiary = (day) => {
+    let datas = DATA.find(data => data.date === day)
+    if(datas?.title === '' || datas?.title === undefined) {
+      return false
+    }
+    else{
+      return true
+    }
+  }
   
   /**
-   * 해당 날짜의 일기 내용을 찾아주는 함수
+   * 해당 날짜의 modal values find
    * @param {int} day 
-   * @returns {string}content
    */
-  const FindContent = (day) => {
-    let content = DATA.find(data => data.date === day)
-    return content?.content
+  const FindModalIn = (day) => {
+    let datas = DATA.find(data => data.date === day)
+    
+    if(datas?.title === '' || datas?.title === undefined) {
+      return false
+    }
+    else{
+      setModalValue({...ModalValue, day:day, imguri:datas?.imgUrl, title:datas?.title, content:datas?.content})
+      return true
+    }
   }
 
   // 요일 날짜 배열
   const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
+
+  useEffect(() => {
+    if(showPhotoModal) {
+      ModalSheetRef.current.snapTo(0)
+    }
+  }, [showPhotoModal])
 
   return(
     <View style={styles.container}>
@@ -122,18 +122,17 @@ function Body(props) {
                     key={index}
                     onPress={() => {
                       if(day !== ''){
-                        // 날짜에 이미지가 있음
-                        if(FindImg(day) !== undefined && FindImg(day) !== ''){
-                          setModalImg(FindImg(day))
-                          setModalDay(day)
-                          setModalContent(FindContent(day))
+                        if(FindModalIn(day)){
                           setShowPhotoModal(true)
+                        }
+                        else{
+                          Alert.alert('일기가 없습니다!', `${day}일의 일기가 없습니다. 일기를 작성하고 조회해보세요!`)
                         }
                       }}
                     }>
                       <ImageBackground 
                       source={{url: FindImg(day) === undefined ? "" : FindImg(day)}}
-                      style={[{width: "100%", height: "100%" }, day===''? {opacity:0} : {opacity: 0.6}, {backgroundColor: isDark ? COLOR_DARK_THIRD : COLOR_LIGHT_THIRD}]}
+                      style={[{width: "100%", height: "100%" }, day===''? {opacity:0} : {opacity: 0.6}, {backgroundColor: isDiary(day) ? isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY : isDark ? COLOR_DARK_THIRD : COLOR_LIGHT_THIRD}]}
                       />
                       <Text 
                       style={[dayS(index, isDark).dayOfWeek, GlobalStyle.font_body, styles.dateText]}
@@ -143,24 +142,32 @@ function Body(props) {
               }
               
             </View>
-            
           ))
         }
       </View>
 
       {/* 오늘의 사진 모달창 */}
       {
-        showPhotoModal &&
-        <DailyPhotoScreen
-        showPhotoModal={showPhotoModal}
-        setShowPhotoModal={setShowPhotoModal}
+        showPhotoModal&&
+        <Modal
+          visible={showPhotoModal}
+          transparent={true}
+          animationType={'fade'}
+          style={{flex:1}}
+        >
+          <View
+          style={{flex:1, backgroundColor:"rgba(0,0,0,0.5)", justifyContent:'center', alignItems: 'center'}}
+          >
+          <BottomSheet
+            ref={ModalSheetRef}
+            snapPoints={['95%','0%']}
+            borderRadius={20}
+            renderContent={renderContent}
+            onCloseEnd={() => setShowPhotoModal(false)}
+          />
+          </View>
 
-        modalImg={modalImg}
-        month={props.month}
-        year = {props.year}
-        day={modalDay}
-        content={modalContent}
-        />
+        </Modal>
       }
     </View>
   )
@@ -220,4 +227,10 @@ const dayS = (el, isDark) => StyleSheet.create({
     : 
     isDark ? COLOR_DARK_WHITE : COLOR_BLACK,
   },
+})
+
+const dayBackGroundS = (haveDiary, isDark) => StyleSheet.create({
+  background:{
+    backgroundColor: haveDiary ? isDark?COLOR_DARK_THIRD:COLOR_LIGHT_SECONDARY : isDark?COLOR_DARK_FOURTH:COLOR_LIGHT_THIRD
+  }
 })

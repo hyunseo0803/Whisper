@@ -1,4 +1,57 @@
 /**
+* 배열을 일주일 단위(7)로 나누는 함수
+* @param {array} arr 
+* @param {int} n 
+* @returns arr/n
+*/
+const division = (arr, n) => {
+  const length = arr.length;
+  const divide = Math.floor(length / n) + (Math.floor( length % n ) > 0 ? 1 : 0);
+  const newArray = [];
+
+  for (let i = 0; i < divide; i++) {
+    // 배열 0부터 n 잘라 새 배열에 넣기
+    newArray.push(arr.splice(0, n)); 
+  }
+  if(newArray[newArray.length - 1].length !== 7){
+    while (newArray[newArray.length - 1].length !== 7) {
+      newArray[newArray.length - 1].push("")
+    }
+  }
+  return newArray;
+}
+
+/**
+ * 한 달 구하는 함수
+ * @param {int} year 
+ * @param {int} month 
+ */
+export const getMonthDays = (year, month) => {
+  const monthLength = new Date(year, month, 0).getDate()  // 현재 달이 몇일 까지인지
+  const monthStartDay = (new Date(year, month-1, 0).getDay()) +1  // 저번 달이 몇 요일까지인지
+
+  // 저번 달 마지막 날들 배열
+  const lastMonth = Array.from(
+    {length: monthStartDay },
+    (v, i) => '',
+  )
+
+  // 이번달 배열
+  const thisDays = Array.from(
+    { length: monthLength },
+    (v, i) => i + 1,
+  );
+
+  if(lastMonth.toString() === ['', '', '', '', '', '', ''].toString()){
+    return(division(thisDays, 7))
+  }
+  else{
+    calenderDate = lastMonth.concat(thisDays)
+    return(division(calenderDate, 7))
+  }
+}
+
+/**
  * 월(int)을 영어 월 이름으로 바꿔주는 함수
  * @param {int} NMonth 
  * @returns EnglishMonthName
