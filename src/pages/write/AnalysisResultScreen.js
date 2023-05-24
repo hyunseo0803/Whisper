@@ -266,12 +266,10 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 					</View>
 				) : (
 					<View style={styles.result}>
-						<View style={styles.container}>
-							<Image
-								source={require("../../../assets/images/opener-loading.gif")}
-								style={styles.loading}
-							/>
-						</View>
+						<Image
+							source={require("../../../assets/images/opener-loading.gif")}
+							style={styles.loading}
+						/>
 					</View>
 				)}
 			</SafeAreaView>
@@ -284,16 +282,16 @@ const styles = StyleSheet.create({
 		width: "100%",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "yellow",
 	},
-	loading_wrapper: {
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "yellow",
-	},
+	// loading_wrapper: {
+	// 	justifyContent: "center",
+	// 	alignItems: "center",
+	// 	backgroundColor: "yellow",
+	// },
 	loading: {
-		width: 500,
-		height: 500,
+		width: 350,
+		height: 350,
+
 		// backgroundColor: "red",
 	},
 	result: {
