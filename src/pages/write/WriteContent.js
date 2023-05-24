@@ -47,6 +47,7 @@ const WriteContent = ({ navigation, route }) => {
 	const [canSave, setCanSave] = useState("#BDBFC4");
 	const [u_id, setU_id] = useState("");
 	const [selectedImage, setSelectedImage] = useState("");
+	// const [audioId, setAudioId] = useState("");
 	// const user = auth.currentUser;
 
 	const [isRecording, setIsRecording] = useState(false);
@@ -106,7 +107,7 @@ const WriteContent = ({ navigation, route }) => {
 		try {
 			await setDoc(newDiaryRef, data);
 			console.log("성공---------------------!");
-			navigation.navigate("HomeTab");
+			navigation.navigate("HomeTab", { audioData: audioData });
 		} catch (error) {
 			console.log(data);
 			console.error(
@@ -156,6 +157,12 @@ const WriteContent = ({ navigation, route }) => {
 		getData();
 	}, []);
 
+	const generateUniqueId = () => {
+		// 원하는 방식으로 고유 식별 문자열 생성 (예: uuid 라이브러리 사용)
+		// 여기서는 임의의 숫자를 사용한 예시입니다.
+		return Math.random().toString(36).substr(2, 9);
+	};
+
 	const stopRecording = async () => {
 		console.log("Stopping recording..");
 		// await SpeechToText.stopSpeech();
@@ -168,17 +175,19 @@ const WriteContent = ({ navigation, route }) => {
 
 		console.log(recordingUri);
 		const { sound, status } = await recording.createNewLoadedSoundAsync();
-
+		const audioId = generateUniqueId();
 		const audio = {
+			id: audioId,
 			sound: sound,
 			file: recordingUri,
 			status: status,
 		};
 
 		//스토리지 저장
-		await AsyncStorage.setItem("audio", JSON.stringify(audio));
+		await AsyncStorage.setItem(`audio_${audio.id}`, JSON.stringify(audio));
 		const result = "녹음 완료 ";
 		setAudioData(audio);
+		// setAudioId(audioId);
 		setResults(result);
 		// setRecording(undefined);
 		// }
@@ -236,7 +245,7 @@ const WriteContent = ({ navigation, route }) => {
 	 */
 	const getData = async () => {
 		try {
-			const audio = await AsyncStorage.getItem("audio");
+			const audio = await AsyncStorage.getItem(`audio_${audioData.id}`);
 			if (audio) {
 				setAudioData(JSON.parse(audio));
 			}
