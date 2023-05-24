@@ -20,6 +20,11 @@ import btnAddImg from "../../../assets/images/btnAddImg.png";
 import { auth, db } from "../../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import * as ImagePicker from "expo-image-picker";
+import { Audio } from "expo-av";
+import * as FileSystem from "expo-file-system";
+import * as Speech from "expo-speech";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import {
 	getFirestore,
 	collection,
@@ -47,7 +52,17 @@ const WriteContent = ({ navigation, route }) => {
 	const [canSave, setCanSave] = useState(isDark? COLOR_DARK_THIRD : COLOR_LIGHT_THIRD);
 	const [u_id, setU_id] = useState("");
 	const [selectedImage, setSelectedImage] = useState("");
+	// const [audioId, setAudioId] = useState("");
 	// const user = auth.currentUser;
+
+	const [isRecording, setIsRecording] = useState(false);
+	// const [recognizedText, setRecognizedText] = useState("");
+	const [recording, setRecording] = React.useState();
+	const [recordingUri, setRecordingUri] = useState("");
+	const [permissionResponse, requestPermission] = Audio.usePermissions();
+	const [sound, setSound] = React.useState();
+	const [audioData, setAudioData] = React.useState({});
+	let [results, setResults] = useState([]);
 
 	// TODO to 현서 : 프리미엄 회원 구분해주세요
 	const premium = false; // 프리미엄 회원 임시
@@ -96,7 +111,8 @@ const WriteContent = ({ navigation, route }) => {
 		const newDiaryRef = doc(diaryRef, `${doc(diaryRef).id}`);
 		try {
 			await setDoc(newDiaryRef, data);
-			navigation.navigate("HomeTab");
+			console.log("성공---------------------!");
+			navigation.navigate("HomeTab", { audioData: audioData });
 		} catch (error) {
 			console.log(data);
 			console.error(
@@ -121,8 +137,135 @@ const WriteContent = ({ navigation, route }) => {
 	/**
 	 * 음성 녹음 / stt 관련 함수
 	 */
-	const voiceRecording = async () => {
-		alert("음성 녹음 기능을 넣어주세요");
+	const recordingOptions = {
+		android: {
+			extension: ".m4a",
+			outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
+			audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
+			sampleRate: 44100,
+			numberOfChannels: 2,
+			bitRate: 128000,
+		},
+		ios: {
+			extension: ".wav",
+			audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_HIGH,
+			sampleRate: 44100,
+			numberOfChannels: 1,
+			bitRate: 128000,
+			linearPCMBitDepth: 16,
+			linearPCMIsBigEndian: false,
+			linearPCMIsFloat: false,
+		},
+	};
+
+	React.useEffect(() => {
+		getData();
+	}, []);
+
+	const generateUniqueId = () => {
+		// 원하는 방식으로 고유 식별 문자열 생성 (예: uuid 라이브러리 사용)
+		// 여기서는 임의의 숫자를 사용한 예시입니다.
+		return Math.random().toString(36).substr(2, 9);
+	};
+
+	const stopRecording = async () => {
+		console.log("Stopping recording..");
+		// await SpeechToText.stopSpeech();
+		// Speech.stop();
+		setIsRecording(false);
+		setRecording(undefined);
+		// if (recording) {
+		await recording.stopAndUnloadAsync();
+		const recordingUri = recording.getURI();
+
+		console.log(recordingUri);
+		const { sound, status } = await recording.createNewLoadedSoundAsync();
+		const audioId = generateUniqueId();
+		const audio = {
+			id: audioId,
+			sound: sound,
+			file: recordingUri,
+			status: status,
+		};
+
+		//스토리지 저장
+		await AsyncStorage.setItem(`audio_${audio.id}`, JSON.stringify(audio));
+		const result = "녹음 완료 ";
+		setAudioData(audio);
+		// setAudioId(audioId);
+		setResults(result);
+		// setRecording(undefined);
+		// }
+	};
+
+	const startRecording = async () => {
+		setIsRecording(true);
+		try {
+			console.log("Requesting permissions..");
+			await Audio.requestPermissionsAsync();
+			await Audio.setAudioModeAsync({
+				allowsRecordingIOS: true,
+				playsInSilentModeIOS: true,
+			});
+
+			console.log("Starting recording..");
+			const { recording } = await Audio.Recording.createAsync(
+				Audio.RecordingOptionsPresets.HIGH_QUALITY
+			);
+			setRecording(recording);
+			console.log("Recording started");
+			// await recoding.startAsync();
+			// setIsRecording(true);
+			// const initialText = "음성 인식을 시작합니다";
+			// Speech.speak(initialText, {
+			// 	language: "ko",
+			// 	pitch: 1,
+			// 	rate: 1,
+			// });
+		} catch (error) {
+			console.error("음성 인식 및 녹음을 시작할 수 없습니다:", error);
+		}
+	};
+
+	// useEffect(() => {
+	// 	const recognitionListener = Speech.getAvailableVoicesAsync(
+	// 		({ error, results }) => {
+	// 			if (error) {
+	// 				console.error("음성 인식 중 오류 발생:", error);
+	// 				return;
+	// 			}
+
+	// 			const [text] = results;
+	// 			setDContent(text);
+	// 		}
+	// 	);
+
+	// 	return () => {
+	// 		recognitionListener.remove();
+	// 	};
+	// }, []);
+
+	/**
+	 * 녹음 재생
+	 */
+	const getData = async () => {
+		try {
+			const audio = await AsyncStorage.getItem(`audio_${audioData.id}`);
+			if (audio) {
+				setAudioData(JSON.parse(audio));
+			}
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	const playAudio = async () => {
+		if (audioData) {
+			const sound = new Audio.Sound();
+			await sound.loadAsync({ uri: audioData.file, shouldPlay: true });
+			console.log("Playing Sound");
+			await sound.playAsync();
+		}
 	};
 
 	/**
@@ -281,14 +424,20 @@ const WriteContent = ({ navigation, route }) => {
 						{/* 음성녹음 버튼 */}
 						<Pressable
 							style={BodyStyle.btnMic}
-							onPress={() => voiceRecording()}
+							onPress={() => (recording ? stopRecording() : startRecording())}
 						>
-							<Ionicons name="mic-circle" size={45} color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}></Ionicons>
+							<Text>{recording ? "Stop Recording" : "Start Recording"} </Text>
+							{/* <Ionicons name="mic-circle" size={45} color="#E76B5C"></Ionicons> */}
+						</Pressable>
+						{recordingUri ? <Text>Recording URI: {recordingUri}</Text> : null}
+						<Pressable onPress={playAudio}>
+							<Text>녹음 내용 다시듣기</Text>
 						</Pressable>
 						{/* 본문 textInput */}
+
 						<TextInput
 							onChangeText={(text) => setDContent(text)}
-							value={dContent}
+							value={isRecording ? results + dContent : dContent}
 							placeholder="음성 인식 기능(녹음시작)을 활용하거나 직접 입력하여 일기를 기록해 보세요! 
             여러분의 이야기를 기록해드릴게요. 오늘은 어떤 하루였나요? :)"
             placeholderTextColor={isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY}
