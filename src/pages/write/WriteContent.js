@@ -164,17 +164,21 @@ const WriteContent = ({ navigation, route }) => {
 		setRecording(undefined);
 		// if (recording) {
 		await recording.stopAndUnloadAsync();
+		const recordingUri = recording.getURI();
+
+		console.log(recordingUri);
 		const { sound, status } = await recording.createNewLoadedSoundAsync();
 
 		const audio = {
 			sound: sound,
-			file: recording.getURI(),
+			file: recordingUri,
 			status: status,
 		};
 
 		//스토리지 저장
 		await AsyncStorage.setItem("audio", JSON.stringify(audio));
 		const result = "녹음 완료 ";
+		setAudioData(audio);
 		setResults(result);
 		// setRecording(undefined);
 		// }
@@ -242,10 +246,12 @@ const WriteContent = ({ navigation, route }) => {
 	};
 
 	const playAudio = async () => {
-		const sound = new Audio.Sound();
-		await sound.loadAsync({ uri: audioData.file, shouldPlay: true });
-		console.log("Playing Sound");
-		await sound.playAsync();
+		if (audioData) {
+			const sound = new Audio.Sound();
+			await sound.loadAsync({ uri: audioData.file, shouldPlay: true });
+			console.log("Playing Sound");
+			await sound.playAsync();
+		}
 	};
 
 	/**
