@@ -2,8 +2,8 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, useColorScheme } from 'react-native';
 import Header from './Header'
 import Body from './Body'
-import { getCalenderData } from '../../util/firebase/CRUD';
 import { DarkTheme, DefaultTheme, useIsFocused } from '@react-navigation/native';
+import { readDiarys } from '../../util/database';
 
 function Calender() {
 	const isDark = useColorScheme() === 'dark'
@@ -46,9 +46,14 @@ function Calender() {
   }
 
   useEffect(() => {
-    getCalenderDataFun = async(month, year) => {
-      const result = await getCalenderData(month, year)
-      setDdata(result)
+    getCalenderDataFun = async (month, year) => {
+      try{
+        const result = await readDiarys(month, year)
+        setDdata(result)
+      }
+      catch(e){
+        console.error(e)
+      }
     }
     getCalenderDataFun(month, year)
   }, [month, year, isFocused]);

@@ -4,7 +4,7 @@ import { COLOR_BLACK, COLOR_DARK_BLUE, COLOR_DARK_FOURTH, COLOR_DARK_RED, COLOR_
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import DailyDiaryScreen from "../../pages/home/DailyDiaryScreen";
 import BottomSheet from 'reanimated-bottom-sheet';
-import { getMonthDays } from "../../util/Calender";
+import { changeNumberTwoLength, getMonthDays } from "../../util/Calender";
 
 
 function Body(props) {
@@ -47,15 +47,14 @@ function Body(props) {
     setTotalDays(getMonthDays(year, month))
   }, [year, month])
 
-
   /**
    * 해당 날짜에 이미지를 찾아주는 함수
    * @param {int} day 
    * @returns {string}imgUrl
    */
   const FindImg = (day) => {
-    let img = DATA.find(data => data.date === day)
-    return img?.imgUrl
+    let img = DATA.find(data => data.date === `${year}-${changeNumberTwoLength(month)}-${changeNumberTwoLength(day)}`)
+    return img?.image
   }
 
   /**
@@ -64,7 +63,7 @@ function Body(props) {
    * @returns true,false
    */
   const haveDiary = (day) => {
-    let datas = DATA.find(data => data.date === day)
+    let datas = DATA.find(data => data.date === `${year}-${changeNumberTwoLength(month)}-${changeNumberTwoLength(day)}`)
     if(datas?.title === '' || datas?.title === undefined) {
       return false
     }
@@ -78,8 +77,8 @@ function Body(props) {
    * @param {int} day 
    */
   const findModalValue = (day) => {
-    let datas = DATA.find(data => data.date === day)
-    setModalValue({...ModalValue, day:day, imguri:datas?.imgUrl, title:datas?.title, content:datas?.content})
+    let datas = DATA.find(data => data.date === `${year}-${changeNumberTwoLength(month)}-${changeNumberTwoLength(day)}`)
+    setModalValue({...ModalValue, day:day, imguri:datas?.image, title:datas?.title, content:datas?.content})
   }
 
   // 요일 날짜 배열

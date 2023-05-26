@@ -20,15 +20,34 @@ export const createTable = () => {
   })
 }
 
-// 데이터 조회
+/**
+ * 일기 조회 (시작날짜-종료날짜)
+ * @param {int} month 
+ * @param {int} year 
+ * @returns {Array}일기 배열
+ */
 export const readDiarys = async(month, year) => {
-  db.transaction((tx) => {
-    tx.executeSql('SELECT * FROM diary WHERE date BETWEEN ? AND ?', 
-    [`${year}-${changeNumberTwoLength(month)}-01 00:00:00`, `${year}-${changeNumberTwoLength(month + 1)}-0 23:59:59`], 
-    (_, { rows }) => {
-      const diarys = rows._array;
-      console.log('조회된 데이터:', diarys);
-      return diarys
+  try{
+    return new Promise((resolve, reject) => {
+      db.transaction((tx) => {
+        tx.executeSql(
+          'SELECT * FROM diary WHERE date BETWEEN ? AND ?',
+          [
+            `${year}-${changeNumberTwoLength(month)}-01 00:00:00`,
+            `${year}-${changeNumberTwoLength(month + 1)}-0 23:59:59`,
+          ],
+          (_, { rows }) => {
+            const diarys = rows._array;
+            resolve(diarys);
+          },
+          (_, error) => {
+            reject(error);
+          }
+        );
+      });
     });
-  });
+  }
+  catch(e) {
+    console.error(e)
+  }
 }
