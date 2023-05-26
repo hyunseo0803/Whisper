@@ -4,6 +4,7 @@ import React from 'react';
 import {View, StyleSheet, Text, Modal, Pressable, Alert, useColorScheme} from 'react-native';
 import GlobalStyle from '../globalStyle/GlobalStyle'
 import ModeColorStyle from '../globalStyle/ModeColorStyle';
+import { deleteDiarys } from '../util/database';
 import { deleteDiary } from '../util/firebase/CRUD';
 
 /**
@@ -12,38 +13,47 @@ import { deleteDiary } from '../util/firebase/CRUD';
  */
 const DeleteMessage = (props) => {
 
+  const {
+    visible,
+    setVisible,
+    wantDelteId,
+    wantDelteDate,
+    setRedirect
+  } = props;
+
   const isDark = useColorScheme() === 'dark'
 
   const onClickDelete = (want_delete) => {
+    console.log(wantDelteId)
     if(want_delete === true) {
       Alert.alert("삭제하시겠습니까?", `삭제하시면 다시 복구하실 수 없습니다. 
-${props.wantDelteDate}의 일기를 정말 삭제할까요?`, [
+${wantDelteDate}의 일기를 정말 삭제할까요?`, [
         {
           text: '취소',
-          onPress: () => props.setVisible(false)
+          onPress: () => setVisible(false)
         },
         {
           text: '삭제',
-          onPress: () => deleteDiaryFun(props.wantDelteId)
+          onPress: () => deleteDiaryFun(wantDelteId)
         }
       ])
     }
     else {
-      props.setVisible(false)
+      setVisible(false)
     }
   }
 
   const deleteDiaryFun = async(id) => {
-    if(deleteDiary(id)){
-      props.setRedirect(true)
+    if(deleteDiarys(id)){
+      setRedirect(true)
     }
-    props.setVisible(false)
+    setVisible(false)
   }
 
   return (
     <Modal 
     animationType={'fade'}
-    visible={props.showDeleteModal}
+    visible={visible}
     transparent={true}
     onRequestClose={() => {
       Alert.alert('Modal has been closed.');

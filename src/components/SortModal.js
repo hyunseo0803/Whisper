@@ -8,13 +8,13 @@ const SortModal = (props) => {
 
   const onClickSort = (how) => {
     switch (how) {
-      case 'asc':
-        props.setHowSortDiary('asc')
+      case 'ASC':
+        props.setHowSortDiary('ASC')
         props.setVisible(false)
         break;
 
-      case 'desc':
-        props.setHowSortDiary('desc')
+      case 'DESC':
+        props.setHowSortDiary('DESC')
         props.setVisible(false)
         break;
 
@@ -37,11 +37,11 @@ const SortModal = (props) => {
     >
       <View style={modalS.background}>
         <Pressable style={[modalS.button, ModeColorStyle(isDark).bg_box, {marginBottom: 10}]}
-        onPress={() => onClickSort('asc')}>
+        onPress={() => onClickSort('ASC')}>
           <Text style={[GlobalStyle.font_title2, ModeColorStyle(isDark).font_RED]}>오름차순 정렬</Text>
         </Pressable>
         <Pressable style={[modalS.button, ModeColorStyle(isDark).bg_box, {marginBottom: 20}]}
-        onPress={() => onClickSort('desc')}>
+        onPress={() => onClickSort('DESC')}>
           <Text style={[GlobalStyle.font_title2, ModeColorStyle(isDark).font_RED]}>내림차순 정렬</Text>
         </Pressable>
 

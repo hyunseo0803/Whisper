@@ -100,7 +100,7 @@ export const dayPlus = (year, yearPlus, month, monthPlus, day, dayPlus) => {
  * @returns ex)05
  */
 export const changeNumberTwoLength = (month) => {
-  if (month.toString().length !== 2){
+  if (`${month}`.length !== 2){
     return '0'+month
   }else{
     return month

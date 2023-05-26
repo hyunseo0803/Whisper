@@ -24,14 +24,15 @@ export const createTable = () => {
  * 일기 조회 (시작날짜-종료날짜)
  * @param {int} month 
  * @param {int} year 
+ * @param {String} howSortDiary 'DESC','ASC' 
  * @returns {Array}일기 배열
  */
-export const readDiarys = async(month, year) => {
+export const readDiarys = async(month, year, howSortDiary) => {
   try{
     return new Promise((resolve, reject) => {
       db.transaction((tx) => {
         tx.executeSql(
-          'SELECT * FROM diary WHERE date BETWEEN ? AND ?',
+          `SELECT * FROM diary WHERE date BETWEEN ? AND ? ORDER BY date ${howSortDiary}`,
           [
             `${year}-${changeNumberTwoLength(month)}-01 00:00:00`,
             `${year}-${changeNumberTwoLength(month + 1)}-0 23:59:59`,
@@ -45,9 +46,34 @@ export const readDiarys = async(month, year) => {
           }
         );
       });
+
     });
   }
   catch(e) {
+    console.error(e)
+  }
+}
+
+/**
+ * 
+ */
+export const deleteDiarys = async(id) => {
+  try{
+    return new Promise((resolve, reject) => {
+      db.transaction((tx) => {
+        tx.executeSql('DELETE FROM diary WHERE id = ?', 
+        [id], 
+        (_, {row}) => {
+          return true
+        },
+        (_, error) => {
+          console.error(error, '삭제 과정에서 에러 발생!')
+          return false
+        })
+      });
+    });
+  }
+  catch(e){
     console.error(e)
   }
 }

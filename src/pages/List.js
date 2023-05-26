@@ -4,12 +4,12 @@ import GlobalStyle from "../globalStyle/GlobalStyle";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import YMPicker from "../components/datePicker/YMPicker";
 import { changeNumberTwoLength } from "../util/Calender";
-import { getDiaryList, timestampToDate } from "../util/firebase/CRUD";
 import DiaryView from "../components/DiaryView";
 import SortModal from "../components/SortModal";
-import { COLOR_BLACK, COLOR_DARK_BG, COLOR_DARK_PRIMARY, COLOR_DARK_WHITE, COLOR_LIGHT_BG, COLOR_LIGHT_PRIMARY } from "../globalStyle/color";
+import { COLOR_BLACK, COLOR_DARK_WHITE} from "../globalStyle/color";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
 import { useIsFocused } from "@react-navigation/native";
+import { readDiarys } from "../util/database";
 
 const List = () => {
   const isDark = useColorScheme() === 'dark'
@@ -24,17 +24,23 @@ const List = () => {
   const [showModal, setShowModal] = useState(false);
   const [diaryList, setDiaryList] = useState([]);   // 일기 정보 배열
   const [showSortModal, setShowSortModal] = useState(false)     // 정렬 기준 모달 
-  const [howSortDiary, setHowSortDiary] = useState('asc')       // asc(오름차순, 기본), decs(내림차순)
+  const [howSortDiary, setHowSortDiary] = useState('ASC')       // asc(오름차순, 기본), decs(내림차순)
   const [redirect, setRedirect] = useState(false);
 
 
   // 데이터를 diaryList에 set해주는 useEffect
   useEffect(() => {
-    async function getDiaryListFun() {
-      const result = await getDiaryList(month, year, howSortDiary)
-      setDiaryList(result)
-    } 
-    getDiaryListFun()
+    getCalenderDataFun = async (month, year) => {
+      try{
+        const result = await readDiarys(month, year, howSortDiary)
+        setDiaryList(result)
+      }
+      catch(e){
+        console.error(e)
+      }
+    }
+    getCalenderDataFun(month, year)
+    
     if(redirect){
       setRedirect(false)
     }
@@ -72,9 +78,9 @@ const List = () => {
         {
           diaryList?.map((diary, index) => (
             <DiaryView
-              dId={diary.d_id}
+              dId={diary.id}
               key={index}
-              date = {timestampToDate(diary.date)}
+              date = {(diary.date).replace(/\-/g, '.')}
               title = {diary.title}
               mood = {diary.mood}
               weather = {diary.weather}

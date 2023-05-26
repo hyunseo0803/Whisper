@@ -48,7 +48,7 @@ function Calender() {
   useEffect(() => {
     getCalenderDataFun = async (month, year) => {
       try{
-        const result = await readDiarys(month, year)
+        const result = await readDiarys(month, year, 'DESC')
         setDdata(result)
       }
       catch(e){
