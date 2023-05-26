@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text, SafeAreaView, Pressable, ScrollView, useColorScheme} from 'react-native';
 import GlobalStyle from '../../globalStyle/GlobalStyle';
 import { Ionicons } from "@expo/vector-icons";
-import { timestampToDate } from '../../util/firebase/CRUD';
 import DiaryView from '../../components/DiaryView';
 import { COLOR_BLACK, COLOR_DARK_WHITE } from '../../globalStyle/color';
 import ModeColorStyle from '../../globalStyle/ModeColorStyle';
@@ -48,7 +47,7 @@ const SearchResult = ({ navigation, route }) => {
           <DiaryView
             dId={diary.d_id}
             key={index}
-            date = {timestampToDate(diary.date)}
+            date = {diary.date}
             title = {diary.title}
             mood = {diary.mood}
             weather = {diary.weather}

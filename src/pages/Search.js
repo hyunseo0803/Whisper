@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, SafeAreaView, Alert, useColorScheme,  } from "react-native";
-import React, {useState, useNativeDriver, useEffect} from "react";
+import { StyleSheet, Text, View, SafeAreaView, useColorScheme } from "react-native";
+import React, {useState, useEffect} from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable } from "react-native";
@@ -7,13 +7,12 @@ import { Keyboard } from "react-native";
 import { TextInput } from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import DateRangePicker from "../components/datePicker/DateRangePicker";
-import { getSearchDiary } from "../util/firebase/CRUD";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
 import { COLOR_BLACK, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_SECONDARY, COLOR_LIGHT_THIRD, COLOR_WHITE } from "../globalStyle/color";
 import HeaderText from "../components/Header";
+import { getDiarySearch } from "../util/database";
 
 const Search = ({navigation}) => {
-  // const router = useRouter();
   const isDark = useColorScheme() === 'dark'
 
   const toDay = new Date();
@@ -60,10 +59,14 @@ const Search = ({navigation}) => {
    * 검색 버튼 onPress 함수
    */
   const searchDiary = async() => {
-    const resultArr = await getSearchDiary(title, startDate, endDate, selectedMood, selectedWeather)
-    navigation.navigate('searchResult', {searchedDiarys : resultArr})
+    try {
+      const searchResults = await getDiarySearch(title, selectedMood, selectedWeather, startDate, endDate);
+      console.log('검색 결과:', searchResults);
+      navigation.navigate('searchResult', {searchedDiarys : searchResults})
+    } catch (error) {
+      console.error(error);
+    }
   }
-
 
 
   useEffect(() => {
@@ -106,7 +109,7 @@ const Search = ({navigation}) => {
                   <Text style={[GlobalStyle.font_body, styles.text_input, {color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.25)'}]}>선택없음</Text>
                 :
                   // 날짜 지정
-                  <Text style={[GlobalStyle.font_body, styles.text_input, {maxWidth: '100%', color:isDark?COLOR_DARK_WHITE:COLOR_BLACK}]}>{startDate} ~ {endDate}</Text>
+                  <Text style={[GlobalStyle.font_body, styles.text_input, {maxWidth: '100%', color:isDark?COLOR_DARK_WHITE:COLOR_BLACK}]}>{startDate.replace(/\-/g, '.')} ~ {endDate.replace(/\-/g, '.')}</Text>
                 }
               </Pressable>
               {

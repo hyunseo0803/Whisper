@@ -123,3 +123,62 @@ export const getDiaryCountByMood = async(month, year) => {
   }
 }
 
+/**
+ * 검색 함수
+ * @param {string} title 
+ * @param {string} mood 
+ * @param {string} weather 
+ * @param {string} startDate 
+ * @param {string} endDate 
+ * @returns 검색 결과 배열
+ */
+export const getDiarySearch = (title, mood, weather, startDate, endDate) => {
+  console.log('제목:',title)
+  console.log('기분:',mood)
+  console.log('날씨:',weather)
+  console.log('시작:',startDate)
+  console.log('종료:',endDate)
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      let query = 'SELECT * FROM diary WHERE 1 = 1';
+      let params = [];
+
+      if (title!=='') {
+        query += ' AND title LIKE ?';
+        params.push(`%${title}%`);
+      }
+
+      if (mood) {
+        query += ' AND mood = ?';
+        params.push(mood);
+      }
+
+      if (weather) {
+        query += ' AND weather = ?';
+        params.push(weather);
+      }
+
+      if (startDate!=='') {
+        query += ' AND date >= ?';
+        params.push(startDate);
+      }
+
+      if (endDate!=='') {
+        query += ' AND date <= ?';
+        params.push(endDate);
+      }
+
+      tx.executeSql(
+        query,
+        params,
+        (_, { rows }) => {
+          const diarys = rows._array;
+          resolve(diarys);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+}

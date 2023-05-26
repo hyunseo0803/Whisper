@@ -29,8 +29,8 @@ const DateRangePicker = (props) => {
    */
   const closeModal = (save) => {
     if(save === 'save') {
-      props.setStartDate(startDate.replace(/-/g, '.'))
-      props.setEndDate(endDate.replace(/-/g, '.'))
+      props.setStartDate(startDate)
+      props.setEndDate(endDate)
     }
     props.setVisible(false)
   }
