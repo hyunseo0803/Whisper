@@ -16,6 +16,7 @@ import { btnGoWriteScreen } from "../globalStyle/BtnStyle";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
 import { useIsFocused } from "@react-navigation/native";
 import HeaderText from "../components/Header";
+import { getDiaryCountByMood } from "../util/database";
 
 
 const MoodTracker = ({navigation}) => {
@@ -28,15 +29,7 @@ const MoodTracker = ({navigation}) => {
 
   const [month, setMonth] = useState(MONTH+1);
   const [year, setYear] = useState(YEAR);
-  const [moodValues, setMoodValues] = useState({
-    happy: 0,           // 기쁨
-    disgust: 0,         // 혐오
-    surprised: 0,       // 놀람
-    angry: 0,           // 화남
-    sad: 0,             // 슬픔
-    fear: 0,            // 두려움
-    expressionless: 0,  // 무표정
-  });
+  const [moodValues, setMoodValues] = useState({});
 
   // TODO to emyo: util에 함수 분리해놓기
   /**
@@ -132,11 +125,18 @@ const MoodTracker = ({navigation}) => {
    * 무드트레커 정보 받아와서 useState로 관리
    */
   useEffect(() => {
-    moodArr.forEach(async(mood) => {
-      const countMoodData = await getMoodData(mood, year, month);
-        setMoodValues((prevState) => {return{...prevState, [mood] : countMoodData}})
-    });
+    const fetchDiaryCountsByMood = async () => {
+      try {
+        const counts = await getDiaryCountByMood(month, year);
+        setMoodValues(counts)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchDiaryCountsByMood()
   }, [month, year, isFocused])
+
+
 
   return (
       <SafeAreaView  style={styles.container}>

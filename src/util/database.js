@@ -46,7 +46,6 @@ export const readDiarys = async(month, year, howSortDiary) => {
           }
         );
       });
-
     });
   }
   catch(e) {
@@ -55,7 +54,9 @@ export const readDiarys = async(month, year, howSortDiary) => {
 }
 
 /**
- * 
+ * 일기 삭제
+ * @param {int} id 
+ * @returns 일기 삭제
  */
 export const deleteDiarys = async(id) => {
   try{
@@ -70,6 +71,45 @@ export const deleteDiarys = async(id) => {
           console.error(error, '삭제 과정에서 에러 발생!')
           return false
         })
+      });
+    });
+  }
+  catch(e){
+    console.error(e)
+  }
+}
+
+
+export const getDiaryCountByMood = async(month, year) => {
+  try{
+    return new Promise((resolve, reject) => {
+      db.transaction((tx) => {
+        tx.executeSql(
+          'SELECT mood, COUNT(*) AS count FROM diary WHERE date BETWEEN ? AND ? GROUP BY mood',
+          [
+            `${year}-${changeNumberTwoLength(month)}-01 00:00:00`,
+            `${year}-${changeNumberTwoLength(month + 1)}-0 23:59:59`,
+          ],
+          (_, { rows }) => {
+            const counts = {
+              happy: 0,           // 기쁨
+              disgust: 0,         // 혐오
+              surprised: 0,       // 놀람
+              angry: 0,           // 화남
+              sad: 0,             // 슬픔
+              fear: 0,            // 두려움
+              expressionless: 0,  // 무표정
+            };
+            for (let i = 0; i < rows.length; i++) {
+              const item = rows.item(i);
+              counts[item.mood] = item.count;
+            }
+            resolve(counts);
+          },
+          (_, error) => {
+            reject(error);
+          }
+        );
       });
     });
   }
