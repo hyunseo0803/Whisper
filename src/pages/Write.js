@@ -5,46 +5,31 @@ import {
 	View,
 	SafeAreaView,
 	Image,
-	Touchable,
 	TouchableOpacity,
-	ActionSheetIOS,
   Pressable,
   useColorScheme,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import { Ionicons } from "@expo/vector-icons";
-
-import happy from "../../assets/images/mood/happy.png";
-import disgust from "../../assets/images/mood/disgust.png";
-import surprised from "../../assets/images/mood/surprised.png";
-import angry from "../../assets/images/mood/angry.png";
-import sad from "../../assets/images/mood/sad.png";
-import fear from "../../assets/images/mood/fear.png";
-import expressionless from "../../assets/images/mood/expressionless.png";
-
-import sunny from "../../assets/images/weather/sunny.png";
-import littleCloud from "../../assets/images/weather/littleCloud.png";
-import cloudy from "../../assets/images/weather/cloudy.png";
-import rain from "../../assets/images/weather/rain.png";
-import snow from "../../assets/images/weather/snow.png";
-import lightning from "../../assets/images/weather/lightning.png";
-import WriteAnalysis from "../pages/write/WriteAnalysis";
 import DatePicker from "../components/datePicker/DatePicker";
 import { changeNumberTwoLength } from "../util/Calender";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
-import { COLOR_BLACK, COLOR_DARK_PRIMARY, COLOR_DARK_WHITE, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_SECONDARY, COLOR_LIGHT_THIRD } from "../globalStyle/color";
-import { getDiaryDate } from "../util/firebase/CRUD";
+import { COLOR_BLACK, COLOR_DARK_WHITE } from "../globalStyle/color";
 import HeaderText from "../components/Header";
+import { getDiaryDates } from "../util/database";
+import { moodArr, MoodWeatherFile, weatherArr } from "../util/MoodWeather";
 
 const Write = ({ navigation }) => {
   const isDark = useColorScheme() === 'dark'
 
+  const DATE = new Date()
+
 	const [selectedMood, setSelectedMood] = useState("");
 	const [selectedWeather, setSelectedWeather] = useState("");
-	const [selectedDate, setSelectedDate] = useState("");
+	const [selectedDate, setSelectedDate] = useState(`${DATE.getFullYear()}-${changeNumberTwoLength(DATE.getMonth())}-${DATE.getDate()}`);
 	const [datepickershow, setDatepickerShow] = useState(false) 
-  const [disabledDate, setDisabledDate] = useState(false)
+  const [dotMarkingDate, setDotmarkingDate] = useState(false)
 
   /**
    * mood onPress 함수
@@ -87,7 +72,7 @@ const Write = ({ navigation }) => {
   useEffect(() => {
     // 일기를 쓸 수 없는 날짜 배열 찾는 함수
     async function getDiaryDateFun() {
-      setDisabledDate(await getDiaryDate())
+      setDotmarkingDate(await getDiaryDates())
     } 
     getDiaryDateFun()
   }, []);
@@ -105,9 +90,9 @@ const Write = ({ navigation }) => {
         style={[{display:'flex', flexDirection:'row', marginTop: 20, alignItems:'center', justifyContent:'center'}]}
         onPress={() => setDatepickerShow(true)}>
           <Text style={[, ModeColorStyle(isDark).font_DEFALUT,
-          selectedDate===''?({color:isDark?COLOR_DARK_PRIMARY:COLOR_LIGHT_PRIMARY, fontSize:16, fontFamily:'Diary'}):(GlobalStyle.font_title1)]}>
+          (GlobalStyle.font_title1)]}>
             {
-              selectedDate === '' ? '이곳을 눌러 날짜를 선택해주세요' : selectedDate.replace(/\-/g, '.')
+              selectedDate.replace(/\-/g, '.')
             }
           </Text>
           <Ionicons
@@ -122,9 +107,8 @@ const Write = ({ navigation }) => {
 					<DatePicker
 						visible = {datepickershow}
 						setVisible = {setDatepickerShow}
-            // selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
-            disabledDate={disabledDate}
+            dotMarkingDate={dotMarkingDate}
 					/>
 				}
 			</View>
@@ -143,78 +127,20 @@ const Write = ({ navigation }) => {
 				</View>
 				{/* 기분과 날씨 고르는 view */}
 				<View style={styles.choose}>
-					<TouchableOpacity
-						onPress={() => handleMoodPress("happy")}
-						style={[
-							styles.touchable,
-							selectedMood === "happy" && styles.selected,
-						]}
-						activeOpacity={1}
-					>
-						<Image source={happy} style={styles.emotion}></Image>
-					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() => handleMoodPress("disgust")}
-						style={[
-							styles.touchable,
-							selectedMood === "disgust" && styles.selected,
-						]}
-						activeOpacity={1}
-					>
-						<Image source={disgust} style={styles.emotion}></Image>
-					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() => handleMoodPress("surprised")}
-						style={[
-							styles.touchable,
-							selectedMood === "surprised" && styles.selected,
-						]}
-						activeOpacity={1}
-					>
-						<Image source={surprised} style={styles.emotion}></Image>
-					</TouchableOpacity>
-				</View>
-				<View style={styles.choose}>
-					<TouchableOpacity
-						onPress={() => handleMoodPress("angry")}
-						style={[
-							styles.touchable,
-							selectedMood === "angry" && styles.selected,
-						]}
-						activeOpacity={1}
-					>
-						<Image source={angry} style={styles.emotion}></Image>
-					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() => handleMoodPress("sad")}
-						style={[
-							styles.touchable,
-							selectedMood === "sad" && styles.selected,
-						]}
-						activeOpacity={1}
-					>
-						<Image source={sad} style={styles.emotion}></Image>
-					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() => handleMoodPress("fear")}
-						style={[
-							styles.touchable,
-							selectedMood === "fear" && styles.selected,
-						]}
-						activeOpacity={1}
-					>
-						<Image source={fear} style={styles.emotion}></Image>
-					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() => handleMoodPress("expressionless")}
-						style={[
-							styles.touchable,
-							selectedMood === "expressionless" && styles.selected,
-						]}
-						activeOpacity={1}
-					>
-						<Image source={expressionless} style={styles.emotion}></Image>
-					</TouchableOpacity>
+          {
+            moodArr.map(mood => (
+              <TouchableOpacity
+                onPress={() => handleMoodPress(mood)}
+                style={[
+                  styles.touchable,
+                  selectedMood === mood && styles.selected,
+                ]}
+                activeOpacity={1}
+              >
+                <Image source={MoodWeatherFile(mood)} style={styles.emotion}></Image>
+              </TouchableOpacity>
+            ))
+          }
 				</View>
 			</View>
 			<View style={styles.chooseWeather}>
@@ -230,69 +156,21 @@ const Write = ({ navigation }) => {
 					</Text>
 				</View>
 				{/* 기분과 날씨 고르는 view */}
-				<View style={styles.choose}>
-					<TouchableOpacity
-						onPress={() => handleWeatherPress("sunny")}
-						style={[
-							styles.touchable,
-							selectedWeather === "sunny" && styles.selected,
-						]}
-						activeOpacity={1}
-					>
-						<Image source={sunny} style={styles.emotion}></Image>
-					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() => handleWeatherPress("littleCloud")}
-						style={[
-							styles.touchable,
-							selectedWeather === "littleCloud" && styles.selected,
-						]}
-						activeOpacity={1}
-					>
-						<Image source={littleCloud} style={styles.emotion}></Image>
-					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() => handleWeatherPress("cloudy")}
-						style={[
-							styles.touchable,
-							selectedWeather === "cloudy" && styles.selected,
-						]}
-						activeOpacity={1}
-					>
-						<Image source={cloudy} style={styles.emotion}></Image>
-					</TouchableOpacity>
-				</View>
-				<View style={styles.choose}>
-					<TouchableOpacity
-						onPress={() => handleWeatherPress("rain")}
-						style={[
-							styles.touchable,
-							selectedWeather === "rain" && styles.selected,
-						]}
-						activeOpacity={1}
-					>
-						<Image source={rain} style={styles.emotion}></Image>
-					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() => handleWeatherPress("snow")}
-						style={[
-							styles.touchable,
-							selectedWeather === "snow" && styles.selected,
-						]}
-						activeOpacity={1}
-					>
-						<Image source={snow} style={styles.emotion}></Image>
-					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() => handleWeatherPress("lightning")}
-						style={[
-							styles.touchable,
-							selectedWeather === "lightning" && styles.selected,
-						]}
-						activeOpacity={1}
-					>
-						<Image source={lightning} style={styles.emotion}></Image>
-					</TouchableOpacity>
+				<View style={[styles.choose, {width: 80*3}]}>
+          {
+            weatherArr.map(weather => (
+              <TouchableOpacity
+                onPress={() => handleWeatherPress(weather)}
+                style={[
+                  styles.touchable,
+                  selectedWeather === weather && styles.selected,
+                ]}
+                activeOpacity={1}
+              >
+                <Image source={MoodWeatherFile(weather)} style={styles.emotion}></Image>
+              </TouchableOpacity>
+            ))
+          }
 				</View>
 			</View>
 			<View style={styles.button}>
@@ -361,6 +239,10 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "row",
 		marginTop: 5,
+    backgroundColor: 'red',
+    width: 110*3,
+    flexWrap: 'wrap',
+    justifyContent: 'center'
 	},
 	emotion: {
 		width: 36,

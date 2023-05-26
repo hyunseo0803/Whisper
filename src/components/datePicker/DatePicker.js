@@ -17,6 +17,13 @@ const DatePicker = (props) => {
 
   const isDark = useColorScheme() === 'dark'
   const DATE = new Date()
+
+  const {
+    setSelectedDate,
+    setVisible,
+    visible,
+    dotMarkingDate,
+  } = props
   
   const [selected, setSelected] = useState(``)
   
@@ -24,10 +31,11 @@ const DatePicker = (props) => {
    * 모달창 닫는 함수
    */
   const closeModal = () => {
-    props.setSelectedDate(selected)
-    props.setVisible(false)
+    setSelectedDate(selected)
+    setVisible(false)
   }
 
+  console.log(dotMarkingDate)
   /**
    * 마킹될 날짜들 객체 생성
    * @param {day} selected 
@@ -35,17 +43,18 @@ const DatePicker = (props) => {
    */
   const markingDates = (selected) => {
     let marking = {};
-    (props.disabledDate).forEach(element => {
-      marking[`${element}`] = {disabled:true, disableTouchEvent:true} // 이미 일기가 있는 날 disabled설정
+    dotMarkingDate.forEach((element) => {
+      console.log(element)
+      marking[element] = { marked: true, dotColor: isDark?COLOR_DARK_BLUE:COLOR_LIGHT_BLUE }; // 이미 일기가 있는 날 dot 표시
     });
-    marking[`${selected}`] = {selected: true, disableTouchEvent: true}  // 선택한 일기 마킹
-    return marking
-  }
+    marking[selected] = { selected: true, disableTouchEvent: true }; // 선택한 일기 마킹
+    return marking;
+  };
 
   return (
     <Modal
     animationType={'fade'}
-    visible={props.visible}
+    visible={visible}
     transparent={true}
     style={{flex:1}}
     >
@@ -60,6 +69,7 @@ const DatePicker = (props) => {
           {/* 달력 */}
           <Calendar
             onDayPress={day => setSelected(day.dateString)} // 날짜 onPress 이벤트
+            markingType={'dot'}
             markedDates={markingDates(selected)}  // 마킹될 날짜들
             maxDate={`${DATE.getFullYear()}-${DATE.getMonth()+1}-${DATE.getDate()-1}`}  // 선택가능한 최대 날짜(오늘)
             theme={{
