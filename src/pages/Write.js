@@ -1,5 +1,4 @@
 import {
-	Button,
 	StyleSheet,
 	Text,
 	View,
@@ -115,21 +114,16 @@ const Write = ({ navigation }) => {
 			<View style={styles.chooseEmotion}>
 				<View style={styles.title}>
 					<Text
-						style={[
-							{ justifyContent: "center", textAlign: "center" },
-							GlobalStyle.font_title2,
-							GlobalStyle.font_title2,
-              ModeColorStyle(isDark).font_DEFALUT
-						]}
-					>
-						기분
-					</Text>
+						style={[ { justifyContent: "center", textAlign: "center" },
+							GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT ]}
+					> 기분 </Text>
 				</View>
 				{/* 기분과 날씨 고르는 view */}
 				<View style={styles.choose}>
           {
-            moodArr.map(mood => (
+            moodArr.map((mood, index) => (
               <TouchableOpacity
+                key={index}
                 onPress={() => handleMoodPress(mood)}
                 style={[
                   styles.touchable,
@@ -148,18 +142,15 @@ const Write = ({ navigation }) => {
 					<Text
 						style={[
 							{ justifyContent: "center", textAlign: "center" },
-							GlobalStyle.font_title2,
-              ModeColorStyle(isDark).font_DEFALUT
-						]}
-					>
-						날씨
-					</Text>
+							GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT ]}
+					>날씨</Text>
 				</View>
 				{/* 기분과 날씨 고르는 view */}
 				<View style={[styles.choose, {width: 80*3}]}>
           {
-            weatherArr.map(weather => (
+            weatherArr.map((weather, index) => (
               <TouchableOpacity
+                key={index}
                 onPress={() => handleWeatherPress(weather)}
                 style={[
                   styles.touchable,
