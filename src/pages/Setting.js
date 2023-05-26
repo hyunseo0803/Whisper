@@ -43,7 +43,7 @@ const Setting = ( {navigation }) => {
           <Ionicons name="chevron-forward-outline" size={25} color={IconColor}></Ionicons>
         </Pressable>
 
-        <Pressable
+        {/* <Pressable
         style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
         onPress={() => navigation.navigate('settingScreenMode')}>
           <View style={styles.flexDirectionRow}>
@@ -51,7 +51,7 @@ const Setting = ( {navigation }) => {
             <Text style={[GlobalStyle.font_body, {marginLeft:7}, ModeColorStyle(isDark).font_DEFALUT]}>화면</Text>
           </View>
           <Ionicons name="chevron-forward-outline" size={25} color={IconColor}></Ionicons>
-        </Pressable>
+        </Pressable> */}
 
         <Pressable
         style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
@@ -73,7 +73,8 @@ const Setting = ( {navigation }) => {
           <Ionicons name="chevron-forward-outline" size={25} color={IconColor}></Ionicons>
         </Pressable>
 
-        <Pressable
+        {/* 프리미엄 기능 보류 */}
+        {/* <Pressable
         style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
         onPress={() => navigation.navigate('settingPremium')}>
           <View style={styles.flexDirectionRow}>
@@ -81,7 +82,7 @@ const Setting = ( {navigation }) => {
             <Text style={[GlobalStyle.font_body, {marginLeft:10}, ModeColorStyle(isDark).font_DEFALUT]}>소곤소곤 프리미엄 가입</Text>
           </View>
           <Ionicons name="chevron-forward-outline" size={25} color={IconColor}></Ionicons>
-        </Pressable>
+        </Pressable> */}
 
         <Pressable
         style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
