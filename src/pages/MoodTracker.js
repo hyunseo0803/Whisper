@@ -2,21 +2,13 @@ import { SafeAreaView, StyleSheet, Text, View, Image, Pressable, Alert, useColor
 import React, {useState, useEffect} from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import Header from "../components/calender/Header";
-import { getMoodData } from "../util/firebase/CRUD";
 import MoodBar from "../components/moodTracker/MoodBar";
-import happy from '../../assets/images/mood/happy.png';
-import disgust from '../../assets/images/mood/disgust.png';
-import surprised from '../../assets/images/mood/surprised.png';
-import angry from '../../assets/images/mood/angry.png';
-import sad from '../../assets/images/mood/sad.png';
-import fear from '../../assets/images/mood/fear.png';
-import expressionless from '../../assets/images/mood/expressionless.png';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { btnGoWriteScreen } from "../globalStyle/BtnStyle";
-import ModeColorStyle from "../globalStyle/ModeColorStyle";
 import { useIsFocused } from "@react-navigation/native";
 import HeaderText from "../components/Header";
 import { getDiaryCountByMood } from "../util/database";
+import { moodArr, moodEngToKr, MoodWeatherFile } from "../util/MoodWeather";
 
 
 const MoodTracker = ({navigation}) => {
@@ -60,66 +52,6 @@ const MoodTracker = ({navigation}) => {
     }
   }
 
-  /**
-   * 감정 배열
-   */
-  const moodArr = [
-    "happy",           // 기쁨
-    "disgust",         // 혐오
-    "surprised",       // 놀람
-    "angry",           // 화남
-    "sad",             // 슬픔
-    "fear",            // 두려움
-    "expressionless",  // 무표정
-  ]
-
-  /**
-   * 영어로된 감정을 한글로 바꿔주는 함수
-   * @param {string} moodEng 
-   * @returns {string}moodKr
-   */
-  const moodEngToKr = (moodEng) => {
-    switch (moodEng) {
-      case "happy":
-        return "기쁨"
-      case "disgust":
-        return "혐오"
-      case "surprised":
-        return "놀람"
-      case "angry":
-        return "화남"
-      case "sad":
-        return "슬픔"
-      case "fear":
-        return "두려움"
-      case "expressionless":
-        return "무표정"
-    }
-  }
-
-    /**
-   * 이미지의 로컬 경로를 리턴하는 함수
-   * @param {string} moodWeather 
-   * @returns require(url)
-   */
-  const MoodWeatherFile = (moodWeather) => {
-    switch (moodWeather) {
-      case 'sunny': return require('../../assets/images/weather/sunny.png')
-      case 'littleCloud': return require('../../assets/images/weather/littleCloud.png')
-      case 'cloudy': return require('../../assets/images/weather/cloudy.png')
-      case 'lightning': return require('../../assets/images/weather/lightning.png')
-      case 'rain': return require('../../assets/images/weather/rain.png')
-      case 'snow': return require('../../assets/images/weather/snow.png')
-      case 'sunny': return require('../../assets/images/weather/sunny.png')
-      case 'angry': return require('../../assets/images/mood/angry.png')
-      case 'disgust': return require('../../assets/images/mood/disgust.png')
-      case 'expressionless': return require('../../assets/images/mood/expressionless.png')
-      case 'fear': return require('../../assets/images/mood/fear.png')
-      case 'happy': return require('../../assets/images/mood/happy.png')
-      case 'sad': return require('../../assets/images/mood/sad.png')
-      case 'surprised': return require('../../assets/images/mood/surprised.png')
-    }
-  }
 
   /**
    * 무드트레커 정보 받아와서 useState로 관리
