@@ -5,7 +5,6 @@ import {View, StyleSheet, Text, Modal, Pressable, Alert, useColorScheme} from 'r
 import GlobalStyle from '../globalStyle/GlobalStyle'
 import ModeColorStyle from '../globalStyle/ModeColorStyle';
 import { deleteDiarys } from '../util/database';
-import { deleteDiary } from '../util/firebase/CRUD';
 
 /**
  * 일기 삭제 안내 모달창
