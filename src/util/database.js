@@ -182,3 +182,33 @@ export const getDiarySearch = (title, mood, weather, startDate, endDate) => {
     });
   });
 }
+
+/**
+ * 일기가 있는 날짜 배열을 구하는 함수
+ * @returns {Array}일기가 있는 날짜
+ */
+export const getDiaryDates = () => {
+  try{
+    return new Promise((resolve, reject) => {
+      db.transaction((tx) => {
+        tx.executeSql(
+          `SELECT date FROM diary`,
+          [],
+          (_, { rows }) => {
+            let diarys = []
+            rows._array.forEach(element => {
+              diarys.push(element['date'])
+            });
+            resolve(diarys);
+          },
+          (_, error) => {
+            reject(error);
+          }
+        );
+      });
+    });
+  }
+  catch(e) {
+    console.error(e)
+  }
+}
