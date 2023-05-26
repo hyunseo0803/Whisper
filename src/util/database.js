@@ -79,7 +79,12 @@ export const deleteDiarys = async(id) => {
   }
 }
 
-
+/**
+ * 월별 감정 count
+ * @param {int} month 
+ * @param {int} year 
+ * @returns 월별 감정 count
+ */
 export const getDiaryCountByMood = async(month, year) => {
   try{
     return new Promise((resolve, reject) => {
@@ -117,3 +122,4 @@ export const getDiaryCountByMood = async(month, year) => {
     console.error(e)
   }
 }
+
