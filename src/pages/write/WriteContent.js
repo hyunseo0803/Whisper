@@ -21,7 +21,8 @@ import { auth, db } from "../../../firebase";
 import * as ImagePicker from "expo-image-picker";
 import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import * as SQLite from "expo-sqlite";
+import { createTable } from "../../util/database";
 import {
 	getFirestore,
 	collection,
@@ -71,6 +72,7 @@ const WriteContent = ({ navigation, route }) => {
 	const [sound, setSound] = React.useState();
 	const [audioData, setAudioData] = React.useState({});
 	let [results, setResults] = useState([]);
+	const db = SQLite.openDatabase("database.db");
 
 	// TODO to 현서 : 프리미엄 회원 구분해주세요
 	const premium = false; // 프리미엄 회원 임시
@@ -115,32 +117,71 @@ const WriteContent = ({ navigation, route }) => {
 	};
 
 	const handleSave = async () => {
-		const diaryRef = collection(db, "diary");
-		const newDiaryRef = doc(diaryRef, `${doc(diaryRef).id}`);
 		try {
-			await setDoc(newDiaryRef, data);
-			console.log("성공---------------------!");
-			navigation.navigate("HomeTab", { audioData: audioData });
+			db.transaction(
+				(tx) => {
+					tx.executeSql(
+						`INSERT INTO diary(date,title,mood,weather,image,content,audio_id,sound,file,status) VALUES(?,?,?,?,?,?,?,?,?,?)`,
+						[
+							dDate,
+							dTitle,
+							dMood,
+							dWeather,
+							selectedImage,
+							dContent,
+							audioData.id,
+							audioData.sound,
+							audioData.file,
+							audioData.status,
+						],
+						(_, { rowsAffected }) => {
+							if (rowsAffected > 0) {
+								console.log("Data inserted successfully.");
+								navigation.navigate("HomeTab");
+							}
+						},
+						(_, error) => {
+							console.log("Failed to insert data:", error);
+						}
+					);
+				},
+				(error) => {
+					console.log("Transaction error:", error);
+				},
+				() => {
+					console.log("Transaction completed successfully.");
+				}
+			);
 		} catch (error) {
-			console.log(data);
-			console.error(
-				`Error message: ${error.message}\nStack trace: ${error.stack}`
-			);
-			console.log(
-				`title:'${dTitle},content:${dContent},uid:${u_id},date${new Date()},image:${selectedImage},mood:${dMood},weather:${dWeather}`
-			);
+			console.log("Failed to insert data:", error);
 		}
 	};
 
-	const data = {
-		title: dTitle,
-		content: dContent,
-		u_id: u_id,
-		date: dDate,
-		image: selectedImage,
-		mood: dMood,
-		weather: dWeather,
-	};
+	// 	const diaryRef = collection(db, "diary");
+	// 	const newDiaryRef = doc(diaryRef, `${doc(diaryRef).id}`);
+	// 	try {
+	// 		await setDoc(newDiaryRef, data);
+	// 		console.log("성공---------------------!");
+	// 		navigation.navigate("HomeTab", { audioData: audioData });
+	// 	} catch (error) {
+	// 		console.log(data);
+	// 		console.error(
+	// 			`Error message: ${error.message}\nStack trace: ${error.stack}`
+	// 		);
+	// 		console.log(
+	// 			`title:'${dTitle},content:${dContent},uid:${u_id},date${new Date()},image:${selectedImage},mood:${dMood},weather:${dWeather}`
+	// 		);
+	// 	}
+
+	// const data = {
+	// 	title: dTitle,
+	// 	content: dContent,
+	// 	u_id: u_id,
+	// 	date: dDate,
+	// 	image: selectedImage,
+	// 	mood: dMood,
+	// 	weather: dWeather,
+	// };
 
 	/**
 	 * 음성 녹음 / stt 관련 함수
@@ -275,6 +316,13 @@ const WriteContent = ({ navigation, route }) => {
 			console.log("Playing Sound");
 			await sound.playAsync();
 		}
+	};
+
+	const databasesetup = async () => {
+		db.transaction((tx) => {
+			tx.executeSql(`DROP TABLE IF EXISTS diary
+      `);
+		});
 	};
 
 	/**
@@ -449,6 +497,7 @@ const WriteContent = ({ navigation, route }) => {
 						<Pressable onPress={playAudio}>
 							<Text>녹음 내용 다시듣기</Text>
 						</Pressable>
+
 						{/* 본문 textInput */}
 
 						<TextInput
@@ -491,6 +540,9 @@ const WriteContent = ({ navigation, route }) => {
 								{contentLength}
 							</Text>
 						</View>
+						<Pressable onPress={databasesetup}>
+							<Text>데이터베이스초기화</Text>
+						</Pressable>
 
 						{premium ? (
 							<ScrollView horizontal>
