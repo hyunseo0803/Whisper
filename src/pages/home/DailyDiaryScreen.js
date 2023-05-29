@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, StyleSheet, Text, Dimensions, Image, ScrollView } from 'react-native';
 import LogoBlack from '../../../assets/images/Logo-black.png'
 import LogoRed from '../../../assets/images/logo.png'
@@ -6,17 +6,25 @@ import { COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_LIGHT_SECONDARY, COLOR_WHI
 import GlobalStyle from '../../globalStyle/GlobalStyle';
 import ModeColorStyle from '../../globalStyle/ModeColorStyle';
 import {changeMonth, changeNumberTwoLength} from '../../util/Calender'
+import PagerView from 'react-native-pager-view';
 
 function DailyDiaryScreen(props) {
   const {
-    year,
-    month,
-    day,
-    modalImg,
-    content,
-    title,
     isDark,
+    modalDatas
   } = props;
+
+  const [dateValues, setDateValues] = useState({
+    year :'',
+    month :'',
+    day :''
+  })
+
+
+  useEffect(() => {
+    const date = modalDatas[0].date.split('-')
+    setDateValues({year:date[0], month:changeMonth(date[1]*1), day:date[2]})
+  }, []);
 
   return (
     <View
@@ -30,32 +38,38 @@ function DailyDiaryScreen(props) {
           <Image source={LogoBlack} style={[styles(isDark).logo]} />
         )}
       <View style={styles(isDark).scrollBar}/>
-      <Text style={[styles(isDark).yearText, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_DEFALUT]}>{year}</Text>
-
+      <Text style={[styles(isDark).yearText, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_DEFALUT]}>{dateValues.year}</Text>
+    </View>
+    
+    <View style={styles(isDark).dateWrap}>
+      <Text style={[styles(isDark).dateMonth, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}>{dateValues.month}</Text>
+      <Text style={[styles(isDark).dateDay, GlobalStyle.font_title1, ModeColorStyle(isDark).font_DEFALUT]}>{dateValues.day}</Text>
     </View>
 
-    <ScrollView style={styles(isDark).scrollWrap}>
-      {/* <Text>Swipe down to close TEst</Text> */}
-      <View style={styles(isDark).dateWrap}>
-        <Text style={[styles(isDark).dateMonth, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}>{changeMonth(month)}</Text>
-        <Text style={[styles(isDark).dateDay, GlobalStyle.font_title1, ModeColorStyle(isDark).font_DEFALUT]}>{changeNumberTwoLength(day)}</Text>
-      </View>
+    <View style={[{flex:1, width:'100%'}]}>
+      <PagerView style={{flex:1}} initialPage={0}
+      overdrag={modalDatas.length===1? false:true}>
+        {
+          modalDatas.map((datas, index, array) => (
+            <ScrollView style={styles(isDark).scrollWrap} key={datas.id}>
 
-      {
-        modalImg !== '' &&
-        <View style={styles(isDark).imgWrap}>
-          <Image source={{ uri:  modalImg }} style={styles(isDark).imgStyle} />
-        </View>
-      }
-      
-      <Text style={[styles(isDark).titleText, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}>{title}</Text>
-      <Text style={[styles(isDark).contentText, GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>{content}</Text>
-    </ScrollView>
+              {
+                datas.image !== '' &&
+                <View style={styles(isDark).imgWrap}>
+                  <Image source={{ uri:  datas.image }} style={styles(isDark).imgStyle} />
+                </View>
+              }
+              <Text style={[styles(isDark).pageText, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_DEFALUT,
+              {display : array.length===1?'none':'flex'}]}>{index+1}/{array.length}</Text>
+
+              <Text style={[styles(isDark).titleText, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}>{datas.title}</Text>
+              <Text style={[styles(isDark).contentText, GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>{datas.content}</Text>
+            </ScrollView> 
+          ))
+        }
+        </PagerView>
+    </View>
   </View>
-      // <View style={styles.topWrap}>
-
-      // <View style={styles.contentWrap}>
-      // </View>
   );
 }
 
@@ -138,7 +152,7 @@ const styles = (isDark) => StyleSheet.create({
     },
     shadowOpacity: isDark ? 0 : 0.29,
     shadowRadius: 4.65,
-    marginBottom: 25
+    marginBottom: 10,
   },
   imgStyle:{
     flex: 1,
@@ -149,7 +163,11 @@ const styles = (isDark) => StyleSheet.create({
   /**
    * text 스타일
    */
+  pageText:{
+    textAlign: 'center'
+  },
   titleText:{
+    marginTop: 20,
     marginBottom: 10,
     width: '100%',
     textAlign: 'center',

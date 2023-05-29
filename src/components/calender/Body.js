@@ -17,13 +17,7 @@ function Body(props) {
     data,
   } = props;
 
-  // modal에 들어가는 values
-  const [ModalValue, setModalValue] = useState({
-    title: '',
-    content: '',
-    day: 0,
-    imguri: '',
-  });
+  const [modalData, setModalData] = useState([]); // modal에 들어가는 values
   const [totalDays, setTotalDays] = useState([]);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const DATA = data;
@@ -31,13 +25,8 @@ function Body(props) {
   const ModalSheetRef = useRef(null);
   const renderContent = () => (
     <DailyDiaryScreen
-      year = {year}
-      month = {month}
-      day = {ModalValue.day}
-      modalImg ={ModalValue.imguri}
-      content = {ModalValue.content}
-      title = {ModalValue.title}
       isDark ={isDark}
+      modalDatas = {modalData}
     />
   );
 
@@ -77,8 +66,8 @@ function Body(props) {
    * @param {int} day 
    */
   const findModalValue = (day) => {
-    let datas = DATA.find(data => data.date === `${year}-${changeNumberTwoLength(month)}-${changeNumberTwoLength(day)}`)
-    setModalValue({...ModalValue, day:day, imguri:datas?.image, title:datas?.title, content:datas?.content})
+    let datas = DATA.filter(data => data.date === `${year}-${changeNumberTwoLength(month)}-${changeNumberTwoLength(day)}`)
+    setModalData(datas)
   }
 
   // 요일 날짜 배열
