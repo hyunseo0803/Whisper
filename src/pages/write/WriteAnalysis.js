@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	View,
 	StyleSheet,
@@ -37,7 +37,7 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 	const selectedMood = params ? params.selectedMood : null;
 	const selectedWeather = params ? params.selectedWeather : null;
 	const selectedDate = params ? params.selectedDate : null;
-	const [buttonPressCount, setButtonPressCount] = useState(0);
+	const [buttonPressCount, setButtonPressCount] = useState(null);
 
 	/**
 	 * 카메라 접근권한 확인
@@ -59,11 +59,31 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 	/**
 	 * 사진 찍고 base64값 받는 함수
 	 */
+	useEffect(() => {
+		const fetchButtonPressCount = async () => {
+			try {
+				const storedButtonPressCount = await AsyncStorage.getItem(
+					"buttonPressCount"
+				);
+				if (storedButtonPressCount !== null) {
+					setButtonPressCount(storedButtonPressCount);
+				} else {
+					// 만약 저장된 값이 없다면 초기값을 설정해줄 수 있습니다.
+					setButtonPressCount("2");
+				}
+			} catch (error) {
+				// 오류 처리
+			}
+		};
+
+		fetchButtonPressCount();
+	}, []);
 	const pickImage = async () => {
 		//현재 날짜 받기 , 최근 버튼 누른 날짜 및 횟수 가져오기
 		const currentDate = new Date().toISOString().split("T")[0];
 		const storedDate = await AsyncStorage.getItem("buttonPressDate");
 		let buttonPressCount = await AsyncStorage.getItem("buttonPressCount");
+		// let buttonPressCount = parseInt(buttonPressCountstr);
 
 		//만약 한번도 버튼을 누른적이 없어서 가져올 storedDate 가 없는 경우
 		if (!storedDate) {
@@ -87,12 +107,14 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 			setButtonPressCount(buttonPressCount);
 		} else {
 			// 버튼 누름 횟수가 있는 경우
-			if (buttonPressCount > 0) {
-				// 버튼 누름 횟수가 2보다 작은 경우, 횟수 증가
-				buttonPressCount = buttonPressCount - 1;
+			let count = parseInt(buttonPressCount);
+			if (count > 0) {
+				// 버튼 누름 횟수가 2보다 작은 경우, 횟수 감소
+				buttonPressCount = (count - 1).toString();
 				setButtonPressCount(buttonPressCount);
+				await AsyncStorage.setItem("buttonPressCount", buttonPressCount);
 			} else {
-				// 버튼 누름 횟수가 2인 경우, 누를 수 없음
+				// 버튼 누름 횟수가 0인 경우, 누를 수 없음
 				Alert.alert(
 					"오늘의 분석 티켓을 모두 사용하셨습니다. 내일 다시 이용하실 수 있어요 !"
 				);
@@ -231,6 +253,13 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 						</Text>
 					</View>
 				</Pressable>
+				{/* <Pressable
+					onPress={() => {
+						resetButtonCount();
+					}}
+				>
+					<Text>초기화</Text>
+				</Pressable> */}
 			</View>
 		</SafeAreaView>
 	);
