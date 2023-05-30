@@ -26,7 +26,7 @@ const Write = ({ navigation }) => {
 
 	const [selectedMood, setSelectedMood] = useState("");
 	const [selectedWeather, setSelectedWeather] = useState("");
-	const [selectedDate, setSelectedDate] = useState(`${DATE.getFullYear()}-${changeNumberTwoLength(DATE.getMonth())}-${DATE.getDate()}`);
+	const [selectedDate, setSelectedDate] = useState(`${DATE.getFullYear()}-${changeNumberTwoLength(DATE.getMonth()+1)}-${DATE.getDate()}`);
 	const [datepickershow, setDatepickerShow] = useState(false) 
   const [dotMarkingDate, setDotmarkingDate] = useState(false)
 
@@ -75,8 +75,6 @@ const Write = ({ navigation }) => {
     } 
     getDiaryDateFun()
   }, []);
-
-  console.log(selectedDate)
 
 	return (
 		<SafeAreaView

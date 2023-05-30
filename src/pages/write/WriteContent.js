@@ -22,7 +22,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SQLite from "expo-sqlite";
-import { createTable } from "../../util/database";
+import { createTable, insertDiary } from "../../util/database";
 import {
 	getFirestore,
 	collection,
@@ -67,8 +67,8 @@ const WriteContent = ({ navigation, route }) => {
 	const [recording, setRecording] = React.useState();
 	const [recordingUri, setRecordingUri] = useState("");
 	const [permissionResponse, requestPermission] = Audio.usePermissions();
-	const [sound, setSound] = React.useState();
-	const [audioData, setAudioData] = React.useState({});
+	const [sound, setSound] = useState();
+	const [audioData, setAudioData] = useState({});
 	let [results, setResults] = useState([]);
 	const db = SQLite.openDatabase("database.db");
 
@@ -108,50 +108,20 @@ const WriteContent = ({ navigation, route }) => {
 		}
 	};
 
-	const handleSavePress = () => {
-		handleSave();
-	};
+  console.log(dDate)
 
 	const handleSave = async () => {
-		try {
-			db.transaction(
-				(tx) => {
-					tx.executeSql(
-						`INSERT INTO diary(date,title,mood,weather,image,content,audio_id,sound,file,status) VALUES(?,?,?,?,?,?,?,?,?,?)`,
-						[
-							dDate,
-							dTitle,
-							dMood,
-							dWeather,
-							selectedImage,
-							dContent,
-							audioData.id,
-							audioData.sound,
-							audioData.file,
-							audioData.status,
-						],
-						(_, { rowsAffected }) => {
-							if (rowsAffected > 0) {
-								console.log("Data inserted successfully.");
-								// navigation.navigate("HomeTab");
-							}
-						},
-						(_, error) => {
-							console.log("Failed to insert data:", error);
-						}
-					);
-				},
-				(error) => {
-					console.log("Transaction error:", error);
-				},
-				() => {
-					console.log("Transaction completed successfully.");
-				}
-			);
-		} catch (error) {
-			console.log("Failed to insert data:", error);
-		}
+		try{
+      console.log('hi')
+      const isSaved = await insertDiary(dDate, dTitle, dMood, dWeather, selectedImage, dContent, audioData)
+      console.log(isSaved)
+      isSaved ? navigation.navigate("HomeTab") : Alert.alert("저장 실패!", '다시 시도해주세요');
+    } catch(e){
+      console.error(e)
+    }
 	};
+
+  console.log(audioData)
 
 	// 	const diaryRef = collection(db, "diary");
 	// 	const newDiaryRef = doc(diaryRef, `${doc(diaryRef).id}`);
@@ -398,9 +368,7 @@ const WriteContent = ({ navigation, route }) => {
 										{ text: "취소" },
 										{
 											text: "저장",
-											onPress: () => {
-												handleSavePress();
-											},
+											onPress: () => { handleSave() },
 										},
 									]
 								)

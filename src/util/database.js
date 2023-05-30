@@ -9,20 +9,92 @@ export const createTable = () => {
 	db.transaction((tx) => {
 		tx.executeSql(`CREATE TABLE IF NOT EXISTS diary 
                     ( id INTEGER PRIMARY KEY AUTOINCREMENT,
-                      date TEXT,
-                      title TEXT,
-                      mood TEXT,
-                      weather TEXT,
-                      image TEXT,
-                      content TEXT,
-                      audio_id TEXT,
-                      sound TEXT,
-                      file TEXT,
-                      status TEXT
+                      date TEXT NOT NULL,
+                      title TEXT NOT NULL,
+                      mood TEXT NOT NULL,
+                      weather TEXT NOT NULL,
+                      image TEXT NULL,
+                      content TEXT NOT NULL,
+                      audio_id TEXT NULL,
+                      sound TEXT NULL,
+                      file TEXT NULL,
+                      status TEXT NULL
                       )
     `);
 	});
 };
+
+// 'diary' 테이블 삭제
+const deleteDiaryTable = () => {
+  db.transaction(tx => {
+    tx.executeSql('DROP TABLE IF EXISTS diary', [], () => {
+      console.log('diary 테이블이 삭제되었습니다.');
+    },
+    error => {
+      console.log('diary 테이블 삭제 중 오류가 발생했습니다.', error);
+    });
+  });
+};
+// deleteDiaryTable()
+
+
+/**
+ * 일기 추가 함수
+ * @param {string} date 
+ * @param {string} title 
+ * @param {string} mood 
+ * @param {string} weather 
+ * @param {string} image 
+ * @param {string} content 
+ * @param {object} audioData 
+ * @returns true/false
+ */
+export const insertDiary = async(date, title, mood, weather, image, content, audioData) => {
+	try {
+    console.log(date)
+		return new Promise((resolve, reject) => {
+      db.transaction((tx) => {
+				tx.executeSql(
+					`INSERT INTO diary (date,title,mood,weather,image,content,audio_id,sound,file,status) VALUES(?,?,?,?,?,?,?,?,?,?)`,
+					[
+						date,
+						title,
+						mood,
+						weather,
+						image,
+						content,
+						audioData.id,
+						audioData.sound,
+						audioData.file,
+						audioData.status,
+					],
+					(_, { rowsAffected, insertId }) => {
+						if (rowsAffected > 0) {
+							console.log(`Data inserted successfully. ID:${insertId}`);
+              resolve(true)
+						}
+					},
+					(_, error) => {
+						console.log("Failed to insert data:", error);
+            reject(false)
+					}
+				);
+		})
+			},
+			(error) => {
+				console.log("Transaction error:", error);
+        reject(false)
+			},
+			() => {
+				console.log("Transaction completed successfully.");
+        resolve(true)
+			}
+		);
+	} catch (error) {
+		console.log("Failed to insert data:", error);
+	}
+}
+
 
 /**
  * 일기 조회 (시작날짜-종료날짜)
