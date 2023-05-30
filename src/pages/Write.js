@@ -76,6 +76,8 @@ const Write = ({ navigation }) => {
     getDiaryDateFun()
   }, []);
 
+  console.log(selectedDate)
+
 	return (
 		<SafeAreaView
 			style={[GlobalStyle.safeAreaWrap, {alignItems:'center', justifyContent:'center'}]}>
