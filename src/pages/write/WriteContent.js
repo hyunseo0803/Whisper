@@ -54,8 +54,6 @@ const WriteContent = ({ navigation, route }) => {
 	const [dContent, setDContent] = useState(""); // 일기 내용
 	const [contentLength, setContentLength] = useState(0);
 	const [img1, setImg1] = useState(""); // 오늘의 사진
-	const [img2, setImg2] = useState(""); // 프리미엄 유저부터 2번 3번 활성화
-	const [img3, setImg3] = useState("");
 	const [canSave, setCanSave] = useState(
 		isDark ? COLOR_DARK_THIRD : COLOR_LIGHT_THIRD
 	);
@@ -74,8 +72,6 @@ const WriteContent = ({ navigation, route }) => {
 	let [results, setResults] = useState([]);
 	const db = SQLite.openDatabase("database.db");
 
-	// TODO to 현서 : 프리미엄 회원 구분해주세요
-	const premium = false; // 프리미엄 회원 임시
 
 	useEffect(() => {
 		const { params } = route;
@@ -137,7 +133,7 @@ const WriteContent = ({ navigation, route }) => {
 						(_, { rowsAffected }) => {
 							if (rowsAffected > 0) {
 								console.log("Data inserted successfully.");
-								navigation.navigate("HomeTab");
+								// navigation.navigate("HomeTab");
 							}
 						},
 						(_, error) => {
@@ -156,8 +152,6 @@ const WriteContent = ({ navigation, route }) => {
 			console.log("Failed to insert data:", error);
 		}
 	};
-
-	console.log(dDate)
 
 	// 	const diaryRef = collection(db, "diary");
 	// 	const newDiaryRef = doc(diaryRef, `${doc(diaryRef).id}`);
@@ -328,45 +322,11 @@ const WriteContent = ({ navigation, route }) => {
 	};
 
 	/**
-	 * 프리미엄 유저인지 확인해서 글자 최대값 리턴
-	 * @param {boolean} premium
-	 * @returns maxLength
-	 */
-	const textLength = (premium) => {
-		if (premium) {
-			// 프리미엄 유저라면 글자수 제한 없음
-			return null;
-		} else {
-			// 일반 유저라면 글자수 500자 제한
-			return 500;
-		}
-	};
-
-	/**
 	 * 주제입력해주는 버튼 이벤트
 	 * @param {string} text
 	 */
 	const btnAddSubject = (text) => {
 		setDContent(dContent + text + "\n");
-	};
-
-	/**
-	 * 이미지 url 지정해주는 onChange 함수
-	 * @param {int} number
-	 * @param {string} url
-	 */
-	const onChangeImgUrl = (number, url) => {
-		switch (number) {
-			case 1:
-				setImg1(url);
-				break;
-			case 2:
-				setImg2(url);
-				break;
-			case 3:
-				setImg3(url);
-				break;
-		}
 	};
 
 	/**
@@ -512,7 +472,6 @@ const WriteContent = ({ navigation, route }) => {
 							}
 							editable
 							multiline
-							maxLength={textLength(premium)} // 프리미엄 회원이 맞으면 true, 아니면 false
 							textAlign="center"
 							style={[
 								BodyStyle.contentInput,
@@ -522,16 +481,6 @@ const WriteContent = ({ navigation, route }) => {
 						/>
 
 						<View style={BodyStyle.textCountWrap}>
-							{
-								// 프리미엄 회원이 아닐 때만 500자 제한 나타남
-								!premium && (
-									<Text
-										style={[{ color: "#86878C" }, GlobalStyle.font_caption2]}
-									>
-										500/
-									</Text>
-								)
-							}
 							<Text
 								style={[
 									{ color: "#86878C" },
@@ -546,51 +495,6 @@ const WriteContent = ({ navigation, route }) => {
 							<Text>데이터베이스초기화</Text>
 						</Pressable>
 
-						{premium ? (
-							<ScrollView horizontal>
-								<Pressable
-									style={BodyStyle.btnImg}
-									onPress={() => ImgPicker(1)}
-								>
-									<Image
-										source={
-											// 이미지 url이 있으면 해당 이미지 출력 / 아니면 샘플 이미지 출력
-											img1 === ""
-												? require("../../../assets/images/btnAddImg.png")
-												: { uri: img1 }
-										}
-										style={{ width: "100%", height: "100%" }}
-									/>
-								</Pressable>
-
-								<Pressable
-									style={BodyStyle.btnImg}
-									onPress={() => ImgPicker(2)}
-								>
-									<Image
-										source={
-											img2 === ""
-												? require("../../../assets/images/btnAddImg.png")
-												: { uri: img2 }
-										}
-										style={{ width: "100%", height: "100%" }}
-									/>
-								</Pressable>
-								<Pressable
-									style={BodyStyle.btnImg}
-									onPress={() => ImgPicker(3)}
-								>
-									<Image
-										source={
-											img3 === ""
-												? require("../../../assets/images/btnAddImg.png")
-												: { uri: img3 }
-										}
-										style={{ width: "100%", height: "100%" }}
-									/>
-								</Pressable>
-							</ScrollView>
-						) : (
 							<View
 								style={{
 									width: "100%",
@@ -613,7 +517,6 @@ const WriteContent = ({ navigation, route }) => {
 									)}
 								</Pressable>
 							</View>
-						)}
 					</ScrollView>
 				</Pressable>
 			</KeyboardAvoidingView>
