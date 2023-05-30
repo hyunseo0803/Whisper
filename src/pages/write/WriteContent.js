@@ -14,14 +14,11 @@ import {
 	useColorScheme,
 } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
-import { Ionicons, Feather } from "@expo/vector-icons";
-import btnAddImg from "../../../assets/images/btnAddImg.png";
-import { auth, db } from "../../../firebase";
+import { Ionicons, Feather, AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as SQLite from "expo-sqlite";
-import { createTable, insertDiary } from "../../util/database";
+import { insertDiary } from "../../util/database";
 import ModeColorStyle from "../../globalStyle/ModeColorStyle";
 import {
 	COLOR_BLACK,
@@ -51,11 +48,8 @@ const WriteContent = ({ navigation, route }) => {
 	const [selectedImage, setSelectedImage] = useState("");
 
 	const [isRecording, setIsRecording] = useState(false);
-	const [recording, setRecording] = React.useState();
-	const [recordingUri, setRecordingUri] = useState("");
+	const [recording, setRecording] = useState();
 	const [audioData, setAudioData] = useState({});
-	const db = SQLite.openDatabase("database.db");
-
 
 	useEffect(() => {
 		const { params } = route;
@@ -110,7 +104,6 @@ const WriteContent = ({ navigation, route }) => {
 		await recording.stopAndUnloadAsync();
 		const recordingUri = recording.getURI();
 
-		console.log(recordingUri);
 		const { sound, status } = await recording.createNewLoadedSoundAsync();
 		const audioId = generateUniqueId();
 		const audio = {
@@ -122,9 +115,7 @@ const WriteContent = ({ navigation, route }) => {
 
 		//스토리지 저장
 		await AsyncStorage.setItem(`audio_${audio.id}`, JSON.stringify(audio));
-		const result = "녹음 완료 ";
 		setAudioData(audio);
-		setResults(result);
 	};
 
 	const startRecording = async () => {
@@ -171,6 +162,22 @@ const WriteContent = ({ navigation, route }) => {
 		}
 	};
 
+  /**
+   * 녹음 삭제해주는 함수
+   */
+  const deleteAudio = () => {
+    Alert.alert('녹음을 삭제하시겠습니까?',
+    "삭제하신 내용은 복구가 불가능합니다.",
+    [
+      {text: "유지하기"},
+      {text: "삭제하기",
+        // TODO to 현서: 삭제 기능 넣어주세요
+        // onPress={}
+      }
+    ]
+    )
+  }
+
 	/**
 	 * 주제입력해주는 버튼 이벤트
 	 * @param {string} text
@@ -194,6 +201,7 @@ const WriteContent = ({ navigation, route }) => {
 		}
 	}, [dContent, dTitle]);
 
+
 	return (
 		<SafeAreaView style={GlobalStyle.safeAreaWrap}>
 			<KeyboardAvoidingView style={{ flex: 1 }} behavior={"padding"}>
@@ -211,6 +219,7 @@ const WriteContent = ({ navigation, route }) => {
 										},
 										{
 											text: "홈으로",
+                      // TODO to 현서 : pop하면 바로 전 화면으로 가용, 아예 홈화면으로 나가게 부탁드립니당
 											onPress: () => navigation.pop(),
 										},
 									]
@@ -282,24 +291,40 @@ const WriteContent = ({ navigation, route }) => {
 								]}
 							/>
 						</View>
+
 						{/* 음성녹음 버튼 */}
-						<Pressable
-							style={BodyStyle.btnMic}
-							onPress={() => (recording ? stopRecording() : startRecording())}
-						>
-							<Text>{recording ? "Stop Recording" : "Start Recording"} </Text>
-							{/* <Ionicons name="mic-circle" size={45} color="#E76B5C"></Ionicons> */}
-						</Pressable>
-						{recordingUri ? <Text>Recording URI: {recordingUri}</Text> : null}
-						<Pressable onPress={playAudio}>
-							<Text>녹음 내용 다시듣기</Text>
-						</Pressable>
+            <View style={BodyStyle.micWrap}>
+              {
+                audioData.id !== undefined ?
+                (<Pressable onPress={deleteAudio}>
+                  <Ionicons name="close-circle" size={45} color={isDark?COLOR_DARK_RED:COLOR_LIGHT_RED} />
+                </Pressable>)
+                :
+                null
+              }
+              <Pressable
+                style={BodyStyle.btnMic}
+                onPress={() => (recording ? stopRecording() : startRecording())}>
+                <Ionicons
+                  name={recording ? "stop-circle" : "mic-circle"}
+                  size={45}
+                  color={isDark?COLOR_DARK_RED:COLOR_LIGHT_RED}
+                />
+              </Pressable>
+              {
+                audioData.id !== undefined ?
+                (<Pressable onPress={playAudio}>
+                  <Ionicons name="play-circle" size={45} color={isDark?COLOR_DARK_RED:COLOR_LIGHT_RED} />
+                </Pressable>)
+                :
+                null
+              }
+            </View>
 
 						{/* 본문 textInput */}
 
 						<TextInput
 							onChangeText={(text) => setDContent(text)}
-							value={isRecording ? results + dContent : dContent}
 							placeholder="음성 인식 기능(녹음시작)을 활용하거나 직접 입력하여 일기를 기록해 보세요! 
             여러분의 이야기를 기록해드릴게요. 오늘은 어떤 하루였나요? :)"
 							placeholderTextColor={
@@ -404,9 +429,20 @@ const BodyStyle = StyleSheet.create({
 		borderColor: "#86878C",
 	},
 
+  /**
+   * 음성 녹음 관련 wrap
+   */
+  micWrap:{
+    display: 'flex',
+    flexDirection: 'row', 
+    marginTop: 10,
+    alignItems: "center",
+    justifyContent: 'center'
+  },
 	btnMic: {
-		marginTop: 18,
 		alignItems: "center",
+    marginHorizontal: 10,
+    padding: 5
 	},
 
 	contentInput: {
