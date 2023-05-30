@@ -18,11 +18,8 @@ import GlobalStyle from "../../globalStyle/GlobalStyle";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import btnAddImg from "../../../assets/images/btnAddImg.png";
 import { auth, db } from "../../../firebase";
-import { onAuthStateChanged } from "firebase/auth";
 import * as ImagePicker from "expo-image-picker";
 import { Audio } from "expo-av";
-import * as FileSystem from "expo-file-system";
-import * as Speech from "expo-speech";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
@@ -33,11 +30,20 @@ import {
 	Firestore,
 } from "firebase/firestore";
 import ModeColorStyle from "../../globalStyle/ModeColorStyle";
-import { COLOR_BLACK, COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY, COLOR_LIGHT_THIRD } from "../../globalStyle/color";
+import {
+	COLOR_BLACK,
+	COLOR_DARK_RED,
+	COLOR_DARK_SECONDARY,
+	COLOR_DARK_THIRD,
+	COLOR_DARK_WHITE,
+	COLOR_LIGHT_RED,
+	COLOR_LIGHT_SECONDARY,
+	COLOR_LIGHT_THIRD,
+} from "../../globalStyle/color";
 import HeaderText from "../../components/Header";
 
 const WriteContent = ({ navigation, route }) => {
-	const isDark = useColorScheme() === 'dark'
+	const isDark = useColorScheme() === "dark";
 
 	const [dSubject, setDSubject] = useState([]); // 일기 주제
 	const [dMood, setDMood] = useState("");
@@ -49,7 +55,9 @@ const WriteContent = ({ navigation, route }) => {
 	const [img1, setImg1] = useState(""); // 오늘의 사진
 	const [img2, setImg2] = useState(""); // 프리미엄 유저부터 2번 3번 활성화
 	const [img3, setImg3] = useState("");
-	const [canSave, setCanSave] = useState(isDark? COLOR_DARK_THIRD : COLOR_LIGHT_THIRD);
+	const [canSave, setCanSave] = useState(
+		isDark ? COLOR_DARK_THIRD : COLOR_LIGHT_THIRD
+	);
 	const [u_id, setU_id] = useState("");
 	const [selectedImage, setSelectedImage] = useState("");
 	// const [audioId, setAudioId] = useState("");
@@ -223,7 +231,8 @@ const WriteContent = ({ navigation, route }) => {
 			// 	rate: 1,
 			// });
 		} catch (error) {
-			console.error("음성 인식 및 녹음을 시작할 수 없습니다:", error);
+			// console.error("음성 인식 및 녹음을 시작할 수 없습니다:", error);
+			Alert.alert("설정에서 마이크 권한을 허용해주세요");
 		}
 	};
 
@@ -332,10 +341,9 @@ const WriteContent = ({ navigation, route }) => {
 			dContent.replace(/\s/g, "") === "" ||
 			dTitle.replace(/\s/g, "") === ""
 		) {
-      isDark ? setCanSave(COLOR_DARK_THIRD) : setCanSave(COLOR_LIGHT_THIRD)
-			;
+			isDark ? setCanSave(COLOR_DARK_THIRD) : setCanSave(COLOR_LIGHT_THIRD);
 		} else {
-      isDark ? setCanSave(COLOR_DARK_RED) : setCanSave(COLOR_LIGHT_RED)
+			isDark ? setCanSave(COLOR_DARK_RED) : setCanSave(COLOR_LIGHT_RED);
 		}
 	}, [dContent, dTitle]);
 
@@ -362,11 +370,15 @@ const WriteContent = ({ navigation, route }) => {
 								);
 							}}
 						>
-							<Ionicons name="arrow-back-outline" size={40} color={isDark ? COLOR_DARK_WHITE : COLOR_BLACK} />
+							<Ionicons
+								name="arrow-back-outline"
+								size={40}
+								color={isDark ? COLOR_DARK_WHITE : COLOR_BLACK}
+							/>
 						</Pressable>
-            <View style={{marginTop:20}}>
-							<HeaderText headerText='Write Diary'/>
-            </View>
+						<View style={{ marginTop: 20 }}>
+							<HeaderText headerText="Write Diary" />
+						</View>
 						<Pressable
 							onPress={() =>
 								Alert.alert(
@@ -418,7 +430,11 @@ const WriteContent = ({ navigation, route }) => {
 								value={dTitle}
 								onChangeText={(text) => setDTitle(text)}
 								placeholder="일기에 제목을 붙여주세요"
-								style={[BodyStyle.titleInput, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}
+								style={[
+									BodyStyle.titleInput,
+									GlobalStyle.font_title2,
+									ModeColorStyle(isDark).font_DEFALUT,
+								]}
 							/>
 						</View>
 						{/* 음성녹음 버튼 */}
@@ -440,12 +456,18 @@ const WriteContent = ({ navigation, route }) => {
 							value={isRecording ? results + dContent : dContent}
 							placeholder="음성 인식 기능(녹음시작)을 활용하거나 직접 입력하여 일기를 기록해 보세요! 
             여러분의 이야기를 기록해드릴게요. 오늘은 어떤 하루였나요? :)"
-            placeholderTextColor={isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY}
+							placeholderTextColor={
+								isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY
+							}
 							editable
 							multiline
 							maxLength={textLength(premium)} // 프리미엄 회원이 맞으면 true, 아니면 false
 							textAlign="center"
-							style={[BodyStyle.contentInput, GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}
+							style={[
+								BodyStyle.contentInput,
+								GlobalStyle.font_body,
+								ModeColorStyle(isDark).font_DEFALUT,
+							]}
 						/>
 
 						<View style={BodyStyle.textCountWrap}>
@@ -563,7 +585,7 @@ const headerStyle = StyleSheet.create({
 		flexWrap: "nowrap",
 	},
 	subjectBox: {
-    boxSizing:'border-box',
+		boxSizing: "border-box",
 		backgroundColor: "#4E4981",
 		paddingHorizontal: 15,
 		paddingVertical: 10,
@@ -603,7 +625,7 @@ const BodyStyle = StyleSheet.create({
 		width: "100%",
 		marginTop: 5,
 		minHeight: 250,
-    maxHeight: 500
+		maxHeight: 500,
 	},
 
 	textCountWrap: {
