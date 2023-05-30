@@ -61,18 +61,25 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 	 */
 	useEffect(() => {
 		const fetchButtonPressCount = async () => {
-			try {
+			const currentDate = new Date().toISOString().split("T")[0];
+			const storedDate = await AsyncStorage.getItem("buttonPressDate");
+
+			if (!storedDate || storedDate !== currentDate) {
+				// 현재 날짜와 이전에 저장된 날짜가 다른 경우
+				await AsyncStorage.setItem("buttonPressDate", currentDate);
+				await AsyncStorage.setItem("buttonPressCount", "2"); // 초기값으로 2를 설정
+				setButtonPressCount("2");
+			} else {
+				// 이전에 저장된 날짜와 현재 날짜가 같은 경우
 				const storedButtonPressCount = await AsyncStorage.getItem(
 					"buttonPressCount"
 				);
 				if (storedButtonPressCount !== null) {
 					setButtonPressCount(storedButtonPressCount);
 				} else {
-					// 만약 저장된 값이 없다면 초기값을 설정해줄 수 있습니다.
+					// 만약 저장된 값이 없다면 초기값
 					setButtonPressCount("2");
 				}
-			} catch (error) {
-				// 오류 처리
 			}
 		};
 
