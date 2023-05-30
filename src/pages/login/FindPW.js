@@ -74,7 +74,7 @@ export default function FindPW() {
           }}
         >
           <TextInput
-            style={[styles.inputbox, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_primary]}
+            style={[styles.inputbox, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_DEFALUT]}
             value={email}
             placeholder="이메일"
             label="email"
@@ -102,6 +102,7 @@ export default function FindPW() {
                   fontSize: 20,
                 },
                 GlobalStyle.font_title2,
+                ModeColorStyle(isDark).font_DEFALUT
               ]}
             >
               메일 보내기

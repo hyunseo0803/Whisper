@@ -11,19 +11,27 @@ import ModeColorStyle from "../../globalStyle/ModeColorStyle";
 import { COLOR_DARK_PRIMARY, COLOR_LIGHT_PRIMARY } from "../../globalStyle/color";
 
 export default function LoginButton(props) {
+
+	const {
+		handleLogin,
+    isDark,
+    title
+	} = props;
+
 	return (
 		<View style={styles.loginButtonWrap}>
 			<Pressable
-				style={[styles.loginbutton, ModeColorStyle(props.isDark).bg_RED]}
-				onPress={props.handleLogin}
+				style={[styles.loginbutton, ModeColorStyle(isDark).bg_RED]}
+				onPress={handleLogin}
 			>
 				<Text
 					style={[
-						{ fontSize: 20, color: COLOR_DARK_PRIMARY },
+						{ fontSize: 20 },
 						GlobalStyle.font_title2,
+						ModeColorStyle(isDark).font_DEFALUT
 					]}
 				>
-					{props.title}
+					{title}
 				</Text>
 			</Pressable>
 		</View>

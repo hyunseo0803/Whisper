@@ -94,7 +94,7 @@ export default function Login({ navigation }) {
         </View>
 
         {/* 로그인버튼 */}
-        <LoginButton handleLogin={handleLogin} title='로그인'/>
+        <LoginButton handleLogin={handleLogin} title='로그인' isDark={isDark}/>
 
         {/* 비밀번호 재설정 | 회원가입 */}
         <PwSettingSignup navigation={navigation}/>

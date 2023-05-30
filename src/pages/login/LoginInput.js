@@ -8,9 +8,18 @@ import { Ionicons } from "@expo/vector-icons";
 import { Pressable } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import { COLOR_DARK_BLUE, COLOR_DARK_PRIMARY, COLOR_DARK_QUATERNARY, COLOR_DARK_SECONDARY, COLOR_LIGHT_BLUE, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_SECONDARY } from "../../globalStyle/color";
+import ModeColorStyle from "../../globalStyle/ModeColorStyle";
 
 export default function LoginInput(props) {
 	const [showPassword, setShowPassword] = useState(false);
+
+  const {
+    isDark,
+    email,
+    setEmail,
+    password,
+    setPassword
+  } = props
 
 	const passwordShowcheck = () => {
 		setShowPassword(!showPassword);
@@ -26,11 +35,11 @@ export default function LoginInput(props) {
 			}}
 		>
 			<TextInput
-				style={[styles(props.isDark).inputbox, GlobalStyle.font_caption1]}
-				value={props.email}
+				style={[styles(isDark).inputbox, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_DEFALUT]}
+				value={email}
 				placeholder="이메일"
 				label="email"
-				onChangeText={props.setEmail}
+				onChangeText={setEmail}
         keyboardType="email-address"
 			/>
 			<View
@@ -40,18 +49,18 @@ export default function LoginInput(props) {
 				}}
 			>
 				<TextInput
-					style={[styles(props.isDark).inputbox, GlobalStyle.font_caption1]}
-					value={props.password}
+					style={[styles(isDark).inputbox, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_DEFALUT]}
+					value={password}
 					placeholder="비밀번호"
-					onChangeText={props.setPassword}
+					onChangeText={setPassword}
 					label="Password"
 					secureTextEntry={!showPassword}
 				/>
-				<Pressable style={styles(props.isDark).selectShow} onPress={passwordShowcheck}>
+				<Pressable style={styles(isDark).selectShow} onPress={passwordShowcheck}>
 					<Ionicons
 						name={showPassword ? "eye-off-outline" : "eye-outline"}
 						size={24}
-						color={props.isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY}
+						color={isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY}
 					/>
 				</Pressable>
 			</View>

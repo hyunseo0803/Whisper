@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import NameLogo from "../../../assets/images/logo.png";
-import GoogleLogo from "../../../assets/images/GoogleLogo.png";
 import { Pressable } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import LoginInput from "../login/LoginInput";
@@ -31,14 +30,14 @@ export default function SignUp({navigation}) {
 	function onAuthStateChanged(user) {
 		setUser(user);
 		if (initializing) setInitializing(false);
-	  }
+	}
   
-	  useEffect(() => {
-		const subscriber = onAuthStateChanged(onAuthStateChanged);
-		return subscriber; // unsubscribe on unmount
-	  }, []);
+	useEffect(() => {
+	const subscriber = onAuthStateChanged(onAuthStateChanged);
+	return subscriber; // unsubscribe on unmount
+	}, []);
 
-	  if (initializing) return null;
+	if (initializing) return null;
 
   /**
    * 회원가입 버튼 click함수
@@ -87,7 +86,7 @@ export default function SignUp({navigation}) {
 				/>
 
 				{/* 회원가입 버튼 */}
-				<LoginButton handleLogin={handleSignUp} title='회원가입하기' />
+				<LoginButton handleLogin={handleSignUp} title='회원가입하기' isDark={isDark} />
 
 			{/* sns로그인 */}
       {/* TODO : 현재 기술 스텍 문제로 인해 SNS 로그인 불가, 추후 추가 예정 */}
