@@ -153,13 +153,10 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 			<SafeAreaView
 				style={{
 					display: "flex",
-					// flex: 1,
-					// justifyContent: "center",
 					alignItems: "center",
 					marginHorizontal: "5%",
 					marginVertical: "10%",
 					height: "90%",
-					// backgroundColor: "red",
 				}}
 			>
 				{isLoding ? (
@@ -284,23 +281,16 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 	},
-	// loading_wrapper: {
-	// 	justifyContent: "center",
-	// 	alignItems: "center",
-	// 	backgroundColor: "yellow",
-	// },
+
 	loading: {
 		width: 350,
 		height: 350,
-
-		// backgroundColor: "red",
 	},
 	result: {
 		width: "100%",
 		justifyContent: "center",
 		alignContent: "center",
 		textAlign: "center",
-		// backgroundColor: "yellow",
 	},
 
 	title: {
@@ -315,26 +305,22 @@ const styles = StyleSheet.create({
 		width: "100%",
 		justifyContent: "center",
 		alignItems: "center",
-		// backgroundColor: "red",
 	},
 	icon: {
 		width: 90,
 		height: 90,
 		marginBottom: 15,
 		borderRadius: 42,
-		// backgroundColor: "yellow",
 		justifyContent: "flex-start",
 		alignSelf: "center",
 		overflow: "hidden",
 		resizeMode: "contain",
-		// alignSelf: "center",
 	},
 
 	subject: {
 		width: "100%",
 		display: "flex",
 		flexDirection: "row",
-		// backgroundColor: "red",
 		flexWrap: "wrap",
 		marginTop: 10,
 	},
@@ -382,7 +368,6 @@ const styles = StyleSheet.create({
 	buttonText: {
 		textAlign: "center",
 		lineHeight: 55,
-		// textAlign: "center",
 	},
 });
 

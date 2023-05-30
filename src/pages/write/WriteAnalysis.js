@@ -90,7 +90,6 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 		const currentDate = new Date().toISOString().split("T")[0];
 		const storedDate = await AsyncStorage.getItem("buttonPressDate");
 		let buttonPressCount = await AsyncStorage.getItem("buttonPressCount");
-		// let buttonPressCount = parseInt(buttonPressCountstr);
 
 		//만약 한번도 버튼을 누른적이 없어서 가져올 storedDate 가 없는 경우
 		if (!storedDate) {
@@ -130,7 +129,6 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 		}
 
 		await AsyncStorage.setItem("buttonPressCount", buttonPressCount);
-		console.log(buttonPressCount);
 		askPermissionsAsync();
 		let result = await ImagePicker.launchCameraAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images, // 이미지만 받음
@@ -149,17 +147,8 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 				selectedDate: selectedDate,
 			});
 		}
-		// }
-		// }
 	};
-	const resetButtonCount = async () => {
-		try {
-			await AsyncStorage.removeItem("buttonPressCount");
-			console.log("true");
-		} catch (error) {
-			console.log("AsyncStorage 초기화 오류:", error);
-		}
-	};
+
 	const Gowrite = async () => {
 		navigate("WriteContent", {
 			selectedMood: selectedMood,
@@ -176,7 +165,6 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 				marginHorizontal: "10%",
 				marginVertical: "10%",
 				height: "90%",
-				// backgroundColor: "red",
 			}}
 		>
 			<View style={styles.container}>
@@ -260,13 +248,6 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 						</Text>
 					</View>
 				</Pressable>
-				{/* <Pressable
-					onPress={() => {
-						resetButtonCount();
-					}}
-				>
-					<Text>초기화</Text>
-				</Pressable> */}
 			</View>
 		</SafeAreaView>
 	);
@@ -281,7 +262,6 @@ const styles = StyleSheet.create({
 	presswrap: {
 		marginTop: 80,
 		width: "100%",
-		// backgroundColor: "yellow",
 	},
 	presszone: {
 		width: "100%",
@@ -314,7 +294,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		marginVertical: 15,
-		// backgroundColor: "yellow",
 	},
 	icon: {
 		width: 40,
@@ -322,11 +301,8 @@ const styles = StyleSheet.create({
 	},
 
 	count: {
-		// backgroundColor: "red",
 		textAlign: "right",
 		marginHorizontal: 15,
-
-		// height: 100,
 	},
 });
 

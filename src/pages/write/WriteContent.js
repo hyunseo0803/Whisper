@@ -14,7 +14,6 @@ import {
 	useColorScheme,
 } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
-// import ImagePicker from "react-native-image-picker";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import btnAddImg from "../../../assets/images/btnAddImg.png";
 import { auth, db } from "../../../firebase";
@@ -23,13 +22,6 @@ import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SQLite from "expo-sqlite";
 import { createTable, insertDiary } from "../../util/database";
-import {
-	getFirestore,
-	collection,
-	setDoc,
-	doc,
-	Firestore,
-} from "firebase/firestore";
 import ModeColorStyle from "../../globalStyle/ModeColorStyle";
 import {
 	COLOR_BLACK,
@@ -53,23 +45,15 @@ const WriteContent = ({ navigation, route }) => {
 	const [dTitle, setDTitle] = useState(""); // 일기 제목
 	const [dContent, setDContent] = useState(""); // 일기 내용
 	const [contentLength, setContentLength] = useState(0);
-	const [img1, setImg1] = useState(""); // 오늘의 사진
 	const [canSave, setCanSave] = useState(
 		isDark ? COLOR_DARK_THIRD : COLOR_LIGHT_THIRD
 	);
-	const [u_id, setU_id] = useState("");
 	const [selectedImage, setSelectedImage] = useState("");
-	// const [audioId, setAudioId] = useState("");
-	// const user = auth.currentUser;
 
 	const [isRecording, setIsRecording] = useState(false);
-	// const [recognizedText, setRecognizedText] = useState("");
 	const [recording, setRecording] = React.useState();
 	const [recordingUri, setRecordingUri] = useState("");
-	const [permissionResponse, requestPermission] = Audio.usePermissions();
-	const [sound, setSound] = useState();
 	const [audioData, setAudioData] = useState({});
-	let [results, setResults] = useState([]);
 	const db = SQLite.openDatabase("database.db");
 
 
@@ -85,18 +69,7 @@ const WriteContent = ({ navigation, route }) => {
 		setDDate(selectedDate);
 	}, []);
 
-	useEffect(() => {
-		auth.onAuthStateChanged((user) => {
-			if (user) {
-				const u_id = user.uid;
-				setU_id(u_id);
-			} else {
-				setU_id(null);
-			}
-		});
-	});
 	const pickImage = async () => {
-		// askPermissionsAsync();
 		let imageData = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.All,
 			allowsEditing: true,
@@ -108,88 +81,32 @@ const WriteContent = ({ navigation, route }) => {
 		}
 	};
 
-  console.log(dDate)
-
 	const handleSave = async () => {
 		try{
-      console.log('hi')
       const isSaved = await insertDiary(dDate, dTitle, dMood, dWeather, selectedImage, dContent, audioData)
-      console.log(isSaved)
       isSaved ? navigation.navigate("HomeTab") : Alert.alert("저장 실패!", '다시 시도해주세요');
     } catch(e){
       console.error(e)
     }
 	};
 
-  console.log(audioData)
-
-	// 	const diaryRef = collection(db, "diary");
-	// 	const newDiaryRef = doc(diaryRef, `${doc(diaryRef).id}`);
-	// 	try {
-	// 		await setDoc(newDiaryRef, data);
-	// 		console.log("성공---------------------!");
-	// 		navigation.navigate("HomeTab", { audioData: audioData });
-	// 	} catch (error) {
-	// 		console.log(data);
-	// 		console.error(
-	// 			`Error message: ${error.message}\nStack trace: ${error.stack}`
-	// 		);
-	// 		console.log(
-	// 			`title:'${dTitle},content:${dContent},uid:${u_id},date${new Date()},image:${selectedImage},mood:${dMood},weather:${dWeather}`
-	// 		);
-	// 	}
-
-	// const data = {
-	// 	title: dTitle,
-	// 	content: dContent,
-	// 	u_id: u_id,
-	// 	date: dDate,
-	// 	image: selectedImage,
-	// 	mood: dMood,
-	// 	weather: dWeather,
-	// };
-
 	/**
 	 * 음성 녹음 / stt 관련 함수
 	 */
-	const recordingOptions = {
-		android: {
-			extension: ".m4a",
-			outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
-			audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
-			sampleRate: 44100,
-			numberOfChannels: 2,
-			bitRate: 128000,
-		},
-		ios: {
-			extension: ".wav",
-			audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_HIGH,
-			sampleRate: 44100,
-			numberOfChannels: 1,
-			bitRate: 128000,
-			linearPCMBitDepth: 16,
-			linearPCMIsBigEndian: false,
-			linearPCMIsFloat: false,
-		},
-	};
 
 	React.useEffect(() => {
 		getData();
 	}, []);
 
 	const generateUniqueId = () => {
-		// 원하는 방식으로 고유 식별 문자열 생성 (예: uuid 라이브러리 사용)
-		// 여기서는 임의의 숫자를 사용한 예시입니다.
+
 		return Math.random().toString(36).substr(2, 9);
 	};
 
 	const stopRecording = async () => {
 		console.log("Stopping recording..");
-		// await SpeechToText.stopSpeech();
-		// Speech.stop();
 		setIsRecording(false);
 		setRecording(undefined);
-		// if (recording) {
 		await recording.stopAndUnloadAsync();
 		const recordingUri = recording.getURI();
 
@@ -207,10 +124,7 @@ const WriteContent = ({ navigation, route }) => {
 		await AsyncStorage.setItem(`audio_${audio.id}`, JSON.stringify(audio));
 		const result = "녹음 완료 ";
 		setAudioData(audio);
-		// setAudioId(audioId);
 		setResults(result);
-		// setRecording(undefined);
-		// }
 	};
 
 	const startRecording = async () => {
@@ -229,37 +143,10 @@ const WriteContent = ({ navigation, route }) => {
 			);
 			setRecording(recording);
 			console.log("Recording started");
-			// await recoding.startAsync();
-			// setIsRecording(true);
-			// const initialText = "음성 인식을 시작합니다";
-			// Speech.speak(initialText, {
-			// 	language: "ko",
-			// 	pitch: 1,
-			// 	rate: 1,
-			// });
 		} catch (error) {
-			// console.error("음성 인식 및 녹음을 시작할 수 없습니다:", error);
 			Alert.alert("설정에서 마이크 권한을 허용해주세요");
 		}
 	};
-
-	// useEffect(() => {
-	// 	const recognitionListener = Speech.getAvailableVoicesAsync(
-	// 		({ error, results }) => {
-	// 			if (error) {
-	// 				console.error("음성 인식 중 오류 발생:", error);
-	// 				return;
-	// 			}
-
-	// 			const [text] = results;
-	// 			setDContent(text);
-	// 		}
-	// 	);
-
-	// 	return () => {
-	// 		recognitionListener.remove();
-	// 	};
-	// }, []);
 
 	/**
 	 * 녹음 재생
@@ -284,13 +171,6 @@ const WriteContent = ({ navigation, route }) => {
 		}
 	};
 
-	const databasesetup = async () => {
-		db.transaction((tx) => {
-			tx.executeSql(`DROP TABLE IF EXISTS diary
-      `);
-		});
-	};
-
 	/**
 	 * 주제입력해주는 버튼 이벤트
 	 * @param {string} text
@@ -299,19 +179,6 @@ const WriteContent = ({ navigation, route }) => {
 		setDContent(dContent + text + "\n");
 	};
 
-	/**
-	 * 이미지 picker 함수
-	 * @param {int} number
-	 */
-	const ImgPicker = async (number) => {
-		// TODO to 현서 : 함수 추가해주세요
-		Alert.alert(
-			`${number}번째 이미지`,
-			"이미지 피커로 이미지 uri 받아와주세요"
-		);
-
-		// onChangeImgUrl(number, 리턴값으로 받은 url)
-	};
 
 	useEffect(() => {
 		// 텍스트 길이 계산
@@ -459,10 +326,6 @@ const WriteContent = ({ navigation, route }) => {
 								{contentLength}
 							</Text>
 						</View>
-						<Pressable onPress={databasesetup}>
-							<Text>데이터베이스초기화</Text>
-						</Pressable>
-
 							<View
 								style={{
 									width: "100%",
