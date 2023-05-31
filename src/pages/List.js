@@ -27,7 +27,6 @@ const List = () => {
   const [howSortDiary, setHowSortDiary] = useState('ASC')       // asc(오름차순, 기본), decs(내림차순)
   const [redirect, setRedirect] = useState(false);
 
-
   // 데이터를 diaryList에 set해주는 useEffect
   useEffect(() => {
     getCalenderDataFun = async (month, year) => {
@@ -76,21 +75,28 @@ const List = () => {
       {/* 일기 list */}
       <ScrollView style={styles.listMainWrap}>
         {
-          diaryList?.map((diary, index) => (
-            <DiaryView
-              dId={diary.id}
-              key={index}
-              date = {(diary.date).replace(/\-/g, '.')}
-              title = {diary.title}
-              mood = {diary.mood}
-              weather = {diary.weather}
-              img = {diary.image}
-              voice = {diary.voice}
-              content = {diary.content}
-              setRedirect = {setRedirect}
-              isDark={isDark}
-            />
-          ))
+          diaryList?.map((diary, index) => {
+            audioObj = {}
+            audioObj['audio_id'] = diary.audio_id
+            audioObj['sound'] = diary.sound
+            audioObj['file'] = diary.file
+            audioObj['status'] = diary.status
+            return(
+              <DiaryView
+                dId={diary.id}
+                key={index}
+                date = {(diary.date).replace(/\-/g, '.')}
+                title = {diary.title}
+                mood = {diary.mood}
+                weather = {diary.weather}
+                img = {diary.image}
+                audioObj={audioObj}
+                content = {diary.content}
+                setRedirect = {setRedirect}
+                isDark={isDark}
+              />
+            )
+          })
         }
       </ScrollView>
 

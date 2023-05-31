@@ -5,6 +5,7 @@ import GlobalStyle from '../globalStyle/GlobalStyle';
 import DeleteMessage from './DeleteMessage';
 import { COLOR_BLACK, COLOR_DARK_BG, COLOR_DARK_FIVTH, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_WHITE, COLOR_LIGHT_BG, COLOR_LIGHT_FOURTH, COLOR_LIGHT_PRIMARY } from '../globalStyle/color';
 import ModeColorStyle from '../globalStyle/ModeColorStyle';
+import { getAudioData, playAudio } from '../util/audioRecord';
 
 /**
  * 
@@ -14,7 +15,7 @@ import ModeColorStyle from '../globalStyle/ModeColorStyle';
  * @param {props} mood 
  * @param {props} weather 
  * @param {props} img 
- * @param {props} voice 
+ * @param {props} audioObj
  * @param {props} content 
  * @param {props} setRedirect 
  * @param {props} isDark 
@@ -24,7 +25,21 @@ const DiaryView = (props) => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false) // 삭제 버튼 모달
 
-  const imgUrl = {uri : props.img}  // 이미지 주소
+  const {
+    did,
+    date,
+    title,
+    mood,
+    weather,
+    img,
+    audioObj,
+    content,
+    setRedirect,
+    isDark
+  } = props;
+
+  console.log(audioObj)
+  const imgUrl = {uri : img}  // 이미지 주소
   
   /**
    * 이미지의 로컬 경로를 리턴하는 함수
@@ -60,30 +75,30 @@ const DiaryView = (props) => {
   /**
    * 음성 녹음 재생 버튼
    */
-  const onClickVoice = () => {
-    // TODO to emyo : 일기 저장 기능 완료되면 음성 녹음 불러오는 기능 추가 바람.
-    Alert.alert("음성녹음 기능 추가 바람")
+  const onClickVoice = async() => {
+    const audioData = await getAudioData(audioObj.audio_id)
+    await playAudio(audioData)
   }
 
   return (
-    <View style={[styles.mainWrap, (props.isDark ? '' : styles.shadow), {backgroundColor : props.isDark ? COLOR_DARK_FOURTH : '#fff'}]}>
-      <Text style={[{marginBottom: 5}, GlobalStyle.font_caption2, ModeColorStyle(props.isDark).font_DEFALUT]}>{props.date}</Text>
-      <Text style={[{marginBottom: 5}, GlobalStyle.font_title1, ModeColorStyle(props.isDark).font_DEFALUT]}>{props.title}</Text>
+    <View style={[styles.mainWrap, (isDark ? '' : styles.shadow), {backgroundColor : isDark ? COLOR_DARK_FOURTH : '#fff'}]}>
+      <Text style={[{marginBottom: 5}, GlobalStyle.font_caption2, ModeColorStyle(isDark).font_DEFALUT]}>{date}</Text>
+      <Text style={[{marginBottom: 5}, GlobalStyle.font_title1, ModeColorStyle(isDark).font_DEFALUT]}>{title}</Text>
       
       <Pressable
       style={styles.btnDelete}
       onPress={() => onClickDelete()}
       >
-        <Ionicons name="ellipsis-vertical-outline" size={25} color={props.isDark ? COLOR_DARK_WHITE : COLOR_BLACK} />
+        <Ionicons name="ellipsis-vertical-outline" size={25} color={isDark ? COLOR_DARK_WHITE : COLOR_BLACK} />
       </Pressable>
       
       <View style={styles.moodWeatherWrap}>
-        <Image style={styles.moodWeatherImg} source={MoodWeatherFile(props.mood)}/>
-        <Image style={styles.moodWeatherImg} source={MoodWeatherFile(props.weather)}/>
+        <Image style={styles.moodWeatherImg} source={MoodWeatherFile(mood)}/>
+        <Image style={styles.moodWeatherImg} source={MoodWeatherFile(weather)}/>
       </View>
       {
         // 이미지가 없으면 자리차지 없도록 설정
-        props.img !== '' &&
+        img !== '' &&
         (<View style={styles.imgWrap}>
           <Image source={imgUrl} style={styles.imgBox}/>
         </View>)
@@ -92,15 +107,14 @@ const DiaryView = (props) => {
       <View style={styles.textWrap}>
         {
           // 음성이 없으면 마이크 아이콘 나타나지 않도록 설정
-          props.voice !== undefined &&
+          audioObj.audio_id !== null &&
           <Pressable
           style={{marginBottom: 10}}
-          onPress={() => onClickVoice()}
-          >
+          onPress={() => onClickVoice()}>
           <Ionicons name="mic-circle" size={40} color='#E76B5C' />
           </Pressable>
         }
-        <Text style={[GlobalStyle.font_body, {textAlign: 'center'}, ModeColorStyle(props.isDark).font_DEFALUT]}>{props.content}</Text>
+        <Text style={[GlobalStyle.font_body, {textAlign: 'center'}, ModeColorStyle(isDark).font_DEFALUT]}>{content}</Text>
       </View>
 
 
@@ -110,9 +124,9 @@ const DiaryView = (props) => {
         <DeleteMessage
         visible = {showDeleteModal}
         setVisible = {setShowDeleteModal}
-        wantDelteId = {props.dId}
-        wantDelteDate = {props.date}
-        setRedirect = {props.setRedirect}
+        wantDelteId = {dId}
+        wantDelteDate = {date}
+        setRedirect = {setRedirect}
         />
       }
 

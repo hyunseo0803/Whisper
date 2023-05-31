@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { View, StyleSheet, Text, Dimensions, Image, ScrollView } from 'react-native';
+import { View, StyleSheet, Text, Dimensions, Image, ScrollView, Pressable } from 'react-native';
 import LogoBlack from '../../../assets/images/Logo-black.png'
 import LogoRed from '../../../assets/images/logo.png'
 import { COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_LIGHT_SECONDARY, COLOR_WHITE } from '../../globalStyle/color';
@@ -7,6 +7,9 @@ import GlobalStyle from '../../globalStyle/GlobalStyle';
 import ModeColorStyle from '../../globalStyle/ModeColorStyle';
 import {changeMonth, changeNumberTwoLength} from '../../util/Calender'
 import PagerView from 'react-native-pager-view';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { getAudioData, playAudio } from '../../util/audioRecord';
+
 
 function DailyDiaryScreen(props) {
   const {
@@ -19,6 +22,14 @@ function DailyDiaryScreen(props) {
     month :'',
     day :''
   })
+
+  /**
+   * 음성 녹음 재생 버튼
+  */
+  const onClickVoice = async(aId) => {
+    const audioData = await getAudioData(aId)
+    await playAudio(audioData)
+  }
 
 
   useEffect(() => {
@@ -62,6 +73,14 @@ function DailyDiaryScreen(props) {
               <Text style={[styles(isDark).pageText, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_DEFALUT,
               {display : array.length===1?'none':'flex'}]}>{index+1}/{array.length}</Text>
 
+              {
+                datas.audio_id !== null &&
+                <Pressable
+                style={{marginTop: 10, alignItems: 'center'}}
+                onPress={() => onClickVoice(datas.audio_id)}>
+                <Ionicons name="mic-circle" size={40} color='#E76B5C' />
+                </Pressable>
+              }
               <Text style={[styles(isDark).titleText, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}>{datas.title}</Text>
               <Text style={[styles(isDark).contentText, GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>{datas.content}</Text>
             </ScrollView> 
