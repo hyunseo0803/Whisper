@@ -9,8 +9,9 @@ import {
 	Button,
 	TouchableOpacity,
 	ScrollView,
+  Alert
 } from "react-native";
-import { getGoogleVisionResult, moodAnalysis } from "../../util/writeDiary";
+import { getGoogleVisionResult, pickImage } from "../../util/writeDiary";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import happy from "../../../assets/images/mood/happy.png";
 import disgust from "../../../assets/images/mood/disgust.png";
@@ -81,8 +82,15 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 			setAnalysisIsLoding(false);
 			try {
 				const result = await getGoogleVisionResult(route.params.imageBase64);
-				setAnalysisMood(result);
-				setAnalysisIsLoding(true);
+
+				if(!result){
+          Alert.alert('얼굴 인식실패!', '카메라로 얼굴이 나오도록 지금 자신의 모습을 찍어주세요! \n 감정분석을 통해 일기 주제를 추천해드립니다.')
+					pickImage()
+        }
+        else{
+          setAnalysisMood(result);
+          setAnalysisIsLoding(true);
+        }
 			} catch (error) {
 				console.error(error);
 			}

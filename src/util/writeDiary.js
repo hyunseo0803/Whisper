@@ -1,11 +1,13 @@
 import {GOOGLE_VISION_KEY} from '@env'
+import { Alert } from 'react-native';
+import * as ImagePicker from "expo-image-picker";
 
 /**
  * 감정 중에 가장 가능성 있는걸 출력해주는 함수
  * @param {array} response 
  * @return {string} mood
  */
- const moodAnalysis = (response) => {
+const moodAnalysis = (response) => {
   const rate = {
     VERY_UNLIKELY : -1, // 매우 해당되지 않음
     UNLIKELY : 0,       // 해당되지 않음
@@ -15,6 +17,9 @@ import {GOOGLE_VISION_KEY} from '@env'
   }
   
   response.forEach(face => {
+    if(face.joyLikelihood===face.angerLikelihood===face.sorrowLikelihood===face.surpriseLikelihood){
+      return 'expressionless'
+    }
       alsMood = [
           {mood:'happy', percent: rate[face.joyLikelihood]},
           {mood:'angry', percent: rate[face.angerLikelihood]},
@@ -63,12 +68,51 @@ export const getGoogleVisionResult = async (base64) => {
     let responseJson = await response.json();
     console.log()
     if(JSON.stringify(responseJson.responses[0]) === '{}'){
-      Alert.alert('인식되지 못했습니다!', '카메라로 지금 자신의 모습을 찍어주세요!')
+      return false
     }else{
-      // console.log(moodAnalysis(responseJson.responses[0].faceAnnotations))
       return moodAnalysis(responseJson.responses[0].faceAnnotations)
     }
   } catch (error) {
     console.log(error);
+  }
+};
+
+
+/**
+ * 카메라 접근권한 확인
+ * @returns {boolean}true
+ */
+const askPermissionsAsync = async () => {
+	if (Platform.OS !== "web") {
+		const { status } = await ImagePicker.requestCameraPermissionsAsync();
+		if (status !== "granted") {
+			Alert.alert(
+				"카메라 접근 권한",
+				"설정으로 이동해서 카메라 접근권한을 허용해주세요!"
+			);
+			return false;
+		}
+		return true;
+	}
+};
+
+
+/**
+ * 사진 찍고 base64값 받는 함수
+ */
+export const pickImage = async () => {
+	askPermissionsAsync();
+	let result = await ImagePicker.launchCameraAsync({
+		mediaTypes: ImagePicker.MediaTypeOptions.Images, // 이미지만 받음
+		allowsEditing: true, // 사진 수정 허용 여부
+		aspect: [1, 1], // 사진의 비율
+		quality: 0.5,
+		base64: true,
+	});
+
+	if (!result.canceled) {
+    return result.assets[0].base64
+	}else{
+    return ''
   }
 };
