@@ -168,3 +168,21 @@ export const moodAnalysisButtonPressCount = async(setButtonPressCount) => {
 
 	await AsyncStorage.setItem("buttonPressCount", buttonPressCount);
 }
+
+/**
+ * 사진첩에서 이미지 선택
+ * @returns imgUri
+ */
+export const pickDiaryImage = async() => {
+  let imageData = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+  if (!imageData.canceled) {
+    return imageData.assets[0].uri;
+  }else{
+    return '';
+  }
+}
