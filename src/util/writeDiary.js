@@ -1,6 +1,7 @@
 import {GOOGLE_VISION_KEY} from '@env'
 import { Alert } from 'react-native';
 import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 /**
  * 감정 중에 가장 가능성 있는걸 출력해주는 함수
@@ -116,3 +117,54 @@ export const pickImage = async () => {
     return ''
   }
 };
+
+/**
+ * 감정분석 버튼 누른 횟수 카운트 함수
+ * @param {useState} setButtonPressCount 
+ * @returns 
+ */
+export const moodAnalysisButtonPressCount = async(setButtonPressCount) => {
+  //현재 날짜 받기 , 최근 버튼 누른 날짜 및 횟수 가져오기
+	const currentDate = new Date().toISOString().split("T")[0];
+	const storedDate = await AsyncStorage.getItem("buttonPressDate");
+	let buttonPressCount = await AsyncStorage.getItem("buttonPressCount");
+  
+	//만약 한번도 버튼을 누른적이 없어서 가져올 storedDate 가 없는 경우
+	if (!storedDate) {
+		//현재 날짜로 최근 버튼 누른 날짜 저장
+		await AsyncStorage.setItem("buttonPressDate", currentDate);
+	}
+	//최근 누른 날짜와 현재 날짜가 다른경우,
+	if (storedDate && storedDate !== currentDate) {
+		// 최근 누른 날짜에 현재 날짜로 업데이트
+		await AsyncStorage.setItem("buttonPressDate", currentDate);
+		// 버튼 누른 횟수 1로 업데이트
+		await AsyncStorage.setItem("buttonPressCount", "1");
+		buttonPressCount = "1";
+		setButtonPressCount(buttonPressCount);
+
+		//버튼 누른 적이 없는 경우
+	} else if (!buttonPressCount) {
+		//버튼 누른 횟수 1로 업데이트
+		await AsyncStorage.setItem("buttonPressCount", "1");
+		buttonPressCount = "1";
+		setButtonPressCount(buttonPressCount);
+	} else {
+		// 버튼 누름 횟수가 있는 경우
+		let count = parseInt(buttonPressCount);
+		if (count > 0) {
+			// 버튼 누름 횟수가 2보다 작은 경우, 횟수 감소
+			buttonPressCount = (count - 1).toString();
+			setButtonPressCount(buttonPressCount);
+			await AsyncStorage.setItem("buttonPressCount", buttonPressCount);
+		} else {
+			// 버튼 누름 횟수가 0인 경우, 누를 수 없음
+			Alert.alert(
+				"오늘의 분석 티켓을 모두 사용하셨습니다. 내일 다시 이용하실 수 있어요 !"
+			);
+			return;
+		}
+	}
+
+	await AsyncStorage.setItem("buttonPressCount", buttonPressCount);
+}

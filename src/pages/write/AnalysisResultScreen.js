@@ -1,16 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-	View,
-	StyleSheet,
-	Text,
-	Pressable,
-	SafeAreaView,
-	Image,
-	Button,
-	TouchableOpacity,
-	ScrollView,
-  Alert
-} from "react-native";
+import { View, StyleSheet, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { getGoogleVisionResult, pickImage } from "../../util/writeDiary";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import happy from "../../../assets/images/mood/happy.png";
@@ -21,9 +10,9 @@ import fear from "../../../assets/images/mood/fear.png";
 import expressionless from "../../../assets/images/mood/expressionless.png";
 import surprised from "../../../assets/images/mood/surprised.png";
 import { setupURLPolyfill } from "react-native-url-polyfill";
-import { loading } from "../../../assets/images/opener-loading.gif";
-import { Openai_Api_KEY } from "@env";
 import HeaderText from "../../components/Header";
+import { diaryTopicQuestion, questionToAI } from "../../util/diaryTopic";
+import { moodTextKr } from "../../util/MoodWeather";
 
 setupURLPolyfill();
 
@@ -40,14 +29,6 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	const selectedWeather = params ? params.selectedWeather : null;
 	const selectedDate = params.selectedDate;
 
-	const { Configuration, OpenAIApi } = require("openai");
-
-	const config = new Configuration({
-		apiKey: Openai_Api_KEY,
-	});
-
-	const openai = new OpenAIApi(config);
-
 	useEffect(() => {
 		setIsLoding(false);
 		if (analysisLoding && openaiLoding) {
@@ -56,8 +37,12 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 		if (analysisLoding === true && openaiLoding === true) {
 			setIsLoding(true);
 		}
-	});
+	}, [analysisLoding, openaiLoding]);
 
+  /**
+   * 일기 주제 선택 함수
+   * @param {string} topic 
+   */
 	const handelTopicPress = (topic) => {
 		if (selectedTopic.includes(topic)) {
 			setSelectedTopic(selectedTopic.filter((t) => t !== topic));
@@ -66,6 +51,10 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 		}
 	};
 	const isSelected = !!selectedTopic;
+  
+  /**
+   * 일기쓰기 화면으로 이동하는 함수
+   */
 	const handleNextButton = () => {
 		navigation.navigate("WriteContent", {
 			selectedTopic: selectedTopic,
@@ -73,10 +62,21 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 			selectedWeather: selectedWeather,
 			selectedDate: selectedDate,
 		});
-		console.log(`AnalysisMood: ${analysisMood}, topic: ${selectedTopic}`);
 	};
 
-	// console.log(selectedTopic);
+  /**
+   * moodImage 오브젝트
+   */
+  const moodImage = {
+    happy: happy,
+    sad: sad,
+    disgust: disgust,
+    surprised: surprised,
+    angry: angry,
+    fear: fear,
+    expressionless: expressionless
+  };
+
 	useEffect(() => {
 		const getGoogleVisionResultFun = async () => {
 			setAnalysisIsLoding(false);
@@ -106,52 +106,14 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	useEffect(() => {
 		const runPrompt = async () => {
 			setOpenaiLoding(false);
-			let prompt = "";
-			if (analysisMood === "happy") {
-				prompt = "기쁜 감정일때 쓰기좋은 재미있는 일기 주제 6가지 추천해줘.";
-			} else if (analysisMood === "sad") {
-				prompt = "슬픈 감정일때 쓰기좋은 재미있는 일기 주제 6가지 추천해줘.";
-			} else if (analysisMood === "fear") {
-				prompt =
-					"두려움이나 불안감을 느낄때 쓰기 좋은 재미있는 일기 주제 6가지 추천해줘.";
-			} else if (analysisMood === "angry") {
-				prompt = "화났을때 쓰기 좋은 재미있는 일기 주제 6가지 추천해줘.";
-			} else if (analysisMood === "surprised") {
-				prompt = "놀랐을때 쓰기 좋은 재미있는 일기 주제 6가지 추천해줘.";
-			} else if (analysisMood === "disgust") {
-				prompt = "혐오감을 느낄때 쓰기 좋은 재미있는 일기 주제 6가지 추천해줘.";
-			} else if (analysisMood === "expressionless") {
-				prompt = "재미있는 일기 주제 6가지 추천해줘.";
-			}
+			const prompt = diaryTopicQuestion(analysisMood);
 
 			if (prompt !== "") {
-				try {
-					const response = await openai.createCompletion({
-						model: "text-davinci-003",
-						prompt: prompt,
-						max_tokens: 2048,
-						temperature: 1,
-					});
-
-					try {
-						const answer = response.data.choices[0].text;
-						const subject = answer
-							.split("\n")
-							.map((item) => item.replace(/^\s*\d+\.\s*/, "# "))
-							.filter((item) => item);
-
-						setSubject(subject);
-
-						console.log(answer);
-						// console.log(answer);
-					} catch (error) {
-						console.error(error);
-					}
-					setOpenaiLoding(true);
-				} catch (error) {
-					console.error(error);
-				}
-			}
+        const result = await questionToAI(prompt, setSubject)
+        if(result){
+          setOpenaiLoding(true);
+        }
+      }
 		};
 		runPrompt();
 	}, [analysisMood]);
@@ -159,13 +121,7 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	return (
 		<ScrollView>
 			<SafeAreaView
-				style={{
-					display: "flex",
-					alignItems: "center",
-					marginHorizontal: "5%",
-					marginVertical: "10%",
-					height: "90%",
-				}}
+				style={[{ alignItems: "center" }, GlobalStyle.safeAreaWrap]}
 			>
 				{isLoding ? (
 					<View style={styles.result}>
@@ -176,42 +132,12 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 						{
 							// 분석된 감정이 공백이 아니면 분석감정 출력
 							analysisMood !== "" &&
-								(analysisMood === "happy" ? (
-									<View style={styles.analysis}>
-										<Image source={happy} style={styles.icon}></Image>
-										<Text style={GlobalStyle.font_body}>기쁨</Text>
-									</View>
-								) : analysisMood === "sad" ? (
-									<View style={styles.analysis}>
-										<Image source={sad} style={styles.icon}></Image>
-										<Text style={GlobalStyle.font_title2}>슬픔</Text>
-									</View>
-								) : analysisMood === "disgust" ? (
-									<View style={styles.analysis}>
-										<Image source={disgust} style={styles.icon}></Image>
-										<Text style={GlobalStyle.font_title2}>혐오</Text>
-									</View>
-								) : analysisMood === "surprised" ? (
-									<View style={styles.analysis}>
-										<Image source={surprised} style={styles.icon}></Image>
-										<Text style={GlobalStyle.font_title2}>놀라움</Text>
-									</View>
-								) : analysisMood === "angry" ? (
-									<View style={styles.analysis}>
-										<Image source={angry} style={styles.icon}></Image>
-										<Text style={GlobalStyle.font_title2}>화남</Text>
-									</View>
-								) : analysisMood === "fear" ? (
-									<View style={styles.analysis}>
-										<Image source={fear} style={styles.icon}></Image>
-										<Text style={GlobalStyle.font_title2}>두려움</Text>
-									</View>
-								) : analysisMood === "expressionless" ? (
-									<View style={styles.analysis}>
-										<Image source={expressionless} style={styles.icon}></Image>
-										<Text style={GlobalStyle.font_title2}>무표정</Text>
-									</View>
-								) : null)
+              (
+                <View style={styles.analysis}>
+									<Image source={moodImage[analysisMood]} style={styles.icon}></Image>
+                  <Text style={GlobalStyle.font_body}>{moodTextKr[analysisMood]}</Text>
+                </View>
+              )
 						}
 						<Text style={[GlobalStyle.font_title2, styles.topicTitle]}>
 							이런 주제는 어때요?
