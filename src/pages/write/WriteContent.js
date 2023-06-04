@@ -295,7 +295,7 @@ const WriteContent = ({ navigation, route }) => {
 									color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
 								/>
 							</Pressable>
-							{audioData.id !== undefined ? 
+							{audioData.id !== undefined &&
                 !isPlaying ? (<Pressable onPress={handlePlayAudio}>
 									<Ionicons
 										name="play-circle"
@@ -311,7 +311,7 @@ const WriteContent = ({ navigation, route }) => {
                     />
                   </Pressable>
                 )
-							: null}
+							}
 						</View>
 
 						{/* 본문 textInput */}
