@@ -38,7 +38,7 @@ const WriteContent = ({ navigation, route }) => {
 	const [dSubject, setDSubject] = useState([]); // 일기 주제
 	const [dMood, setDMood] = useState("");
 	const [dWeather, setDWeather] = useState("");
-	const [dDate, setDDate] = useState("");	// 일기 날짜
+	const [dDate, setDDate] = useState(""); // 일기 날짜
 	const [dTitle, setDTitle] = useState(""); // 일기 제목
 	const [dContent, setDContent] = useState(""); // 일기 내용
 	const [contentLength, setContentLength] = useState(0);
@@ -48,6 +48,8 @@ const WriteContent = ({ navigation, route }) => {
 	const [selectedImage, setSelectedImage] = useState("");
 
 	const [isRecording, setIsRecording] = useState(false);
+	const [sound, setSound] = useState(null);
+	const [isPlaying, setIsPlaying] = useState(false);
 	const [recording, setRecording] = useState();
 	const [audioData, setAudioData] = useState({});
 
@@ -76,12 +78,22 @@ const WriteContent = ({ navigation, route }) => {
 	};
 
 	const handleSave = async () => {
-		try{
-      const isSaved = await insertDiary(dDate, dTitle, dMood, dWeather, selectedImage, dContent, audioData)
-      isSaved ? navigation.navigate("HomeTab") : Alert.alert("저장 실패!", '다시 시도해주세요');
-    } catch(e){
-      console.error(e)
-    }
+		try {
+			const isSaved = await insertDiary(
+				dDate,
+				dTitle,
+				dMood,
+				dWeather,
+				selectedImage,
+				dContent,
+				audioData
+			);
+			isSaved
+				? navigation.navigate("HomeTab")
+				: Alert.alert("저장 실패!", "다시 시도해주세요");
+		} catch (e) {
+			console.error(e);
+		}
 	};
 
 	/**
@@ -93,7 +105,6 @@ const WriteContent = ({ navigation, route }) => {
 	}, []);
 
 	const generateUniqueId = () => {
-
 		return Math.random().toString(36).substr(2, 9);
 	};
 
@@ -135,7 +146,7 @@ const WriteContent = ({ navigation, route }) => {
 			setRecording(recording);
 			console.log("Recording started");
 		} catch (error) {
-			Alert.alert("설정에서 마이크 권한을 허용해주세요");
+			console.error("Failed to start recording:", error);
 		}
 	};
 
@@ -155,28 +166,62 @@ const WriteContent = ({ navigation, route }) => {
 
 	const playAudio = async () => {
 		if (audioData) {
-			const sound = new Audio.Sound();
-			await sound.loadAsync({ uri: audioData.file, shouldPlay: true });
+			const newsound = new Audio.Sound();
+			await newsound.loadAsync({ uri: audioData.file, shouldPlay: true });
 			console.log("Playing Sound");
-			await sound.playAsync();
+			setSound(newsound);
+			await newsound.playAsync();
+			setIsPlaying(true);
+		} else {
+			Alert.alert("재생할 녹음이 없습니다.");
 		}
 	};
 
-  /**
-   * 녹음 삭제해주는 함수
-   */
-  const deleteAudio = () => {
-    Alert.alert('녹음을 삭제하시겠습니까?',
-    "삭제하신 내용은 복구가 불가능합니다.",
-    [
-      {text: "유지하기"},
-      {text: "삭제하기",
-        // TODO to 현서: 삭제 기능 넣어주세요
-        // onPress={}
-      }
-    ]
-    )
-  }
+	const stopAudio = async () => {
+		if (sound) {
+			if (isPlaying) {
+				await sound.stopAsync(); // 오디오 멈추기
+				console.log("Sound stopped");
+				setIsPlaying(false);
+			} else {
+				await sound.playAsync(); // 오디오 다시 재생하기
+				console.log("Sound restart");
+				setIsPlaying(true);
+			}
+		}
+	};
+
+	/**
+	 * 녹음 삭제해주는 함수
+	 */
+	const deleteAudio = () => {
+		Alert.alert(
+			"녹음을 삭제하시겠습니까?",
+			"삭제하신 내용은 복구가 불가능합니다.",
+			[
+				{ text: "유지하기" },
+				{
+					text: "삭제하기",
+					onPress: okDeleteAudio,
+				},
+			]
+		);
+	};
+
+	const okDeleteAudio = async () => {
+		try {
+			if (audioData && audioData.id) {
+				console.log(audioData.id);
+				await AsyncStorage.removeItem(`audio_${audioData.id}`);
+				setAudioData("");
+				console.log("Audio deleted");
+			} else {
+				throw new Error("Invalid audio data or audio ID is missing");
+			}
+		} catch (error) {
+			console.error("Failed to delete audio", error);
+		}
+	};
 
 	/**
 	 * 주제입력해주는 버튼 이벤트
@@ -185,7 +230,6 @@ const WriteContent = ({ navigation, route }) => {
 	const btnAddSubject = (text) => {
 		setDContent(dContent + text + "\n");
 	};
-
 
 	useEffect(() => {
 		// 텍스트 길이 계산
@@ -200,7 +244,6 @@ const WriteContent = ({ navigation, route }) => {
 			isDark ? setCanSave(COLOR_DARK_RED) : setCanSave(COLOR_LIGHT_RED);
 		}
 	}, [dContent, dTitle]);
-
 
 	return (
 		<SafeAreaView style={GlobalStyle.safeAreaWrap}>
@@ -219,8 +262,7 @@ const WriteContent = ({ navigation, route }) => {
 										},
 										{
 											text: "홈으로",
-                      // TODO to 현서 : pop하면 바로 전 화면으로 가용, 아예 홈화면으로 나가게 부탁드립니당
-											onPress: () => navigation.pop(),
+											onPress: () => navigation.navigate("HomeTab"),
 										},
 									]
 								);
@@ -244,7 +286,9 @@ const WriteContent = ({ navigation, route }) => {
 										{ text: "취소" },
 										{
 											text: "저장",
-											onPress: () => { handleSave() },
+											onPress: () => {
+												handleSave();
+											},
 										},
 									]
 								)
@@ -293,33 +337,39 @@ const WriteContent = ({ navigation, route }) => {
 						</View>
 
 						{/* 음성녹음 버튼 */}
-            <View style={BodyStyle.micWrap}>
-              {
-                audioData.id !== undefined ?
-                (<Pressable onPress={deleteAudio}>
-                  <Ionicons name="close-circle" size={45} color={isDark?COLOR_DARK_RED:COLOR_LIGHT_RED} />
-                </Pressable>)
-                :
-                null
-              }
-              <Pressable
-                style={BodyStyle.btnMic}
-                onPress={() => (recording ? stopRecording() : startRecording())}>
-                <Ionicons
-                  name={recording ? "stop-circle" : "mic-circle"}
-                  size={45}
-                  color={isDark?COLOR_DARK_RED:COLOR_LIGHT_RED}
-                />
-              </Pressable>
-              {
-                audioData.id !== undefined ?
-                (<Pressable onPress={playAudio}>
-                  <Ionicons name="play-circle" size={45} color={isDark?COLOR_DARK_RED:COLOR_LIGHT_RED} />
-                </Pressable>)
-                :
-                null
-              }
-            </View>
+						<View style={BodyStyle.micWrap}>
+							{audioData.id !== undefined ? (
+								<Pressable onPress={deleteAudio}>
+									<Ionicons
+										name="close-circle"
+										size={45}
+										color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
+									/>
+								</Pressable>
+							) : null}
+							<Pressable
+								style={BodyStyle.btnMic}
+								onPress={() => (recording ? stopRecording() : startRecording())}
+							>
+								<Ionicons
+									name={recording ? "stop-circle" : "mic-circle"}
+									size={45}
+									color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
+								/>
+							</Pressable>
+							{audioData.id !== undefined ? (
+								<Pressable onPress={playAudio}>
+									<Ionicons
+										name="play-circle"
+										size={45}
+										color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
+									/>
+								</Pressable>
+							) : null}
+							<Pressable onPress={() => stopAudio()}>
+								<Text>멈추기 </Text>
+							</Pressable>
+						</View>
 
 						{/* 본문 textInput */}
 
@@ -351,28 +401,28 @@ const WriteContent = ({ navigation, route }) => {
 								{contentLength}
 							</Text>
 						</View>
-							<View
-								style={{
-									width: "100%",
-									justifyContent: "center",
-									alignItems: "center",
-								}}
-							>
-								<Pressable style={BodyStyle.btnImg} onPress={() => pickImage()}>
-									{selectedImage ? (
-										<Image
-											source={{ uri: selectedImage }}
-											onChangePhoto={{ uri: setSelectedImage }}
-											style={{ width: "100%", height: "100%" }}
-										/>
-									) : (
-										<Image
-											source={require("../../../assets/images/btnAddImg.png")}
-											style={{ width: "100%", height: "100%" }}
-										/>
-									)}
-								</Pressable>
-							</View>
+						<View
+							style={{
+								width: "100%",
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						>
+							<Pressable style={BodyStyle.btnImg} onPress={() => pickImage()}>
+								{selectedImage ? (
+									<Image
+										source={{ uri: selectedImage }}
+										onChangePhoto={{ uri: setSelectedImage }}
+										style={{ width: "100%", height: "100%" }}
+									/>
+								) : (
+									<Image
+										source={require("../../../assets/images/btnAddImg.png")}
+										style={{ width: "100%", height: "100%" }}
+									/>
+								)}
+							</Pressable>
+						</View>
 					</ScrollView>
 				</Pressable>
 			</KeyboardAvoidingView>
@@ -429,20 +479,20 @@ const BodyStyle = StyleSheet.create({
 		borderColor: "#86878C",
 	},
 
-  /**
-   * 음성 녹음 관련 wrap
-   */
-  micWrap:{
-    display: 'flex',
-    flexDirection: 'row', 
-    marginTop: 10,
-    alignItems: "center",
-    justifyContent: 'center'
-  },
+	/**
+	 * 음성 녹음 관련 wrap
+	 */
+	micWrap: {
+		display: "flex",
+		flexDirection: "row",
+		marginTop: 10,
+		alignItems: "center",
+		justifyContent: "center",
+	},
 	btnMic: {
 		alignItems: "center",
-    marginHorizontal: 10,
-    padding: 5
+		marginHorizontal: 10,
+		padding: 5,
 	},
 
 	contentInput: {
