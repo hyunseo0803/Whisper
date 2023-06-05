@@ -9,6 +9,7 @@ import { useIsFocused } from "@react-navigation/native";
 import HeaderText from "../components/Header";
 import { getDiaryCountByMood } from "../util/database";
 import { moodArr, moodEngToKr, MoodWeatherFile } from "../util/MoodWeather";
+import { calenderBtnNextMonth, calenderBtnPrevMonth } from "../util/Calender";
 
 
 const MoodTracker = ({navigation}) => {
@@ -22,36 +23,6 @@ const MoodTracker = ({navigation}) => {
   const [month, setMonth] = useState(MONTH+1);
   const [year, setYear] = useState(YEAR);
   const [moodValues, setMoodValues] = useState({});
-
-  // TODO to emyo: util에 함수 분리해놓기
-  /**
-   * 다음 달로 이동하는 화살표 버튼 함수
-   * @param {int} month 
-   */
-  const moveNextMonth = (month) => {
-    if (month === 12) {
-      setYear((prevYear) => prevYear+1);
-      setMonth(1);
-    }
-    else {
-      setMonth((prevMonth) => prevMonth+1)
-    }
-  }
-
-  /**
-   * 이전달로 이동하는 화살표 버튼 함수
-   * @param {int} month 
-   */
-  const movePrevMonth = (month) => {
-    if (month ===1 ) {
-      setYear((prevYear) => prevYear-1)
-      setMonth(12);
-    }
-    else{
-      setMonth((prevMonth) => prevMonth-1)
-    }
-  }
-
 
   /**
    * 무드트레커 정보 받아와서 useState로 관리
@@ -78,8 +49,8 @@ const MoodTracker = ({navigation}) => {
         <Header
           month = {month}
           year = {year}
-          moveNextMonth = {moveNextMonth}
-          movePrevMonth = {movePrevMonth}
+          moveNextMonth = {calenderBtnNextMonth}
+          movePrevMonth = {calenderBtnPrevMonth}
           setMonth = {setMonth}
           setYear = {setYear}
           isDark = {isDark}

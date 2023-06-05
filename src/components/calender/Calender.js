@@ -4,6 +4,7 @@ import Header from './Header'
 import Body from './Body'
 import { DarkTheme, DefaultTheme, useIsFocused } from '@react-navigation/native';
 import { readDiarys } from '../../util/database';
+import { calenderBtnNextMonth, calenderBtnPrevMonth } from '../../util/Calender';
 
 function Calender() {
 	const isDark = useColorScheme() === 'dark'
@@ -63,8 +64,8 @@ function Calender() {
       <Header
         month = {month}
         year = {year}
-        moveNextMonth = {moveNextMonth}
-        movePrevMonth = {movePrevMonth}
+        moveNextMonth = {calenderBtnNextMonth}
+        movePrevMonth = {calenderBtnPrevMonth}
         setMonth = {setMonth}
         setYear = {setYear}
         isDark = {isDark}
