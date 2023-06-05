@@ -42,7 +42,7 @@ function Body(props) {
    * @returns {string}imgUrl
    */
   const FindImg = (day) => {
-    let img = DATA.find(data => data.date === `${year}-${changeNumberTwoLength(month)}-${changeNumberTwoLength(day)}`)
+    let img = DATA.find(data => {data.date === `${year}-${changeNumberTwoLength(month)}-${changeNumberTwoLength(day)}` && DATA.is_featured === 1})
     return img?.image
   }
 

@@ -15,7 +15,6 @@ import { getDiarySearch } from "../util/database";
 const Search = ({navigation}) => {
   const isDark = useColorScheme() === 'dark'
 
-  const toDay = new Date();
   const [title, setTitle] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -61,7 +60,6 @@ const Search = ({navigation}) => {
   const searchDiary = async() => {
     try {
       const searchResults = await getDiarySearch(title, selectedMood, selectedWeather, startDate, endDate);
-      console.log('검색 결과:', searchResults);
       navigation.navigate('searchResult', {searchedDiarys : searchResults})
     } catch (error) {
       console.error(error);

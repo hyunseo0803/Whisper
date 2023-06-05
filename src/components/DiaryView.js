@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Text, Image, Pressable, Alert} from 'react-native';
+import {View, StyleSheet, Text, Image, Pressable, Alert, TouchableOpacity} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import GlobalStyle from '../globalStyle/GlobalStyle';
 import DeleteMessage from './DeleteMessage';
@@ -78,7 +78,7 @@ const DiaryView = (props) => {
    */
   const onClickVoice = async() => {
     const audioData = await getAudioData(audioObj.audio_id)
-    const sound = await playAudio(audioData)
+    const sound = await playAudio(audioData, setIsPlaying)
     if(!sound){
       Alert.alert('재생할 녹음이 없습니다.')
     }else{
@@ -92,12 +92,12 @@ const DiaryView = (props) => {
       <Text style={[{marginBottom: 5}, GlobalStyle.font_caption2, ModeColorStyle(isDark).font_DEFALUT]}>{date}</Text>
       <Text style={[{marginBottom: 5}, GlobalStyle.font_title1, ModeColorStyle(isDark).font_DEFALUT]}>{title}</Text>
       
-      <Pressable
+      <TouchableOpacity
       style={styles.btnDelete}
       onPress={() => onClickDelete()}
       >
         <Ionicons name="ellipsis-vertical-outline" size={25} color={isDark ? COLOR_DARK_WHITE : COLOR_BLACK} />
-      </Pressable>
+      </TouchableOpacity>
       
       <View style={styles.moodWeatherWrap}>
         <Image style={styles.moodWeatherImg} source={MoodWeatherFile(mood)}/>
@@ -115,12 +115,12 @@ const DiaryView = (props) => {
         {
           // 음성이 없으면 마이크 아이콘 나타나지 않도록 설정
           audioObj.audio_id !== null &&
-          <Pressable
+          <TouchableOpacity
           style={{marginBottom: 10}}
           onPress={() => !isPlaying ? onClickVoice() : stopPlayAudio(sound, setIsPlaying, isPlaying)}>
-          <Ionicons name={!isPlaying ? "play-circle" : "play-circle"} size={40}
+          <Ionicons name={isPlaying ? "pause-circle" : "play-circle"} size={40}
           color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED} />
-          </Pressable>
+          </TouchableOpacity>
         }
         <Text style={[GlobalStyle.font_body, {textAlign: 'center'}, ModeColorStyle(isDark).font_DEFALUT]}>{content}</Text>
       </View>

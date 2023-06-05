@@ -35,7 +35,6 @@ const DatePicker = (props) => {
     setVisible(false)
   }
 
-  console.log(dotMarkingDate)
   /**
    * 마킹될 날짜들 객체 생성
    * @param {day} selected 
@@ -44,7 +43,6 @@ const DatePicker = (props) => {
   const markingDates = (selected) => {
     let marking = {};
     dotMarkingDate.forEach((element) => {
-      console.log(element)
       marking[element] = { marked: true, dotColor: isDark?COLOR_DARK_BLUE:COLOR_LIGHT_BLUE }; // 이미 일기가 있는 날 dot 표시
     });
     marking[selected] = { selected: true, disableTouchEvent: true }; // 선택한 일기 마킹

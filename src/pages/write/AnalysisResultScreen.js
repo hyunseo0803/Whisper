@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { View, StyleSheet, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Alert, useColorScheme } from "react-native";
 import { getGoogleVisionResult, pickImage } from "../../util/writeDiary";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import happy from "../../../assets/images/mood/happy.png";
@@ -13,10 +13,14 @@ import { setupURLPolyfill } from "react-native-url-polyfill";
 import HeaderText from "../../components/Header";
 import { diaryTopicQuestion, questionToAI } from "../../util/diaryTopic";
 import { moodTextKr } from "../../util/MoodWeather";
+import ModeColorStyle from "../../globalStyle/ModeColorStyle";
+import { COLOR_DARK_BLUE, COLOR_DARK_WHITE, COLOR_LIGHT_BLUE, COLOR_WHITE } from "../../globalStyle/color";
 
 setupURLPolyfill();
 
 const AnalysisResultScreen = ({ navigation, route }) => {
+	const isDark = useColorScheme() === 'dark'
+
 	const [analysisMood, setAnalysisMood] = useState("");
 	const [subject, setSubject] = useState("");
 	const [selectedTopic, setSelectedTopic] = useState([]);
@@ -128,18 +132,16 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 						<View style={styles.container}>
 							<HeaderText headerText='Wirte Diary' />
 						</View>
-						<Text style={styles.title}>나의 감정 분석 결과</Text>
+						<Text style={[styles.title, ModeColorStyle(isDark).font_DEFALUT, GlobalStyle.font_title1]}>나의 감정 분석 결과</Text>
 						{
 							// 분석된 감정이 공백이 아니면 분석감정 출력
 							analysisMood !== "" &&
-              (
                 <View style={styles.analysis}>
 									<Image source={moodImage[analysisMood]} style={styles.icon}></Image>
-                  <Text style={GlobalStyle.font_body}>{moodTextKr[analysisMood]}</Text>
+                  <Text style={[GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>{moodTextKr[analysisMood]}</Text>
                 </View>
-              )
 						}
-						<Text style={[GlobalStyle.font_title2, styles.topicTitle]}>
+						<Text style={[GlobalStyle.font_title2, styles.topicTitle, ModeColorStyle(isDark).font_DEFALUT]}>
 							이런 주제는 어때요?
 						</Text>
 
@@ -149,19 +151,19 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 									return (
 										<View style={styles.buttonContainer} key={index}>
 											<TouchableOpacity
-												// title={item}
 												onPress={() => handelTopicPress(item)}
 												style={[
 													styles.touchable,
-													selectedTopic.includes(item) &&
-														styles.selectedTouchable,
+                          {borderColor : isDark ? COLOR_DARK_BLUE : COLOR_LIGHT_BLUE},
+													selectedTopic.includes(item) && {backgroundColor: isDark? COLOR_DARK_BLUE : COLOR_LIGHT_BLUE}
 												]}
 											>
 												<Text
 													style={[
 														styles.topic,
+                            {color : isDark ? COLOR_DARK_BLUE : COLOR_LIGHT_BLUE},
 														GlobalStyle.font_body,
-														selectedTopic.includes(item) && styles.selectedText,
+														selectedTopic.includes(item) &&  { color : isDark ? COLOR_DARK_WHITE : COLOR_WHITE }
 													]}
 												>
 													{item}
@@ -280,8 +282,8 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-start",
 	},
 	topic: {
-		color: "black",
 		marginHorizontal: 10,
+    marginVertical: 5
 	},
 	selectedText: {
 		color: "white",

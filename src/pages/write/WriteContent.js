@@ -12,6 +12,8 @@ import {
 	Image,
 	Alert,
 	useColorScheme,
+  TouchableHighlight,
+  TouchableOpacity,
 } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import { Ionicons, Feather } from "@expo/vector-icons";
@@ -166,7 +168,11 @@ const WriteContent = ({ navigation, route }) => {
 	 * @param {string} text
 	 */
 	const btnAddSubject = (text) => {
-		setDContent(dContent + text + "\n");
+		console.log(text)
+		console.log(dContent)
+    const result = dContent + "\n" + text + "\n"
+
+		setDContent(result);
 	};
 
 	useEffect(() => {
@@ -215,7 +221,7 @@ const WriteContent = ({ navigation, route }) => {
 						<View style={{ marginTop: 20 }}>
 							<HeaderText headerText="Write Diary" />
 						</View>
-						<Pressable
+						<TouchableOpacity
 							onPress={() =>
 								Alert.alert(
 									"저장하시겠습니까?",
@@ -233,7 +239,7 @@ const WriteContent = ({ navigation, route }) => {
 							}
 						>
 							<Feather name="check" size={40} color={canSave} />
-						</Pressable>
+						</TouchableOpacity>
 					</View>
 
 					{/* body */}
@@ -243,7 +249,7 @@ const WriteContent = ({ navigation, route }) => {
 							dSubject !== undefined && (
 								<ScrollView style={headerStyle.subjectWrap} horizontal>
 									{dSubject.map((subjectElement, index) => (
-										<Pressable
+										<TouchableOpacity
 											style={headerStyle.subjectBox}
 											key={index}
 											name={subjectElement}
@@ -254,7 +260,7 @@ const WriteContent = ({ navigation, route }) => {
 											>
 												{subjectElement}
 											</Text>
-										</Pressable>
+										</TouchableOpacity>
 									))}
 								</ScrollView>
 							)
@@ -277,15 +283,15 @@ const WriteContent = ({ navigation, route }) => {
 						{/* 음성녹음 버튼 */}
 						<View style={BodyStyle.micWrap}>
 							{audioData.id !== undefined ? (
-								<Pressable onPress={handelDeleteAudio}>
+								<TouchableOpacity onPress={handelDeleteAudio}>
 									<Ionicons
 										name="close-circle"
 										size={45}
 										color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
 									/>
-								</Pressable>
+								</TouchableOpacity>
 							) : null}
-							<Pressable
+							<TouchableOpacity
 								style={BodyStyle.btnMic}
 								onPress={() => (recording ? handleStopRecording() : handleStartRecording())}
 							>
@@ -294,15 +300,15 @@ const WriteContent = ({ navigation, route }) => {
 									size={45}
 									color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
 								/>
-							</Pressable>
+							</TouchableOpacity>
 							{audioData.id !== undefined &&
-                <Pressable onPress={() => !isPlaying ? handlePlayAudio() : stopPlayAudio(sound, setIsPlaying, isPlaying)}>
+                <TouchableOpacity onPress={() => !isPlaying ? handlePlayAudio() : stopPlayAudio(sound, setIsPlaying, isPlaying)}>
 									<Ionicons
 										name= {isPlaying ? "pause-circle" : "play-circle"}
 										size={45}
 										color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
 									/>
-								</Pressable>
+								</TouchableOpacity>
 							}
 						</View>
 
@@ -310,6 +316,7 @@ const WriteContent = ({ navigation, route }) => {
 
 						<TextInput
 							onChangeText={(text) => setDContent(text)}
+              value={dContent}
 							placeholder="음성 인식 기능(녹음시작)을 활용하거나 직접 입력하여 일기를 기록해 보세요! 
             여러분의 이야기를 기록해드릴게요. 오늘은 어떤 하루였나요? :)"
 							placeholderTextColor={
@@ -343,7 +350,7 @@ const WriteContent = ({ navigation, route }) => {
 								alignItems: "center",
 							}}
 						>
-							<Pressable style={BodyStyle.btnImg} onPress={() => pickImage()}>
+							<TouchableOpacity style={BodyStyle.btnImg} onPress={() => pickImage()}>
 								{selectedImage ? (
 									<Image
 										source={{ uri: selectedImage }}
@@ -356,7 +363,7 @@ const WriteContent = ({ navigation, route }) => {
 										style={{ width: "100%", height: "100%" }}
 									/>
 								)}
-							</Pressable>
+							</TouchableOpacity>
 						</View>
 					</ScrollView>
 				</Pressable>
