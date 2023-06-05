@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { View, StyleSheet, Text, Dimensions, Image, ScrollView, Pressable } from 'react-native';
 import LogoBlack from '../../../assets/images/Logo-black.png'
 import LogoRed from '../../../assets/images/logo.png'
-import { COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_LIGHT_SECONDARY, COLOR_WHITE, COLOR_LIGHT_RED } from '../../globalStyle/color';
+import { COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_LIGHT_SECONDARY, COLOR_WHITE, COLOR_LIGHT_RED, COLOR_DARK_RED } from '../../globalStyle/color';
 import GlobalStyle from '../../globalStyle/GlobalStyle';
 import ModeColorStyle from '../../globalStyle/ModeColorStyle';
 import {changeMonth, changeNumberTwoLength} from '../../util/Calender'
@@ -31,7 +31,7 @@ function DailyDiaryScreen(props) {
   */
   const handlePlayAudio = async(aId) => {
     const audioData = await getAudioData(aId)
-    const sound = await playAudio(audioData)
+    const sound = await playAudio(audioData, setIsPlaying)
     if(!sound){
       Alert.alert('재생할 녹음이 없습니다.')
     }else{
@@ -83,23 +83,16 @@ function DailyDiaryScreen(props) {
               {display : array.length===1?'none':'flex'}]}>{index+1}/{array.length}</Text>
 
               {
-                // 음성 재생 버튼
-                datas.audio_id !== null&&
-                !isPlaying ?
-                (<Pressable
+                // 음성 재생&중지 버튼
+                datas.audio_id !== null &&
+                <Pressable
                 style={{marginTop: 10, alignItems: 'center'}}
-                onPress={() => handlePlayAudio(datas.audio_id)}>
-                <Ionicons name="mic-circle" size={40} color='#E76B5C' />
-                </Pressable>) :
-                (<Pressable 
-                style={{marginTop: 10, alignItems: 'center'}}
-                onPress={() => stopPlayAudio(sound, setIsPlaying, isPlaying)}>
-                <Ionicons
-                  name="pause-circle"
-                  size={40}
-                  color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
-                />
-              </Pressable>)
+                onPress={() => !isPlaying ? handlePlayAudio(datas.audio_id) : stopPlayAudio(sound, setIsPlaying, isPlaying)}>
+                <Ionicons 
+                  name={isPlaying ? "pause-circle" : "play-circle"} 
+                  size={40} 
+                  color={isDark?COLOR_DARK_RED : COLOR_LIGHT_RED} />
+                </Pressable> 
               }
               <Text style={[styles(isDark).titleText, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}>{datas.title}</Text>
               <Text style={[styles(isDark).contentText, GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>{datas.content}</Text>

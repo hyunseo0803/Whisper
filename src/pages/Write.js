@@ -30,8 +30,6 @@ const Write = ({ navigation }) => {
 	const [datepickershow, setDatepickerShow] = useState(false) 
   const [dotMarkingDate, setDotmarkingDate] = useState(false)
 
-  console.log(selectedDate)
-
   /**
    * mood onPress 함수
    * @param {string} mood 

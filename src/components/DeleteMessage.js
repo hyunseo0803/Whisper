@@ -54,9 +54,6 @@ ${wantDelteDate}의 일기를 정말 삭제할까요?`, [
     animationType={'fade'}
     visible={visible}
     transparent={true}
-    onRequestClose={() => {
-      Alert.alert('Modal has been closed.');
-    }}
     >
       <View style={modalS.background}>
         <Pressable style={[modalS.button, ModeColorStyle(isDark).bg_box, {marginBottom: 20}]}

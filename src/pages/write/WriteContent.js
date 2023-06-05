@@ -131,7 +131,7 @@ const WriteContent = ({ navigation, route }) => {
    * 일기 재생 함수
    */
 	const handlePlayAudio = async () => {
-    const result = await playAudio(audioData)
+    const result = await playAudio(audioData, setIsPlaying)
     if(!result){
       Alert.alert('재생할 녹음이 없습니다.')
     }else{
@@ -296,21 +296,13 @@ const WriteContent = ({ navigation, route }) => {
 								/>
 							</Pressable>
 							{audioData.id !== undefined &&
-                !isPlaying ? (<Pressable onPress={handlePlayAudio}>
+                <Pressable onPress={() => !isPlaying ? handlePlayAudio() : stopPlayAudio(sound, setIsPlaying, isPlaying)}>
 									<Ionicons
-										name="play-circle"
+										name= {isPlaying ? "pause-circle" : "play-circle"}
 										size={45}
 										color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
 									/>
-								</Pressable>) : (
-                  <Pressable onPress={() => stopPlayAudio(sound, setIsPlaying, isPlaying)}>
-                    <Ionicons
-                      name="pause-circle"
-                      size={45}
-                      color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
-                    />
-                  </Pressable>
-                )
+								</Pressable>
 							}
 						</View>
 

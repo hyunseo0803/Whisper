@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View,SafeAreaView, Pressable, ScrollView, useColorScheme } from "react-native";
+import { StyleSheet, Text, View,SafeAreaView, Pressable, ScrollView, useColorScheme } from "react-native";
 import React, {useState, useEffect} from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -31,8 +31,7 @@ const List = () => {
   useEffect(() => {
     getCalenderDataFun = async (month, year) => {
       try{
-        const result = await readDiarys(month, year, howSortDiary)
-        setDiaryList(result)
+        setDiaryList(await readDiarys(month, year, howSortDiary))
       }
       catch(e){
         console.error(e)

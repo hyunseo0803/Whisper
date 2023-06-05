@@ -8,7 +8,6 @@ import { btnGoWriteScreen } from "../globalStyle/BtnStyle";
 import { Ionicons } from "@expo/vector-icons";
 
 const Home = ({ navigation }) => {
-	const isDark = useColorScheme() === 'dark'
 
 	return (
 		<SafeAreaView style={[GlobalStyle.safeAreaWrap, styles.container]}>

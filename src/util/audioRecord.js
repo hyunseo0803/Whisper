@@ -32,12 +32,20 @@ export const getAudioData = async (audioId) => {
  * @param {object} audioData 
  * @returns {object} 녹음된 소리 객체
  */
-export const playAudio = async (audioData) => {
+export const playAudio = async (audioData, setIsPlaying) => {
 	if (audioData) {
 		const SOUND = new Audio.Sound();
 		await SOUND.loadAsync({ uri: audioData.file, shouldPlay: true });
 		// console.log("Playing Sound");
 		await SOUND.playAsync();
+
+    SOUND.setOnPlaybackStatusUpdate((playbackStatus) => {
+      // 재생이 완료되면 isplaying false로 전환
+      if (playbackStatus.didJustFinish) {
+        setIsPlaying(false);
+      }
+    });
+
     return(SOUND)
 	}else{
     return false

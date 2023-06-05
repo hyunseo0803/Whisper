@@ -20,7 +20,17 @@ import ModeColorStyle from "../../globalStyle/ModeColorStyle";
  * @returns calender
  */
 function Header(props) {
-  const isDark = props.isDark
+  // const isDark = isDark
+
+  const {
+    month,
+    year,
+    moveNextMonth,
+    movePrevMonth,
+    setMonth,
+    setYear,
+    isDark
+  } = props;
 
   // 모달창 show
   const [showModal, setShowModal] = useState(false);
@@ -29,7 +39,7 @@ function Header(props) {
     <View style={S.headerContainer}>
       <Pressable 
       style={S.btnBox}
-      onPress={props.movePrevMonth.bind(this, props.month)}>
+      onPress={movePrevMonth.bind(this, month, setYear, setMonth)}>
         <Ionicons name="chevron-back" size={40} color={isDark ? COLOR_DARK_WHITE : COLOR_BLACK} />
       </Pressable>
 
@@ -37,15 +47,15 @@ function Header(props) {
       onPress={() => {
         setShowModal(true);
       }}>
-        <Text style={[GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>{props.year}</Text>
+        <Text style={[GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>{year}</Text>
         <Text style={[GlobalStyle.font_title1, ModeColorStyle(isDark).font_DEFALUT]}>
-          {changeMonth(props.month)}
+          {changeMonth(month)}
         </Text>
       </Pressable>
 
       <Pressable 
       style = {S.btnBox}
-      onPress={props.moveNextMonth.bind(this, props.month)}>
+      onPress={moveNextMonth.bind(this, month, setYear, setMonth)}>
         <Ionicons name="chevron-forward" size={40} color={isDark ? COLOR_DARK_WHITE : COLOR_BLACK} />
       </Pressable>
 
@@ -56,10 +66,10 @@ function Header(props) {
           visible={true}
   
           setShowModal = {setShowModal}
-          month = {props.month}
-          setMonth = {props.setMonth}
-          year = {props.year}
-          setYear = {props.setYear}
+          month = {month}
+          setMonth = {setMonth}
+          year = {year}
+          setYear = {setYear}
           isDark={isDark}
         />
       }

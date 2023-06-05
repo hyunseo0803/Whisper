@@ -43,21 +43,28 @@ const SearchResult = ({ navigation, route }) => {
       {
         Diarys.length !== 0 &&
         <ScrollView style={{marginTop:20,}}>
-        {Diarys.map((diary, index)=> (
-          <DiaryView
-            dId={diary.d_id}
-            key={index}
-            date = {diary.date}
-            title = {diary.title}
-            mood = {diary.mood}
-            weather = {diary.weather}
-            img = {diary.image}
-            voice = {diary.voice}
-            content = {diary.content}
-            setRedirect = {setRedirect}
-            isDark={isDark}
-          />
-        )
+        {Diarys.map((diary, index)=> {
+          const audio = {
+            audio_id : diary.audio_id,
+            sound : diary.sound,
+            status : diary.status
+          }
+          return(
+            <DiaryView
+              dId={diary.d_id}
+              key={index}
+              date = {diary.date}
+              title = {diary.title}
+              mood = {diary.mood}
+              weather = {diary.weather}
+              img = {diary.image}
+              audioObj = {audio}
+              content = {diary.content}
+              setRedirect = {setRedirect}
+              isDark={isDark}
+            />
+          )
+        }
         )}
         </ScrollView>
       }

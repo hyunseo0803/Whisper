@@ -28,7 +28,7 @@ const DiaryView = (props) => {
   const [sound, setSound] = useState()
 
   const {
-    did,
+    dId,
     date,
     title,
     mood,
@@ -115,23 +115,12 @@ const DiaryView = (props) => {
         {
           // 음성이 없으면 마이크 아이콘 나타나지 않도록 설정
           audioObj.audio_id !== null &&
-          !isPlaying ?
-          (<Pressable
+          <Pressable
           style={{marginBottom: 10}}
-          onPress={() => onClickVoice()}>
-          <Ionicons name="mic-circle" size={40}
+          onPress={() => !isPlaying ? onClickVoice() : stopPlayAudio(sound, setIsPlaying, isPlaying)}>
+          <Ionicons name={!isPlaying ? "play-circle" : "play-circle"} size={40}
           color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED} />
-          </Pressable>)
-          :
-          (<Pressable 
-            style={{marginBottom: 10}}
-            onPress={() => stopPlayAudio(sound, setIsPlaying, isPlaying)}>
-            <Ionicons
-              name="pause-circle"
-              size={40}
-              color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
-            />
-          </Pressable>)
+          </Pressable>
         }
         <Text style={[GlobalStyle.font_body, {textAlign: 'center'}, ModeColorStyle(isDark).font_DEFALUT]}>{content}</Text>
       </View>
