@@ -21,7 +21,7 @@ const SettingContactLog = ({ navigation }) => {
 
 	const detailContact = (cTitle) => {
 		console.log(`'${cTitle}' 선택`);
-		navigation.navigate("settingContactDetail", cTitle);
+		navigation.navigate("settingContactDetail", { cTitle: cTitle });
 	};
 	return (
 		<View>
