@@ -5,8 +5,8 @@ import FindPWScreen from "./src/pages/login/FindPW";
 import SignUpScreen from "./src/pages/login/SignUp";
 import WriteScreen from "./src/pages/Write";
 import HomeScreen from "./src/pages/Home";
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 import Tabs from "./src/components/tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { DarkTheme, DefaultTheme } from "./src/globalStyle/theme";
@@ -23,18 +23,19 @@ import Setting from "./src/pages/Setting";
 import SettingAlert from "./src/pages/setting/settingAlert";
 import SettingContact from "./src/pages/setting/settingContact";
 import SettingContactLog from "./src/pages/setting/settingContactLog";
+import SettingContactDetail from "./src/pages/setting/settingContactDetail";
 import SettingPremium from "./src/pages/setting/settingPremium";
 import SettingWithdrawal from "./src/pages/setting/settingWithdrawal";
 import { COLOR_DARK_BG, COLOR_LIGHT_BG } from "./src/globalStyle/color";
 import SettingScreenMode from "./src/pages/setting/settingScreenMode";
-import { createTable } from "./src/util/database";
+import { createTable, createContact } from "./src/util/database";
 
 export default function App() {
-  const isDark = useColorScheme() === 'dark'
+	const isDark = useColorScheme() === "dark";
 
-  const [fontsLoaded] = useFonts({
-    'Diary': require('./assets/fonts/EF_Diary.ttf'),
-  });
+	const [fontsLoaded] = useFonts({
+		Diary: require("./assets/fonts/EF_Diary.ttf"),
+	});
 
 	const Stack = createNativeStackNavigator();
 	const [islogin, setIsLogin] = useState(false);
@@ -57,75 +58,145 @@ export default function App() {
 		checkLogin;
 	}, [islogin]);
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
+	const onLayoutRootView = useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync();
+		}
+	}, [fontsLoaded]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+	if (!fontsLoaded) {
+		return null;
+	}
 
-  if(islogin){
-    createTable()
-    return(
-      <NavigationContainer onLayout={onLayoutRootView}  theme={isDark ? DarkTheme : DefaultTheme}>
-        <Stack.Navigator>
-          <Stack.Screen name="HomeTab" component={Tabs}
-            options={{headerShown: false}}
-          />
+	if (islogin) {
+		createTable();
+		createContact();
+		return (
+			<NavigationContainer
+				onLayout={onLayoutRootView}
+				theme={isDark ? DarkTheme : DefaultTheme}
+			>
+				<Stack.Navigator>
+					<Stack.Screen
+						name="HomeTab"
+						component={Tabs}
+						options={{ headerShown: false }}
+					/>
 
-          {/* Write */}
-          <Stack.Screen name="Write" component={WriteScreen}
-          options={{headerShown: false}}/>
-          <Stack.Screen name="WriteAnalysis" component={WriteAnalysis}
-						options={{ headerShown: false }} />
-					<Stack.Screen name="AnalysisResultScreen" component={AnalysisResultScreen}
-						options={{ headerShown: false }} />
-					<Stack.Screen name="WriteContent" component={WriteContent}
-						options={{ headerShown: false }} />
-          
-          {/* search */}
-          <Stack.Screen name="search" component={Search}
-          options={{headerShown: false}}/>
-          <Stack.Screen name="searchResult" component={SearchResult}
-          options={{headerShown: false}}/>
+					{/* Write */}
+					<Stack.Screen
+						name="Write"
+						component={WriteScreen}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="WriteAnalysis"
+						component={WriteAnalysis}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="AnalysisResultScreen"
+						component={AnalysisResultScreen}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="WriteContent"
+						component={WriteContent}
+						options={{ headerShown: false }}
+					/>
 
-          {/* setting */}
-          <Stack.Screen name="setting" component={Setting}
-            options={{headerShown: false}}/>
-          <Stack.Screen name="settingAlert" component={SettingAlert}
-            options={{headerShown: false}}/>
-          <Stack.Screen name="settingScreenMode" component={SettingScreenMode}
-            options={{headerShown: false}}/>
-          <Stack.Screen name="settingContact" component={SettingContact}
-            options={{headerShown: false}}/>
-          <Stack.Screen name="settingContactLog" component={SettingContactLog}
-            options={{headerShown: false}}/>
-          <Stack.Screen name="settingPremium" component={SettingPremium}
-            options={{headerShown: false}}/>
-          <Stack.Screen name="settingWithdrawal" component={SettingWithdrawal}
-            options={{headerShown: false}}/>
+					{/* search */}
+					<Stack.Screen
+						name="search"
+						component={Search}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="searchResult"
+						component={SearchResult}
+						options={{ headerShown: false }}
+					/>
 
-        </Stack.Navigator>
-      </NavigationContainer>
-    )
-  }
-  return(
-    <NavigationContainer onLayout={onLayoutRootView} theme={isDark ? DarkTheme : DefaultTheme}>
-      <Stack.Navigator>
-        {/* 로그인 화면 */}
-        <Stack.Screen name="Login" component={LoginScreen} 
-        options={{headerShown: false}}/>
-        {/* 회원가입 화면 */}
-        <Stack.Screen name="SignUp" component={SignUpScreen} 
-        options={{headerStyle: {backgroundColor:(isDark ? COLOR_DARK_BG : COLOR_LIGHT_BG)}, headerTitle:""}}/>
-        {/* 비밀번호 변경 화면 */}
-        <Stack.Screen name="FindPW" component={FindPWScreen}
-        options={{headerStyle: {backgroundColor:(isDark ? COLOR_DARK_BG : COLOR_LIGHT_BG)}, headerTitle:""}}/>
-      </Stack.Navigator>
-    </NavigationContainer>
-
-  )
+					{/* setting */}
+					<Stack.Screen
+						name="setting"
+						component={Setting}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="settingAlert"
+						component={SettingAlert}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="settingScreenMode"
+						component={SettingScreenMode}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="settingContact"
+						component={SettingContact}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="settingContactLog"
+						component={SettingContactLog}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="settingContactDetail"
+						component={SettingContactDetail}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="settingPremium"
+						component={SettingPremium}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="settingWithdrawal"
+						component={SettingWithdrawal}
+						options={{ headerShown: false }}
+					/>
+				</Stack.Navigator>
+			</NavigationContainer>
+		);
+	}
+	return (
+		<NavigationContainer
+			onLayout={onLayoutRootView}
+			theme={isDark ? DarkTheme : DefaultTheme}
+		>
+			<Stack.Navigator>
+				{/* 로그인 화면 */}
+				<Stack.Screen
+					name="Login"
+					component={LoginScreen}
+					options={{ headerShown: false }}
+				/>
+				{/* 회원가입 화면 */}
+				<Stack.Screen
+					name="SignUp"
+					component={SignUpScreen}
+					options={{
+						headerStyle: {
+							backgroundColor: isDark ? COLOR_DARK_BG : COLOR_LIGHT_BG,
+						},
+						headerTitle: "",
+					}}
+				/>
+				{/* 비밀번호 변경 화면 */}
+				<Stack.Screen
+					name="FindPW"
+					component={FindPWScreen}
+					options={{
+						headerStyle: {
+							backgroundColor: isDark ? COLOR_DARK_BG : COLOR_LIGHT_BG,
+						},
+						headerTitle: "",
+					}}
+				/>
+			</Stack.Navigator>
+		</NavigationContainer>
+	);
 }
