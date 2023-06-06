@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, SafeAreaView, Text, Pressable } from "react-native";
 import { readcontactDetail } from "../../util/database";
 
-const settingContactDetail = ({ navigation, route }) => {
-	const { cTitle } = route.params;
+const SettingContactDetail = ({ navigation, route }) => {
+	const { params } = route;
+	const cTitle = params ? params.cTitle : null;
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
 	const [email, setEmail] = useState("");
@@ -23,14 +24,23 @@ const settingContactDetail = ({ navigation, route }) => {
 	}, [cTitle]);
 
 	return (
-		<View>
-			<Text>Title: {title}</Text>
-			<Text>Content: {content}</Text>
-			<Text>Email: {email}</Text>
-		</View>
+		<SafeAreaView
+			style={{
+				alignItems: "center",
+				height: "90%",
+				marginVertical: 40,
+				marginHorizontal: 20,
+			}}
+		>
+			<View>
+				<Text>Title: {title}</Text>
+				<Text>Content: {content}</Text>
+				<Text>Email: {email}</Text>
+			</View>
+		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({});
 
-export default settingContactDetail;
+export default SettingContactDetail;
