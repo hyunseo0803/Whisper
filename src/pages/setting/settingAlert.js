@@ -142,7 +142,7 @@ const SettingAlert = ({ navigation }) => {
 							justifyContent: "center",
 							alignItems: "center",
 						}}
-						onPress={savedAlertTime()}
+						onPress={savedAlertTime}
 					>
 						<Text style={{ color: "white", letterSpacing: 10 }}>저장</Text>
 					</Pressable>
