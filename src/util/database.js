@@ -24,6 +24,18 @@ export const createTable = () => {
     `);
 	});
 };
+export const createContact = () => {
+	db.transaction((tx) => {
+		tx.executeSql(`CREATE TABLE IF NOT EXISTS contact
+                    ( id INTEGER PRIMARY KEY AUTOINCREMENT,
+                      date TEXT NOT NULL,
+                      title TEXT NOT NULL,
+                      content TEXT NOT NULL,
+					  email TEXT NOT NULL
+                      )
+    `);
+	});
+};
 
 /**
  * 컬럼 추가
