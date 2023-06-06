@@ -11,6 +11,7 @@ import { useState } from "react";
 import Toggle from "react-native-toggle-input";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from "moment";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SettingAlert = ({ navigation }) => {
 	const [toggle, setToggle] = useState(false);
@@ -28,6 +29,11 @@ const SettingAlert = ({ navigation }) => {
 	const handleCancelTimePicker = () => {
 		setModal(false);
 		setToggle(false);
+	};
+	const savedAlertTime = async () => {
+		await AsyncStorage.setItem("AlertTime", selectedTime);
+		console.log(selectedTime);
+		navigation.navigate("setting");
 	};
 
 	useEffect(() => {
@@ -136,6 +142,7 @@ const SettingAlert = ({ navigation }) => {
 							justifyContent: "center",
 							alignItems: "center",
 						}}
+						onPress={savedAlertTime()}
 					>
 						<Text style={{ color: "white", letterSpacing: 10 }}>저장</Text>
 					</Pressable>
