@@ -15,18 +15,19 @@ function Body(props) {
     year,
     month,
     data,
+    setRendering,
   } = props;
 
-  const [modalData, setModalData] = useState([]); // modal에 들어가는 values
   const [totalDays, setTotalDays] = useState([]);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [modalDate, setModalDate] = useState('');
   const DATA = data;
 
   const ModalSheetRef = useRef(null);
   const renderContent = () => (
     <DailyDiaryScreen
       isDark ={isDark}
-      modalDatas = {modalData}
+      modalDate = {modalDate}
     />
   );
 
@@ -42,7 +43,7 @@ function Body(props) {
    * @returns {string}imgUrl
    */
   const FindImg = (day) => {
-    let img = DATA.find(data => data.date === `${year}-${changeNumberTwoLength(month)}-${changeNumberTwoLength(day)}`)
+    let img = DATA.find(data => (data.date === `${year}-${changeNumberTwoLength(month)}-${changeNumberTwoLength(day)}`)&&(data.is_featured===1))
     return img?.image
   }
 
@@ -59,15 +60,6 @@ function Body(props) {
     else{
       return true
     }
-  }
-  
-  /**
-   * 해당 날짜의 modal values find
-   * @param {int} day 
-   */
-  const findModalValue = (day) => {
-    let datas = DATA.filter(data => data.date === `${year}-${changeNumberTwoLength(month)}-${changeNumberTwoLength(day)}`)
-    setModalData(datas)
   }
 
   // 요일 날짜 배열
@@ -104,7 +96,7 @@ function Body(props) {
                     onPress={() => {
                       if(day !== ''){
                         if(haveDiary(day)){
-                          findModalValue(day)
+                          setModalDate(`${year}-${changeNumberTwoLength(month)}-${changeNumberTwoLength(day)}`)
                           setShowPhotoModal(true)
                         }
                         else{
@@ -145,7 +137,7 @@ function Body(props) {
             snapPoints={['95%','0%']}
             borderRadius={20}
             renderContent={renderContent}
-            onCloseEnd={() => setShowPhotoModal(false)}
+            onCloseEnd={() => {setShowPhotoModal(false); setRendering(prev => !prev)}}
           />
           </View>
 

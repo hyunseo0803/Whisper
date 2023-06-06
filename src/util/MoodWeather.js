@@ -11,6 +11,9 @@ export const moodArr = [
   "expressionless",  // 무표정
 ]
 
+/**
+ * 영어 날씨 배열
+ */
 export const weatherArr = [
   "sunny",
   "littleCloud",
@@ -19,6 +22,19 @@ export const weatherArr = [
   "snow",
   "lightning"
 ]
+
+/**
+ * mood to textKr
+ */
+export const moodTextKr = {
+  happy: "기쁨",
+  sad: "슬픔",
+  disgust: "혐오",
+  surprised: "놀라움",
+  angry: "화남",
+  fear: "두려움",
+  expressionless: "무표정"
+};
 
 /**
  * 영어로된 감정을 한글로 바꿔주는 함수

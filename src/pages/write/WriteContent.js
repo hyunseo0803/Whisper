@@ -12,9 +12,11 @@ import {
 	Image,
 	Alert,
 	useColorScheme,
+  TouchableHighlight,
+  TouchableOpacity,
 } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
-import { Ionicons, Feather, AntDesign } from "@expo/vector-icons";
+import { Ionicons, Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -31,6 +33,8 @@ import {
 	COLOR_LIGHT_THIRD,
 } from "../../globalStyle/color";
 import HeaderText from "../../components/Header";
+import { deleteAudio, getAudioData, playAudio, startRecording, stopPlayAudio, stopRecording } from "../../util/audioRecord";
+import { pickDiaryImage } from "../../util/writeDiary";
 
 const WriteContent = ({ navigation, route }) => {
 	const isDark = useColorScheme() === "dark";
@@ -66,17 +70,13 @@ const WriteContent = ({ navigation, route }) => {
 	}, []);
 
 	const pickImage = async () => {
-		let imageData = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.All,
-			allowsEditing: true,
-			aspect: [4, 3],
-			quality: 1,
-		});
-		if (!imageData.canceled) {
-			setSelectedImage(imageData.assets[0].uri);
-		}
+    const result = await pickDiaryImage();
+    result !== '' ? setSelectedImage(result) : Alert.alert('사진불러오기 실패!', '사진을 불러오는데 실패했습니다. 다시 시도해주세요.')
 	};
 
+  /**
+   * 일기 저장 함수
+   */
 	const handleSave = async () => {
 		try {
 			const isSaved = await insertDiary(
@@ -100,101 +100,52 @@ const WriteContent = ({ navigation, route }) => {
 	 * 음성 녹음 / stt 관련 함수
 	 */
 
-	React.useEffect(() => {
-		getData();
+	useEffect(() => {
+		getAudioData(audioData.id);
 	}, []);
 
-	const generateUniqueId = () => {
-		return Math.random().toString(36).substr(2, 9);
-	};
-
-	const stopRecording = async () => {
-		console.log("Stopping recording..");
+  /**
+   * 음성중지 & 저장 버튼함수
+   */
+	const handleStopRecording = async () => {
 		setIsRecording(false);
 		setRecording(undefined);
-		await recording.stopAndUnloadAsync();
-		const recordingUri = recording.getURI();
-
-		const { sound, status } = await recording.createNewLoadedSoundAsync();
-		const audioId = generateUniqueId();
-		const audio = {
-			id: audioId,
-			sound: sound,
-			file: recordingUri,
-			status: status,
-		};
-
-		//스토리지 저장
-		await AsyncStorage.setItem(`audio_${audio.id}`, JSON.stringify(audio));
-		setAudioData(audio);
+    const result = await stopRecording(recording)
+		setAudioData(result);
 	};
 
-	const startRecording = async () => {
+  /**
+   * 녹음시작 버튼 함수
+   */
+	const handleStartRecording = async () => {
 		setIsRecording(true);
-		try {
-			console.log("Requesting permissions..");
-			await Audio.requestPermissionsAsync();
-			await Audio.setAudioModeAsync({
-				allowsRecordingIOS: true,
-				playsInSilentModeIOS: true,
-			});
-
-			console.log("Starting recording..");
-			const { recording } = await Audio.Recording.createAsync(
-				Audio.RecordingOptionsPresets.HIGH_QUALITY
-			);
-			setRecording(recording);
-			console.log("Recording started");
-		} catch (error) {
-			console.error("Failed to start recording:", error);
-		}
+    const result = await startRecording()
+    if(!result){
+      console.error("Failed to start recording:", error);
+      Alert.alert("녹음 실패!", '다시 시도해주세요.')
+    }
+    else{
+      setRecording(result)
+    }
 	};
 
-	/**
-	 * 녹음 재생
-	 */
-	const getData = async () => {
-		try {
-			const audio = await AsyncStorage.getItem(`audio_${audioData.id}`);
-			if (audio) {
-				setAudioData(JSON.parse(audio));
-			}
-		} catch (e) {
-			console.log(e);
-		}
-	};
-
-	const playAudio = async () => {
-		if (audioData) {
-			const newsound = new Audio.Sound();
-			await newsound.loadAsync({ uri: audioData.file, shouldPlay: true });
-			console.log("Playing Sound");
-			setSound(newsound);
-			await newsound.playAsync();
+  /**
+   * 일기 재생 함수
+   */
+	const handlePlayAudio = async () => {
+    const result = await playAudio(audioData, setIsPlaying)
+    if(!result){
+      Alert.alert('재생할 녹음이 없습니다.')
+    }else{
+      setSound(result)
 			setIsPlaying(true);
-		} else {
-			Alert.alert("재생할 녹음이 없습니다.");
-		}
-	};
-
-	const stopAudio = async () => {
-		if (sound) {
-			if (isPlaying) {
-				await sound.stopAsync(); // 오디오 멈추기
-				console.log("Sound stopped");
-				setIsPlaying(false);
-			} else {
-				await sound.playAsync(); // 오디오 다시 재생하기
-				console.log("Sound restart");
-				setIsPlaying(true);
-			}
-		}
+    }
 	};
 
 	/**
 	 * 녹음 삭제해주는 함수
 	 */
-	const deleteAudio = () => {
+	const handelDeleteAudio = () => {
 		Alert.alert(
 			"녹음을 삭제하시겠습니까?",
 			"삭제하신 내용은 복구가 불가능합니다.",
@@ -202,25 +153,14 @@ const WriteContent = ({ navigation, route }) => {
 				{ text: "유지하기" },
 				{
 					text: "삭제하기",
-					onPress: okDeleteAudio,
+					onPress: okhandelDeleteAudio,
 				},
 			]
 		);
 	};
 
-	const okDeleteAudio = async () => {
-		try {
-			if (audioData && audioData.id) {
-				console.log(audioData.id);
-				await AsyncStorage.removeItem(`audio_${audioData.id}`);
-				setAudioData("");
-				console.log("Audio deleted");
-			} else {
-				throw new Error("Invalid audio data or audio ID is missing");
-			}
-		} catch (error) {
-			console.error("Failed to delete audio", error);
-		}
+	const okhandelDeleteAudio = async () => {
+    setAudioData(await deleteAudio(audioData))
 	};
 
 	/**
@@ -228,7 +168,11 @@ const WriteContent = ({ navigation, route }) => {
 	 * @param {string} text
 	 */
 	const btnAddSubject = (text) => {
-		setDContent(dContent + text + "\n");
+		console.log(text)
+		console.log(dContent)
+    const result = dContent + "\n" + text + "\n"
+
+		setDContent(result);
 	};
 
 	useEffect(() => {
@@ -277,7 +221,7 @@ const WriteContent = ({ navigation, route }) => {
 						<View style={{ marginTop: 20 }}>
 							<HeaderText headerText="Write Diary" />
 						</View>
-						<Pressable
+						<TouchableOpacity
 							onPress={() =>
 								Alert.alert(
 									"저장하시겠습니까?",
@@ -295,7 +239,7 @@ const WriteContent = ({ navigation, route }) => {
 							}
 						>
 							<Feather name="check" size={40} color={canSave} />
-						</Pressable>
+						</TouchableOpacity>
 					</View>
 
 					{/* body */}
@@ -305,7 +249,7 @@ const WriteContent = ({ navigation, route }) => {
 							dSubject !== undefined && (
 								<ScrollView style={headerStyle.subjectWrap} horizontal>
 									{dSubject.map((subjectElement, index) => (
-										<Pressable
+										<TouchableOpacity
 											style={headerStyle.subjectBox}
 											key={index}
 											name={subjectElement}
@@ -316,7 +260,7 @@ const WriteContent = ({ navigation, route }) => {
 											>
 												{subjectElement}
 											</Text>
-										</Pressable>
+										</TouchableOpacity>
 									))}
 								</ScrollView>
 							)
@@ -339,42 +283,40 @@ const WriteContent = ({ navigation, route }) => {
 						{/* 음성녹음 버튼 */}
 						<View style={BodyStyle.micWrap}>
 							{audioData.id !== undefined ? (
-								<Pressable onPress={deleteAudio}>
+								<TouchableOpacity onPress={handelDeleteAudio}>
 									<Ionicons
 										name="close-circle"
 										size={45}
 										color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
 									/>
-								</Pressable>
+								</TouchableOpacity>
 							) : null}
-							<Pressable
+							<TouchableOpacity
 								style={BodyStyle.btnMic}
-								onPress={() => (recording ? stopRecording() : startRecording())}
+								onPress={() => (recording ? handleStopRecording() : handleStartRecording())}
 							>
 								<Ionicons
 									name={recording ? "stop-circle" : "mic-circle"}
 									size={45}
 									color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
 								/>
-							</Pressable>
-							{audioData.id !== undefined ? (
-								<Pressable onPress={playAudio}>
+							</TouchableOpacity>
+							{audioData.id !== undefined &&
+                <TouchableOpacity onPress={() => !isPlaying ? handlePlayAudio() : stopPlayAudio(sound, setIsPlaying, isPlaying)}>
 									<Ionicons
-										name="play-circle"
+										name= {isPlaying ? "pause-circle" : "play-circle"}
 										size={45}
 										color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
 									/>
-								</Pressable>
-							) : null}
-							<Pressable onPress={() => stopAudio()}>
-								<Text>멈추기 </Text>
-							</Pressable>
+								</TouchableOpacity>
+							}
 						</View>
 
 						{/* 본문 textInput */}
 
 						<TextInput
 							onChangeText={(text) => setDContent(text)}
+              value={dContent}
 							placeholder="음성 인식 기능(녹음시작)을 활용하거나 직접 입력하여 일기를 기록해 보세요! 
             여러분의 이야기를 기록해드릴게요. 오늘은 어떤 하루였나요? :)"
 							placeholderTextColor={
@@ -408,7 +350,7 @@ const WriteContent = ({ navigation, route }) => {
 								alignItems: "center",
 							}}
 						>
-							<Pressable style={BodyStyle.btnImg} onPress={() => pickImage()}>
+							<TouchableOpacity style={BodyStyle.btnImg} onPress={() => pickImage()}>
 								{selectedImage ? (
 									<Image
 										source={{ uri: selectedImage }}
@@ -421,7 +363,7 @@ const WriteContent = ({ navigation, route }) => {
 										style={{ width: "100%", height: "100%" }}
 									/>
 								)}
-							</Pressable>
+							</TouchableOpacity>
 						</View>
 					</ScrollView>
 				</Pressable>

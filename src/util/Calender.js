@@ -124,3 +124,38 @@ export const getDatesStartToLast = (startDate, lastDate) => {
 	}
 	return result;
 }
+
+
+
+// calender btn 함수
+/**
+ * 다음달 이동 버튼함수
+ * @param {number} month 
+ * @param {useState} setYear 
+ * @param {useState} setMonth 
+ */
+export const calenderBtnNextMonth = (month, setYear, setMonth) => {
+  if (month === 12) {
+    setYear((prevYear) => prevYear+1);
+    setMonth(1);
+  }
+  else {
+    setMonth((prevMonth) => prevMonth+1)
+  }
+}
+
+/**
+ * 이전달 이동 버튼함수
+ * @param {number} month 
+ * @param {useState} setYear 
+ * @param {useState} setMonth 
+ */
+export const calenderBtnPrevMonth = (month, setYear, setMonth) => {
+  if (month === 1) {
+    setYear((prevYear) => prevYear-1)
+    setMonth(12);
+  }
+  else{
+    setMonth((prevMonth) => prevMonth-1)
+  }
+}
