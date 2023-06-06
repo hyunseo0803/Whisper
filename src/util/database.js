@@ -23,78 +23,145 @@ export const createTable = () => {
     `);
 	});
 };
+// 'contact' 테이블 초기 생성
+export const createContact = () => {
+	db.transaction((tx) => {
+		tx.executeSql(`CREATE TABLE IF NOT EXISTS contact
+                    ( id INTEGER PRIMARY KEY AUTOINCREMENT,
+                      date TEXT NOT NULL,
+                      title TEXT NOT NULL,
+                      content TEXT NOT NULL,
+					  email TEXT NOT NULL
+                      )
+    `);
+	});
+};
 
 // 'diary' 테이블 삭제
 const deleteDiaryTable = () => {
-  db.transaction(tx => {
-    tx.executeSql('DROP TABLE IF EXISTS diary', [], () => {
-      console.log('diary 테이블이 삭제되었습니다.');
-    },
-    error => {
-      console.log('diary 테이블 삭제 중 오류가 발생했습니다.', error);
-    });
-  });
+	db.transaction((tx) => {
+		tx.executeSql(
+			"DROP TABLE IF EXISTS diary",
+			[],
+			() => {
+				console.log("diary 테이블이 삭제되었습니다.");
+			},
+			(error) => {
+				console.log("diary 테이블 삭제 중 오류가 발생했습니다.", error);
+			}
+		);
+	});
 };
 // deleteDiaryTable()
 
-
 /**
  * 일기 추가 함수
- * @param {string} date 
- * @param {string} title 
- * @param {string} mood 
- * @param {string} weather 
- * @param {string} image 
- * @param {string} content 
- * @param {object} audioData 
+ * @param {string} date
+ * @param {string} title
+ * @param {string} mood
+ * @param {string} weather
+ * @param {string} image
+ * @param {string} content
+ * @param {object} audioData
  * @returns true/false
  */
-export const insertDiary = async(date, title, mood, weather, image, content, audioData) => {
+export const insertDiary = async (
+	date,
+	title,
+	mood,
+	weather,
+	image,
+	content,
+	audioData
+) => {
 	try {
-    console.log(date)
-		return new Promise((resolve, reject) => {
-      db.transaction((tx) => {
-				tx.executeSql(
-					`INSERT INTO diary (date,title,mood,weather,image,content,audio_id,sound,file,status) VALUES(?,?,?,?,?,?,?,?,?,?)`,
-					[
-						date,
-						title,
-						mood,
-						weather,
-						image,
-						content,
-						audioData.id,
-						audioData.sound,
-						audioData.file,
-						audioData.status,
-					],
-					(_, { rowsAffected, insertId }) => {
-						if (rowsAffected > 0) {
-							console.log(`Data inserted successfully. ID:${insertId}`);
-              resolve(true)
+		console.log(date);
+		return new Promise(
+			(resolve, reject) => {
+				db.transaction((tx) => {
+					tx.executeSql(
+						`INSERT INTO diary (date,title,mood,weather,image,content,audio_id,sound,file,status) VALUES(?,?,?,?,?,?,?,?,?,?)`,
+						[
+							date,
+							title,
+							mood,
+							weather,
+							image,
+							content,
+							audioData.id,
+							audioData.sound,
+							audioData.file,
+							audioData.status,
+						],
+						(_, { rowsAffected, insertId }) => {
+							if (rowsAffected > 0) {
+								console.log(`Data inserted successfully. ID:${insertId}`);
+								resolve(true);
+							}
+						},
+						(_, error) => {
+							console.log("Failed to insert data:", error);
+							reject(false);
 						}
-					},
-					(_, error) => {
-						console.log("Failed to insert data:", error);
-            reject(false)
-					}
-				);
-		})
+					);
+				});
 			},
 			(error) => {
 				console.log("Transaction error:", error);
-        reject(false)
+				reject(false);
 			},
 			() => {
 				console.log("Transaction completed successfully.");
-        resolve(true)
+				resolve(true);
 			}
 		);
 	} catch (error) {
 		console.log("Failed to insert data:", error);
 	}
-}
+};
 
+/**
+ * 문의 추가 함수
+ * @param {string} date
+ * @param {string} cTitle
+ * @param {string} content
+ * @param {string} user_email
+ */
+
+export const insertContact = async (date, cTitle, content, user_email) => {
+	try {
+		return new Promise(
+			(resolve, reject) => {
+				db.transaction((tx) => {
+					tx.executeSql(
+						`INSERT INTO contact (date,title,content,email) VALUES(?,?,?,?)`,
+						[date, cTitle, content, user_email],
+						(_, { rowsAffected, insertId }) => {
+							if (rowsAffected > 0) {
+								console.log(`Data inserted successfully. ID:${insertId}`);
+								resolve(true);
+							}
+						},
+						(_, error) => {
+							console.log("Failed to insert data:", error);
+							reject(false);
+						}
+					);
+				});
+			},
+			(error) => {
+				console.log("Transaction error:", error);
+				reject(false);
+			},
+			() => {
+				console.log("Transaction completed successfully.");
+				resolve(true);
+			}
+		);
+	} catch (error) {
+		console.log("Failed to insert data:", error);
+	}
+};
 
 /**
  * 일기 조회 (시작날짜-종료날짜)
@@ -128,6 +195,62 @@ export const readDiarys = async (month, year, howSortDiary) => {
 	}
 };
 
+/**
+ * 문의 목록 조회
+ */
+export const readcontact = async () => {
+	return new Promise((resolve, reject) => {
+		db.transaction((tx) => {
+			tx.executeSql(
+				"SELECT title FROM contact",
+				[],
+				(_, resultSet) => {
+					const { rows } = resultSet;
+					const title = [];
+					for (let i = 0; i < rows.length; i++) {
+						title.push(rows.item(i).title);
+					}
+					resolve(title);
+				},
+				(_, error) => {
+					reject(error);
+				}
+			);
+		});
+	});
+};
+
+/**
+ * 문의 상세 조회
+ * * @param {Stirng} cTitle
+ *
+ */
+export const readcontactDetail = async (cTitle) => {
+	return new Promise((resolve, reject) => {
+		db.transaction((tx) => {
+			tx.executeSql(
+				"SELECT * FROM contact WHERE title=?",
+				[cTitle],
+				(_, resultSet) => {
+					const { rows } = resultSet;
+					if (rows.length > 0) {
+						const contact = rows.item(0);
+						resolve({
+							title: contact.title,
+							content: contact.content,
+							email: contact.email,
+						});
+					} else {
+						reject(new Error("Contact not found"));
+					}
+				},
+				(_, error) => {
+					reject(error);
+				}
+			);
+		});
+	});
+};
 /**
  * 일기 삭제
  * @param {int} id
