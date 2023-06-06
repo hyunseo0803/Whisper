@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { View, StyleSheet, Text, Dimensions, Image, ScrollView, Pressable } from 'react-native';
+import { View, StyleSheet, Text, Dimensions, Image, ScrollView, Pressable, Alert } from 'react-native';
 import LogoBlack from '../../../assets/images/Logo-black.png'
 import LogoRed from '../../../assets/images/logo.png'
 import { COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_LIGHT_SECONDARY, COLOR_WHITE, COLOR_LIGHT_RED, COLOR_DARK_RED } from '../../globalStyle/color';
@@ -7,14 +7,15 @@ import GlobalStyle from '../../globalStyle/GlobalStyle';
 import ModeColorStyle from '../../globalStyle/ModeColorStyle';
 import {changeMonth, changeNumberTwoLength} from '../../util/Calender'
 import PagerView from 'react-native-pager-view';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { getAudioData, playAudio, stopPlayAudio } from '../../util/audioRecord';
+import {readDailyDiarys, setFeaturedDiaryImg} from '../../util/database.js'
 
 
 function DailyDiaryScreen(props) {
   const {
     isDark,
-    modalDatas
+    modalDate
   } = props;
 
   const [dateValues, setDateValues] = useState({
@@ -22,9 +23,10 @@ function DailyDiaryScreen(props) {
     month :'',
     day :''
   })
-
+  const [diaryDatas, setDiaryDatas] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false)
-  const [sound, setSound] = useState()
+  const [sound, setSound] = useState();
+  const [rendering, setRendering] = useState(false)
 
   /**
    * 음성 녹음 재생 버튼
@@ -40,9 +42,33 @@ function DailyDiaryScreen(props) {
     }
   }
 
+  /**
+   * 대표 이미지 지정 버튼
+   * @param {number} id 
+   * @param {string} date 
+   */
+  const handleSetFeaturedImg = (id, date, is_featured) => {
+    const result = setFeaturedDiaryImg(id, date, is_featured);
+    if(result){
+      setRendering(prevRendering => !prevRendering)
+    }
+  }
+
+  /**
+   * 오늘 일기 받아오는 함수
+   */
+  const readDailyDiarysFun = async() => {
+    setDiaryDatas(await readDailyDiarys(modalDate))
+  }
 
   useEffect(() => {
-    const date = modalDatas[0].date.split('-')
+    readDailyDiarysFun()
+  }, [rendering])
+
+  useEffect(() => {
+    readDailyDiarysFun()
+
+    const date = modalDate.split('-')
     setDateValues({year:date[0], month:changeMonth(date[1]*1), day:date[2]})
   }, []);
 
@@ -68,15 +94,20 @@ function DailyDiaryScreen(props) {
 
     <View style={[{flex:1, width:'100%'}]}>
       <PagerView style={{flex:1}} initialPage={0}
-      overdrag={modalDatas.length===1? false:true}>
+      overdrag={diaryDatas.length===1? false:true}
+      >
         {
-          modalDatas.map((datas, index, array) => (
+          diaryDatas.map((datas, index, array) => (
             <ScrollView style={styles(isDark).scrollWrap} key={datas.id}>
 
               {
+                // 이미지
                 datas.image !== '' &&
                 <View style={styles(isDark).imgWrap}>
                   <Image source={{ uri:  datas.image }} style={styles(isDark).imgStyle} />
+                  <AntDesign name={datas.is_featured===0 ? "staro" : 'star'} size={25} color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
+                  style={{position: 'absolute', right: 10, top:10}} 
+                  onPress={() => handleSetFeaturedImg(datas.id, datas.date, datas.is_featured)}/>
                 </View>
               }
               <Text style={[styles(isDark).pageText, GlobalStyle.font_caption1, ModeColorStyle(isDark).font_DEFALUT,
@@ -172,6 +203,7 @@ const styles = (isDark) => StyleSheet.create({
    * 이미지 wrap
    */
   imgWrap:{
+    position: 'relative',
     width: '100%',
     height: Dimensions.get('window').width-30,  // 정사각형을 만들기 위해.
     flex: 1,

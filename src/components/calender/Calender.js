@@ -17,6 +17,7 @@ function Calender() {
   const [month, setMonth] = useState(MONTH+1);
   const [year, setYear] = useState(YEAR);
   const [Ddata, setDdata] = useState([]);
+  const [rendering, setRendering] = useState(false);
 
   /**
    * 다음 달로 이동하는 화살표 버튼 함수
@@ -57,7 +58,7 @@ function Calender() {
       }
     }
     getCalenderDataFun(month, year)
-  }, [month, year, isFocused]);
+  }, [month, year, isFocused, rendering]);
 
   return(
     <View style={S.calenderContainer} theme={isDark ? DarkTheme : DefaultTheme}>
@@ -77,6 +78,8 @@ function Calender() {
         movePrevMonth = {movePrevMonth}
         data = {Ddata}
         isDark = {isDark}
+        setRendering = {setRendering}
+        rendering={rendering}
       />
 
     </View>

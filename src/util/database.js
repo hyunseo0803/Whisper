@@ -18,20 +18,39 @@ export const createTable = () => {
                       audio_id TEXT NULL,
                       sound TEXT NULL,
                       file TEXT NULL,
-                      status TEXT NULL
+                      status TEXT NULL,
+                      is_featured INTEGER DEFAULT 0
                       )
     `);
 	});
+};
+
+/**
+ * 컬럼 추가
+ */
+const addColumn = () => {
+  db.transaction((tx) => {
+    tx.executeSql(
+      `ALTER TABLE diary ADD COLUMN is_featured INTEGER DEFAULT 0`,
+      [],
+      (txObj, resultSet) => {
+        console.log('Column added successfully');
+      },
+      (txObj, error) => {
+        console.log('Error adding column:', error);
+      }
+    );
+  });
 };
 
 // 'diary' 테이블 삭제
 const deleteDiaryTable = () => {
   db.transaction(tx => {
     tx.executeSql('DROP TABLE IF EXISTS diary', [], () => {
-      console.log('diary 테이블이 삭제되었습니다.');
+    //   console.log('diary 테이블이 삭제되었습니다.');
     },
     error => {
-      console.log('diary 테이블 삭제 중 오류가 발생했습니다.', error);
+      console.error('diary 테이블 삭제 중 오류가 발생했습니다.', error);
     });
   });
 };
@@ -51,7 +70,6 @@ const deleteDiaryTable = () => {
  */
 export const insertDiary = async(date, title, mood, weather, image, content, audioData) => {
 	try {
-    console.log(date)
 		return new Promise((resolve, reject) => {
       db.transaction((tx) => {
 				tx.executeSql(
@@ -70,29 +88,119 @@ export const insertDiary = async(date, title, mood, weather, image, content, aud
 					],
 					(_, { rowsAffected, insertId }) => {
 						if (rowsAffected > 0) {
-							console.log(`Data inserted successfully. ID:${insertId}`);
               resolve(true)
 						}
 					},
 					(_, error) => {
-						console.log("Failed to insert data:", error);
+						console.error("Failed to insert data:", error);
             reject(false)
 					}
 				);
 		})
 			},
 			(error) => {
-				console.log("Transaction error:", error);
+				console.error("Transaction error:", error);
         reject(false)
 			},
 			() => {
-				console.log("Transaction completed successfully.");
         resolve(true)
 			}
 		);
 	} catch (error) {
-		console.log("Failed to insert data:", error);
+		console.error("Failed to insert data:", error);
 	}
+}
+
+/**
+ * (SET)달력 대표 이미지(일기) 설정 함수
+ * @param {number} diaryId 
+ */
+export const setFeaturedDiaryImg = (diaryId, diaryDate, is_featured) => {
+  try{
+    if(is_featured === 0){
+  		return new Promise((resolve, reject) => {
+        // 원래 대표일기가 지정이 되어있지 않았다면
+        db.transaction((tx) => {
+          // 이전 대표일기의 is_featured 값을 0으로 업데이트 (같은 날짜의 데이터만)
+          tx.executeSql(
+            `UPDATE diary SET is_featured = 0 WHERE is_featured = 1 AND date = ?`,
+            [diaryDate],
+            (txObj, resultSet) => {
+              // console.log('Previous featured diary updated successfully');
+            },
+            (txObj, error) => {
+              console.error('Error updating previous featured diary:', error);
+            }
+          );
+      
+          // 선택한 일기의 is_featured 값을 1로 업데이트
+          tx.executeSql(
+            `UPDATE diary SET is_featured = 1 WHERE id = ? AND date = ?`,
+            [diaryId, diaryDate],
+            (txObj, resultSet) => {
+              // console.log('Selected diary updated as featured successfully');
+              resolve(true)
+            },
+            (txObj, error) => {
+              console.error('Error updating selected diary as featured:', error);
+              reject(false)
+            }
+          );
+        });
+      })
+    }
+    else if(is_featured === 1){
+      // 원래 대표이미지로 지정되어있었다면,
+  		return new Promise((resolve, reject) => {
+        db.transaction((tx) => {
+          // 해당 일기의 is_featured 값을 0으로 업데이트
+          tx.executeSql(
+            `UPDATE diary SET is_featured = 0 WHERE id = ?`,
+            [diaryId],
+            (txObj, resultSet) => {
+              // console.log('Previous featured diary updated successfully');
+              resolve(true);
+            },
+            (txObj, error) => {
+              console.error('Error updating previous featured diary:', error);
+              reject(false)
+            }
+          );
+        })
+      })
+    }
+  }
+  catch(error){
+    console.error('대표일기 지정오류!', error)
+  }
+};
+
+/**
+ * 하루 일기 조회
+ * @param {string} date 
+ * @returns 일일일기 배열
+ */
+export const readDailyDiarys = async(date) => {
+  try{
+    return new Promise((resolve, reject) => {
+			db.transaction((tx) => {
+				tx.executeSql(
+          `SELECT * FROM diary WHERE date = ?`,
+          [date],
+          (_, { rows }) => {
+						const diarys = rows._array;
+						resolve(diarys);
+					},
+					(_, error) => {
+						reject(error);
+					}
+        )
+      })
+    })
+  }
+  catch(error){
+    console.error(error)
+  }
 }
 
 
@@ -111,7 +219,7 @@ export const readDiarys = async (month, year, howSortDiary) => {
 					`SELECT * FROM diary WHERE date BETWEEN ? AND ? ORDER BY date ${howSortDiary}`,
 					[
 						`${year}-${changeNumberTwoLength(month)}-01 00:00:00`,
-						`${year}-${changeNumberTwoLength(month + 1)}-0 23:59:59`,
+						`${year}-${changeNumberTwoLength(month + 1)}-01 23:59:59`,
 					],
 					(_, { rows }) => {
 						const diarys = rows._array;
@@ -208,11 +316,6 @@ export const getDiaryCountByMood = async (month, year) => {
  * @returns 검색 결과 배열
  */
 export const getDiarySearch = (title, mood, weather, startDate, endDate) => {
-	console.log("제목:", title);
-	console.log("기분:", mood);
-	console.log("날씨:", weather);
-	console.log("시작:", startDate);
-	console.log("종료:", endDate);
 	return new Promise((resolve, reject) => {
 		db.transaction((tx) => {
 			let query = "SELECT * FROM diary WHERE 1 = 1";
