@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, SafeAreaView, Text, Pressable } from "react-native";
 import { readcontact } from "../../util/database";
+import GlobalStyle from "../../globalStyle/GlobalStyle";
 
 const SettingContactLog = ({ navigation }) => {
-	const [cTitles, setCTitles] = useState([]);
+	const [contacts, setContacts] = useState([]);
 
 	useEffect(() => {
 		const fetchCTitles = async () => {
 			try {
-				const cTitles = await readcontact();
-				setCTitles(cTitles);
-				console.log("모든 cTitle:", cTitles);
+				const contactList = await readcontact();
+				setContacts(contactList);
+				console.log("모든 cTitle:", contactList);
 			} catch (error) {
 				console.error("cTitle 가져오기 오류:", error);
 			}
@@ -38,14 +39,34 @@ const SettingContactLog = ({ navigation }) => {
 						width: "100%",
 						alignItems: "center",
 						marginBottom: 100,
+						top: 10,
 					}}
 				>
-					<Text>Inquiry history</Text>
+					<Text style={GlobalStyle.font_caption1}>Inquiry history</Text>
 				</View>
-				{cTitles.map((cTitle, index) => (
-					<Pressable key={index} onPress={() => detailContact(cTitle)}>
-						<Text style={styles.cTitle}>{cTitle}</Text>
-						{index !== cTitles.length + 1 && <View style={styles.separator} />}
+				{contacts.map((contact, index) => (
+					<Pressable
+						key={index}
+						onPress={() => detailContact(contact.title)}
+						style={{
+							paddingVertical: 8,
+						}}
+					>
+						<View
+							style={{
+								display: "flex",
+								flexDirection: "row",
+								justifyContent: "space-between",
+							}}
+						>
+							<Text style={[styles.cTitle, GlobalStyle.font_body]}>
+								{index + 1}. {contact.title}
+							</Text>
+							<Text style={[styles.cDate, GlobalStyle.font_body]}>
+								{contact.date}
+							</Text>
+						</View>
+						{index !== contacts.length + 1 && <View style={styles.separator} />}
 					</Pressable>
 				))}
 			</SafeAreaView>
@@ -59,9 +80,9 @@ const styles = StyleSheet.create({
 		marginBottom: 4,
 	},
 	separator: {
-		// width: "100%",
+		width: 300,
 		height: 1,
-		backgroundColor: "gray",
+		backgroundColor: "#E2E2E2",
 		marginVertical: 10,
 	},
 });
