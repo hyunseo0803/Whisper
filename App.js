@@ -28,7 +28,7 @@ import SettingPremium from "./src/pages/setting/settingPremium";
 import SettingWithdrawal from "./src/pages/setting/settingWithdrawal";
 import { COLOR_DARK_BG, COLOR_LIGHT_BG } from "./src/globalStyle/color";
 import SettingScreenMode from "./src/pages/setting/settingScreenMode";
-import { createTable, createContact } from "./src/util/database";
+import { createTable, createContact, deleteContact } from "./src/util/database";
 
 export default function App() {
 	const isDark = useColorScheme() === "dark";
@@ -71,6 +71,7 @@ export default function App() {
 	if (islogin) {
 		createTable();
 		createContact();
+		// deleteContact();
 		return (
 			<NavigationContainer
 				onLayout={onLayoutRootView}
