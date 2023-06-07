@@ -309,15 +309,20 @@ export const readcontact = async () => {
 	return new Promise((resolve, reject) => {
 		db.transaction((tx) => {
 			tx.executeSql(
-				"SELECT title FROM contact",
+				"SELECT title, date FROM contact",
 				[],
 				(_, resultSet) => {
 					const { rows } = resultSet;
-					const title = [];
+					const contacts = [];
 					for (let i = 0; i < rows.length; i++) {
-						title.push(rows.item(i).title);
+						const data = rows.item(i);
+						const contact = {
+							title: data.title,
+							date: data.date,
+						};
+						contacts.push(contact);
 					}
-					resolve(title);
+					resolve(contacts);
 				},
 				(_, error) => {
 					reject(error);
@@ -346,6 +351,7 @@ export const readcontactDetail = async (cTitle) => {
 							title: contact.title,
 							content: contact.content,
 							email: contact.email,
+							date: contact.date,
 						});
 					} else {
 						reject(new Error("Contact not found"));
@@ -370,6 +376,28 @@ export const deleteDiarys = async (id) => {
 				tx.executeSql(
 					"DELETE FROM diary WHERE id = ?",
 					[id],
+					(_, { row }) => {
+						return true;
+					},
+					(_, error) => {
+						console.error(error, "삭제 과정에서 에러 발생!");
+						return false;
+					}
+				);
+			});
+		});
+	} catch (e) {
+		console.error(e);
+	}
+};
+
+export const deleteContact = async () => {
+	try {
+		return new Promise((resolve, reject) => {
+			db.transaction((tx) => {
+				tx.executeSql(
+					"DELETE FROM contact",
+					[],
 					(_, { row }) => {
 						return true;
 					},
