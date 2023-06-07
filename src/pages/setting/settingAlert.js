@@ -12,6 +12,8 @@ import Toggle from "react-native-toggle-input";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from "moment";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import GlobalStyle from "../../globalStyle/GlobalStyle";
+import { Feather, Ionicons } from "@expo/vector-icons";
 
 const SettingAlert = ({ navigation }) => {
 	const [toggle, setToggle] = useState(false);
@@ -61,45 +63,79 @@ const SettingAlert = ({ navigation }) => {
 						width: "100%",
 						alignItems: "center",
 						marginBottom: 100,
+						top: 10,
 					}}
 				>
-					<Text>Setting Alert</Text>
+					<Text style={GlobalStyle.font_caption1}>Setting Alert</Text>
 				</View>
 				<View
 					style={{
 						width: "100%",
 						alignItems: "center",
+						textAlign: "center",
+						display: "flex",
+						flexDirection: "row",
+						justifyContent: "center",
 					}}
 				>
-					<Text>일기를 매일 쓸 수 있도록 제가 챙겨줄게요</Text>
+					<Text style={[{ marginHorizontal: 5 }, GlobalStyle.font_caption1]}>
+						일기를 매일 쓸 수 있도록 제가 챙겨줄게요
+					</Text>
+					<Feather name="smile" size={24} color="black" />
 				</View>
 				<View
 					style={{
-						justifyContent: "space-between",
+						// justifyContent: "space-between",
 						backgroundColor: "white",
 						borderRadius: 15,
-						display: "flex",
+						// display: "flex",
 						flexDirection: "row",
 						width: "100%",
-						height: "9%",
+						height: "8%",
 						marginVertical: 10,
+						// position: "relative",
 						shadowColor: "black",
 						shadowOffset: {
 							width: 5,
-							height: 7,
+							height: 5,
 						},
 						shadowOpacity: 0.2,
 						shadowRadius: 8,
 					}}
 				>
-					<Text style={{ marginHorizontal: 20, marginVertical: 20 }}>
+					<Ionicons
+						name="alarm"
+						size={45}
+						color="black"
+						style={{
+							marginHorizontal: 10,
+							marginVertical: 3,
+							alignItems: "center",
+							justifyContent: "center",
+							// backgroundColor: "red",
+						}}
+					/>
+					<Text
+						style={[
+							{
+								// justifyContent: "center",
+								textAlign: "center",
+								marginVertical: 15,
+								// alignItems: "center",
+								// position: "absolute",
+							},
+							GlobalStyle.font_title2,
+						]}
+					>
 						알람 시간 설정하기
 					</Text>
 					<View
-						style={{
-							justifyContent: "center",
-							marginHorizontal: 10,
-						}}
+						style={[
+							{
+								justifyContent: "center",
+								marginLeft: 40,
+							},
+						]}
 					>
 						<Toggle
 							size={27}
@@ -119,14 +155,17 @@ const SettingAlert = ({ navigation }) => {
 				</View>
 				<View>
 					<Text
-						style={{
-							color: "gray",
-							alignItems: "center",
-							textAlign: "center",
-							justifyContent: "center",
-							marginVertical: 80,
-							letterSpacing: 1,
-						}}
+						style={[
+							{
+								color: "gray",
+								alignItems: "center",
+								textAlign: "center",
+								justifyContent: "center",
+								marginVertical: 80,
+								letterSpacing: 1,
+							},
+							GlobalStyle.font_body,
+						]}
 					>
 						알람 시간을 설정하시면, {"\n"}매일 소곤소곤 일기장이 일기 쓸 시간에
 						{"\n"}
@@ -138,13 +177,30 @@ const SettingAlert = ({ navigation }) => {
 							height: 50,
 							backgroundColor: "#E76B5C",
 							borderRadius: 15,
-							marginTop: 150,
+							marginTop: 200,
+							marginHorizontal: 10,
+							// display: "flex",
+							// flex: 1,
 							justifyContent: "center",
 							alignItems: "center",
+							// position: "absolute",
+							// textAlign: "center",
 						}}
 						onPress={savedAlertTime}
 					>
-						<Text style={{ color: "white", letterSpacing: 10 }}>저장</Text>
+						<Text
+							style={[
+								{
+									color: "white",
+									// wordSpacing: 10,
+									// letterSpacing: 50,
+									// position: "relative",
+								},
+								GlobalStyle.font_title2,
+							]}
+						>
+							저장
+						</Text>
 					</Pressable>
 				</View>
 			</SafeAreaView>
