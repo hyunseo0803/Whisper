@@ -35,6 +35,7 @@ function Body(props) {
   // 연, 월 이 바뀔 때마다 한 번씩만 실행
   useEffect(() => {
     setTotalDays(getMonthDays(year, month))
+
   }, [year, month])
 
   /**
@@ -54,7 +55,7 @@ function Body(props) {
    */
   const haveDiary = (day) => {
     let datas = DATA.find(data => data.date === `${year}-${changeNumberTwoLength(month)}-${changeNumberTwoLength(day)}`)
-    if(datas?.title === '' || datas?.title === undefined) {
+    if(datas?.title === undefined) {
       return false
     }
     else{

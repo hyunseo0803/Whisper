@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, useColorScheme } from 'react-native';
 import Header from './Header'
 import Body from './Body'
 import { DarkTheme, DefaultTheme, useIsFocused } from '@react-navigation/native';
-import { readDiarys } from '../../util/database';
+import { read, readDiarys } from '../../util/database';
 import { calenderBtnNextMonth, calenderBtnPrevMonth } from '../../util/Calender';
 
 function Calender() {
@@ -49,13 +49,7 @@ function Calender() {
 
   useEffect(() => {
     getCalenderDataFun = async (month, year) => {
-      try{
-        const result = await readDiarys(month, year, 'DESC')
-        setDdata(result)
-      }
-      catch(e){
-        console.error(e)
-      }
+      setDdata(await readDiarys(month, year, 'DESC'))
     }
     getCalenderDataFun(month, year)
   }, [month, year, isFocused, rendering]);

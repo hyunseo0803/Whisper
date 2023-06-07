@@ -96,30 +96,38 @@ export const insertDiary = async (
 		return new Promise(
 			(resolve, reject) => {
 				db.transaction((tx) => {
-					tx.executeSql(
-						`INSERT INTO diary (date,title,mood,weather,image,content,audio_id,sound,file,status) VALUES(?,?,?,?,?,?,?,?,?,?)`,
-						[
-							date,
-							title,
-							mood,
-							weather,
-							image,
-							content,
-							audioData.id,
-							audioData.sound,
-							audioData.file,
-							audioData.status,
-						],
-						(_, { rowsAffected, insertId }) => {
-							if (rowsAffected > 0) {
-								resolve(true);
-							}
-						},
-						(_, error) => {
-							console.error("Failed to insert data:", error);
-							reject(false);
-						}
-					);
+          // 해당 날짜에 is_featured가 1인 데이터가 있는지 확인
+          tx.executeSql(
+            `SELECT COUNT(*) AS count FROM diary WHERE date = ? AND is_featured = 1`,
+            [date],
+            (_, { rows }) => {
+              const { count } = rows.item(0);
+            
+              // is_featured 값을 설정
+              const isFeatured = count > 0 ? 0 : (image!=='' ? 1 : 0);
+            
+              console.log(date)
+              // 일기 데이터 삽입
+              tx.executeSql(
+                `INSERT INTO diary (date, title, mood, weather, image, content, audio_id, sound, file, status, is_featured) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [date, title, mood, weather, image, content, audioData.id, audioData.sound, audioData.file, audioData.status, isFeatured],
+                (_, { rowsAffected, insertId }) => {
+                  if (rowsAffected > 0) {
+                    resolve(true);
+                  }
+                },
+                (_, error) => {
+                  console.error("Failed to insert data:", error);
+                  reject(false);
+                }
+              );
+            },
+            (_, error) => {
+              console.error("Failed to check is_featured:", error);
+              reject(false);
+            }
+          );
 				});
 			},
 			(error) => {
@@ -234,7 +242,6 @@ export const readDailyDiarys = async (date) => {
  * @param {string} content
  * @param {string} user_email
  */
-
 export const insertContact = async (date, cTitle, content, user_email) => {
 	try {
 		return new Promise(
@@ -284,8 +291,8 @@ export const readDiarys = async (month, year, howSortDiary) => {
 				tx.executeSql(
 					`SELECT * FROM diary WHERE date BETWEEN ? AND ? ORDER BY date ${howSortDiary}`,
 					[
-						`${year}-${changeNumberTwoLength(month)}-01 00:00:00`,
-						`${year}-${changeNumberTwoLength(month + 1)}-01 23:59:59`,
+						`${year}-${changeNumberTwoLength(month)}-01`,
+						`${year}-${changeNumberTwoLength(month + 1)}-00`,
 					],
 					(_, { rows }) => {
 						const diarys = rows._array;
