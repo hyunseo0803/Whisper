@@ -8,6 +8,7 @@ const SettingContactDetail = ({ navigation, route }) => {
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
 	const [email, setEmail] = useState("");
+	const [date, setDate] = useState("");
 	useEffect(() => {
 		const fetchDetails = async () => {
 			try {
@@ -15,6 +16,7 @@ const SettingContactDetail = ({ navigation, route }) => {
 				setTitle(details.title);
 				setContent(details.content);
 				setEmail(details.email);
+				setDate(details.date);
 			} catch (error) {
 				console.error("Error fetching details:", error);
 			}
@@ -36,6 +38,7 @@ const SettingContactDetail = ({ navigation, route }) => {
 				<Text>Title: {title}</Text>
 				<Text>Content: {content}</Text>
 				<Text>Email: {email}</Text>
+				<Text>Date:{date}</Text>
 			</View>
 		</SafeAreaView>
 	);
