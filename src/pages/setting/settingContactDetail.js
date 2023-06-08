@@ -59,146 +59,50 @@ const SettingContactDetail = ({ navigation, route }) => {
 	};
 
 	return (
-		<SafeAreaView
-			style={{
-				alignItems: "center",
-				height: "90%",
-				marginVertical: 40,
-				marginHorizontal: 20,
-			}}
-		>
+		<SafeAreaView style={styles.safearea}>
 			<ScrollView
 				contentContainerStyle={{ alignItems: "center" }}
 				showsVerticalScrollIndicator={false}
 			>
-				<View
-					style={{
-						width: "100%",
-						alignItems: "center",
-						marginBottom: 60,
-						top: 10,
-					}}
-				>
+				<View style={styles.topLabel}>
 					<Text style={GlobalStyle.font_caption1}>Inquiry history</Text>
 				</View>
-				<View
-					style={{
-						display: "flex",
-						flexDirection: "row",
-						justifyContent: "space-between",
-						alignItems: "center",
-						marginBottom: 10,
-					}}
-				>
-					<Text
-						style={[
-							{ flex: 1, textAlign: "left", marginHorizontal: 10 },
-							GlobalStyle.font_body,
-						]}
-					>
+				<View style={styles.titleLabelView}>
+					<Text style={[styles.titleLabel, GlobalStyle.font_body]}>
 						문의 제목
 					</Text>
-					<Text
-						style={[
-							{
-								flex: 1,
-								textAlign: "right",
-								marginHorizontal: 10,
-								color: "#5F5F5F",
-							},
-							GlobalStyle.font_caption2,
-						]}
-					>
+					<Text style={[styles.dateLabel, GlobalStyle.font_caption2]}>
 						{date}
 					</Text>
 				</View>
-				<View
-					style={{
-						backgroundColor: "white",
-						width: 320,
-						padding: 10,
-						justifyContent: "flex-start",
-						alignItems: "flex-start",
-
-						borderRadius: 10,
-						marginBottom: 35,
-					}}
-				>
+				<View style={styles.title}>
 					<Text style={[{ textAlignVertical: "top" }, GlobalStyle.font_body]}>
 						{title}
 					</Text>
 				</View>
-				<View
-					style={{
-						display: "flex",
-						flexDirection: "row",
-						justifyContent: "space-between",
-						alignItems: "center",
-						marginBottom: 10,
-					}}
-				>
-					<Text
-						style={[{ flex: 1, marginHorizontal: 10 }, GlobalStyle.font_body]}
-					>
+				<View style={styles.contentLabelView}>
+					<Text style={[styles.contentLabel, GlobalStyle.font_body]}>
 						문의 내용
 					</Text>
 				</View>
-				<View
-					style={{
-						backgroundColor: "white",
-						width: 320,
-						minHeight: 340,
-						padding: 10,
-						justifyContent: "flex-start",
-						alignItems: "flex-start",
-						borderRadius: 10,
-						marginBottom: 35,
-					}}
-				>
+				<View style={styles.content}>
 					<Text style={({ textAlignVertical: "top" }, GlobalStyle.font_body)}>
 						{content}
 					</Text>
 				</View>
-				<View
-					style={{
-						display: "flex",
-						flexDirection: "row",
-						alignItems: "center",
-						marginBottom: 10,
-					}}
-				>
+				<View style={styles.emailLabelView}>
 					<Text
 						style={[{ flex: 1, marginHorizontal: 10 }, GlobalStyle.font_body]}
 					>
 						회신 받으실 이메일
 					</Text>
 				</View>
-				<View
-					style={{
-						backgroundColor: "white",
-						width: 320,
-						padding: 10,
-						justifyContent: "flex-start",
-						alignItems: "flex-start",
-						borderRadius: 10,
-					}}
-				>
+				<View style={styles.email}>
 					<Text style={[{ textAlignVertical: "top" }, GlobalStyle.font_body]}>
 						{email}
 					</Text>
 				</View>
-				<Pressable
-					onPress={checkDeleteContact}
-					style={{
-						width: "100%",
-						height: 55,
-						backgroundColor: "#E76B5C",
-						borderRadius: 15,
-						marginVertical: 40,
-						justifyContent: "center",
-						alignItems: "center",
-					}}
-				>
+				<Pressable onPress={checkDeleteContact} style={styles.deleteButton}>
 					<AntDesign name="delete" size={30} color="white" />
 				</Pressable>
 			</ScrollView>
@@ -206,6 +110,91 @@ const SettingContactDetail = ({ navigation, route }) => {
 	);
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	safearea: {
+		alignItems: "center",
+		height: "90%",
+		marginVertical: 40,
+		marginHorizontal: 20,
+	},
+	topLabel: {
+		width: "100%",
+		alignItems: "center",
+		marginBottom: 60,
+		top: 10,
+	},
+	titleLabelView: {
+		display: "flex",
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		marginBottom: 10,
+	},
+	titleLabel: {
+		flex: 1,
+		textAlign: "left",
+		marginHorizontal: 10,
+	},
+	dateLabel: {
+		flex: 1,
+		textAlign: "right",
+		marginHorizontal: 10,
+		color: "#5F5F5F",
+	},
+	title: {
+		backgroundColor: "white",
+		width: 320,
+		padding: 10,
+		justifyContent: "flex-start",
+		alignItems: "flex-start",
+
+		borderRadius: 10,
+		marginBottom: 35,
+	},
+	contentLabelView: {
+		display: "flex",
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		marginBottom: 10,
+	},
+	contentLabel: {
+		flex: 1,
+		marginHorizontal: 10,
+	},
+	content: {
+		backgroundColor: "white",
+		width: 320,
+		minHeight: 340,
+		padding: 10,
+		justifyContent: "flex-start",
+		alignItems: "flex-start",
+		borderRadius: 10,
+		marginBottom: 35,
+	},
+	emailLabelView: {
+		display: "flex",
+		flexDirection: "row",
+		alignItems: "center",
+		marginBottom: 10,
+	},
+	email: {
+		backgroundColor: "white",
+		width: 320,
+		padding: 10,
+		justifyContent: "flex-start",
+		alignItems: "flex-start",
+		borderRadius: 10,
+	},
+	deleteButton: {
+		width: "100%",
+		height: 55,
+		backgroundColor: "#E76B5C",
+		borderRadius: 15,
+		marginVertical: 40,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+});
 
 export default SettingContactDetail;

@@ -56,86 +56,27 @@ const SettingAlert = ({ navigation }) => {
 
 	return (
 		<View>
-			<SafeAreaView
-				style={{
-					alignItems: "center",
-					height: "90%",
-					marginVertical: 40,
-					marginHorizontal: 20,
-				}}
-			>
-				<View
-					style={{
-						width: "100%",
-						alignItems: "center",
-						marginBottom: 100,
-						top: 10,
-					}}
-				>
+			<SafeAreaView style={styles.safearea}>
+				<View style={styles.topLabel}>
 					<Text style={GlobalStyle.font_caption1}>Setting Alert</Text>
 				</View>
-				<View
-					style={{
-						width: "100%",
-						alignItems: "center",
-						textAlign: "center",
-						display: "flex",
-						flexDirection: "row",
-						justifyContent: "center",
-					}}
-				>
+				<View style={styles.middleLabel}>
 					<Text style={[{ marginHorizontal: 5 }, GlobalStyle.font_caption1]}>
 						일기를 매일 쓸 수 있도록 제가 챙겨줄게요
 					</Text>
 					<Feather name="smile" size={24} color="black" />
 				</View>
-				<View
-					style={{
-						backgroundColor: "white",
-						borderRadius: 15,
-						flexDirection: "row",
-						width: "100%",
-						height: "8%",
-						marginVertical: 10,
-						shadowColor: "black",
-						shadowOffset: {
-							width: 5,
-							height: 5,
-						},
-						shadowOpacity: 0.2,
-						shadowRadius: 8,
-					}}
-				>
+				<View style={styles.selectTimeView}>
 					<Ionicons
 						name="alarm"
 						size={45}
 						color="black"
-						style={{
-							marginHorizontal: 10,
-							marginVertical: 3,
-							alignItems: "center",
-							justifyContent: "center",
-						}}
+						style={styles.selectTimeView_icon}
 					/>
-					<Text
-						style={[
-							{
-								textAlign: "center",
-								marginVertical: 15,
-							},
-							GlobalStyle.font_title2,
-						]}
-					>
+					<Text style={[styles.selectTimeView_label, GlobalStyle.font_title2]}>
 						알람 시간 설정하기
 					</Text>
-					<View
-						style={[
-							{
-								justifyContent: "center",
-								marginLeft: 40,
-							},
-						]}
-					>
+					<View style={styles.toggleWrapper}>
 						<Toggle
 							size={27}
 							filled={true}
@@ -155,29 +96,15 @@ const SettingAlert = ({ navigation }) => {
 				<View>
 					{selectedTime ? (
 						<View>
-							<Text
-								style={[
-									{
-										color: "#5f5f5f",
-										alignItems: "center",
-										textAlign: "center",
-										justifyContent: "center",
-										marginTop: 80,
-										letterSpacing: 5,
-									},
-									GlobalStyle.font_title1,
-								]}
-							>
+							<Text style={[styles.selectedtimeView, GlobalStyle.font_title1]}>
 								{selectedTime}
 							</Text>
 							<Text
 								style={[
 									{
-										color: "#5f5f5f",
-										textAlign: "center",
 										letterSpacing: 5,
-										marginTop: 15,
 									},
+									styles.selectedwordView,
 									GlobalStyle.font_body,
 								]}
 							>
@@ -186,55 +113,25 @@ const SettingAlert = ({ navigation }) => {
 							<Text
 								style={[
 									{
-										color: "#5f5f5f",
-										textAlign: "center",
 										letterSpacing: 2,
-										marginTop: 15,
 									},
+									styles.selectedwordView,
 									GlobalStyle.font_caption1,
 								]}
 							>
 								알림 받기를 원하시면 저장 버튼까지 눌러주세요 !
 							</Text>
 							<Pressable
-								style={{
-									width: 330,
-									height: 50,
-									backgroundColor: "#E76B5C",
-									borderRadius: 15,
-									marginTop: 240,
-									marginHorizontal: 10,
-									justifyContent: "center",
-									alignItems: "center",
-								}}
+								style={styles.pressableButton}
 								onPress={savedAlertTime}
 							>
-								<Text
-									style={[
-										{
-											color: "white",
-										},
-										GlobalStyle.font_title2,
-									]}
-								>
+								<Text style={[styles.pressableText, GlobalStyle.font_title2]}>
 									저장
 								</Text>
 							</Pressable>
 						</View>
 					) : (
-						<Text
-							style={[
-								{
-									color: "gray",
-									alignItems: "center",
-									textAlign: "center",
-									justifyContent: "center",
-									marginVertical: 80,
-									letterSpacing: 1,
-								},
-								GlobalStyle.font_body,
-							]}
-						>
+						<Text style={[styles.textView, GlobalStyle.font_body]}>
 							알람 시간을 설정하시면, {"\n"}매일 소곤소곤 일기장이 일기 쓸
 							시간에
 							{"\n"}
@@ -247,6 +144,90 @@ const SettingAlert = ({ navigation }) => {
 	);
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	safearea: {
+		alignItems: "center",
+		height: "90%",
+		marginVertical: 40,
+		marginHorizontal: 20,
+	},
+	topLabel: {
+		width: "100%",
+		alignItems: "center",
+		marginBottom: 100,
+		top: 10,
+	},
+	middleLabel: {
+		width: "100%",
+		alignItems: "center",
+		textAlign: "center",
+		display: "flex",
+		flexDirection: "row",
+		justifyContent: "center",
+	},
+	selectTimeView: {
+		backgroundColor: "white",
+		borderRadius: 15,
+		flexDirection: "row",
+		width: "100%",
+		height: "8%",
+		marginVertical: 10,
+		shadowColor: "black",
+		shadowOffset: {
+			width: 5,
+			height: 5,
+		},
+		shadowOpacity: 0.2,
+		shadowRadius: 8,
+	},
+	selectTimeView_icon: {
+		marginHorizontal: 10,
+		marginVertical: 3,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	selectTimeView_label: {
+		textAlign: "center",
+		marginVertical: 15,
+	},
+	toggleWrapper: {
+		justifyContent: "center",
+		marginLeft: 40,
+	},
+	selectedtimeView: {
+		color: "#5f5f5f",
+		alignItems: "center",
+		textAlign: "center",
+		justifyContent: "center",
+		marginTop: 80,
+		letterSpacing: 5,
+	},
+	selectedwordView: {
+		color: "#5f5f5f",
+		textAlign: "center",
+		marginTop: 15,
+	},
+	pressableButton: {
+		width: 330,
+		height: 50,
+		backgroundColor: "#E76B5C",
+		borderRadius: 15,
+		marginTop: 240,
+		marginHorizontal: 10,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	pressableText: {
+		color: "white",
+	},
+	textView: {
+		color: "gray",
+		alignItems: "center",
+		textAlign: "center",
+		justifyContent: "center",
+		marginVertical: 80,
+		letterSpacing: 1,
+	},
+});
 
 export default SettingAlert;

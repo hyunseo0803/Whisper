@@ -34,50 +34,20 @@ const SettingContactLog = ({ navigation }) => {
 		navigation.navigate("settingContactDetail", { id: id });
 	};
 	return (
-		<SafeAreaView
-			style={{
-				alignItems: "center",
-				height: "90%",
-				marginVertical: 40,
-				marginHorizontal: 20,
-			}}
-		>
+		<SafeAreaView style={styles.safearea}>
 			{contacts.length === 0 ? (
-				<View
-					style={{
-						marginTop: "80%",
-						justifyContent: "center",
-						alignItems: "center",
-					}}
-				>
-					<Text
-						style={[
-							GlobalStyle.font_body,
-							{ letterSpacing: 3, textAlign: "center" },
-						]}
-					>
+				<View style={styles.nothingContentView}>
+					<Text style={[GlobalStyle.font_body, styles.nothingContentText]}>
 						문의 내역이 없습니다.
 					</Text>
-					<Text
-						style={[
-							GlobalStyle.font_caption1,
-							{ letterSpacing: 3, textAlign: "center" },
-						]}
-					>
+					<Text style={[GlobalStyle.font_caption1, styles.nothingContentText]}>
 						{"\n"}피드백도, 칭찬도 모두 좋으니 {"\n"}
 						편하게 남겨주세요!
 					</Text>
 				</View>
 			) : (
 				<>
-					<View
-						style={{
-							width: "100%",
-							alignItems: "center",
-							marginBottom: 100,
-							top: 10,
-						}}
-					>
+					<View style={styles.topLabel}>
 						<Text style={GlobalStyle.font_caption1}>Inquiry history</Text>
 					</View>
 					{contacts.map((contact, index) => (
@@ -88,13 +58,7 @@ const SettingContactLog = ({ navigation }) => {
 								overflow: "auto",
 							}}
 						>
-							<View
-								style={{
-									display: "flex",
-									flexDirection: "row",
-									justifyContent: "space-between",
-								}}
-							>
+							<View style={styles.contactListView}>
 								<Text style={[styles.cTitle, GlobalStyle.font_body]}>
 									{index + 1}. {contact.title}
 								</Text>
@@ -116,6 +80,12 @@ const SettingContactLog = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+	safearea: {
+		alignItems: "center",
+		height: "90%",
+		marginVertical: 40,
+		marginHorizontal: 20,
+	},
 	cTitle: {
 		flex: 1,
 	},
@@ -125,6 +95,26 @@ const styles = StyleSheet.create({
 		height: 1,
 		backgroundColor: "#E2E2E2",
 		marginVertical: 10,
+	},
+	nothingContentView: {
+		marginTop: "80%",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	nothingContentText: {
+		letterSpacing: 3,
+		textAlign: "center",
+	},
+	topLabel: {
+		width: "100%",
+		alignItems: "center",
+		marginBottom: 100,
+		top: 10,
+	},
+	contactListView: {
+		display: "flex",
+		flexDirection: "row",
+		justifyContent: "space-between",
 	},
 });
 

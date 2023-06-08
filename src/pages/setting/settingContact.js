@@ -57,28 +57,14 @@ const SettingContact = ({ navigation }) => {
 	};
 
 	return (
-		<SafeAreaView
-			style={{
-				height: "90%",
-				marginVertical: 40,
-				marginHorizontal: 25,
-				flex: 1,
-			}}
-		>
+		<SafeAreaView style={styles.safearea}>
 			<KeyboardAvoidingView
 				style={{ flex: 1, width: "100%" }}
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
 				keyboardVerticalOffset={Platform.OS === "ios" ? 55 : 0}
 			>
 				<ScrollView showsVerticalScrollIndicator={false}>
-					<View
-						style={{
-							width: "100%",
-							alignItems: "center",
-							marginBottom: 60,
-							top: 10,
-						}}
-					>
+					<View style={styles.topLabel}>
 						<Text style={GlobalStyle.font_caption1}>Contact Us</Text>
 					</View>
 					<Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
@@ -87,30 +73,11 @@ const SettingContact = ({ navigation }) => {
 								value={cTitle}
 								onChangeText={(text) => setCTitle(text)}
 								placeholder="문의 제목"
-								style={[
-									{
-										width: "100%",
-										padding: 7,
-										borderBottomWidth: 1,
-										borderColor: "#D4D4D4",
-										marginBottom: 10,
-									},
-									GlobalStyle.font_body,
-								]}
+								style={[styles.titleInput, GlobalStyle.font_body]}
 							/>
 						</View>
 						<View>
-							<Text
-								style={[
-									{
-										textAlign: "center",
-										marginVertical: 15,
-										letterSpacing: 1,
-										color: "#5F5F5F",
-									},
-									GlobalStyle.font_caption1,
-								]}
-							>
+							<Text style={[styles.helpText, GlobalStyle.font_caption1]}>
 								핸드폰의 기종 및 사양을 함께 입력해주시면 {"\n"}보다 자세한
 								답변을 받으실 수 있습니다.
 							</Text>
@@ -119,18 +86,7 @@ const SettingContact = ({ navigation }) => {
 								onChangeText={(text) => setContent(text)}
 								placeholder={`문의하실 내용을 입력 해주세요.`}
 								multiline={true}
-								style={[
-									{
-										width: "100%",
-										minHeight: 340,
-										textAlignVertical: "top",
-										padding: 10,
-										borderRadius: 5,
-										marginBottom: 20,
-										backgroundColor: "white",
-									},
-									GlobalStyle.font_body,
-								]}
+								style={[styles.contentInput, GlobalStyle.font_body]}
 								scrollEnabled={true}
 								maxLength={800}
 							/>
@@ -140,31 +96,19 @@ const SettingContact = ({ navigation }) => {
 								value={user_email}
 								onChangeText={(text) => setUser_email(text)}
 								placeholder="회신 받을 이메일 ex)sample@sogon.com"
-								style={[
-									{
-										width: "100%",
-										padding: 7,
-										borderBottomWidth: 1,
-										borderColor: "white",
-										marginVertical: 15,
-									},
-									GlobalStyle.font_body,
-								]}
+								style={[styles.emailInput, GlobalStyle.font_body]}
 							/>
 						</View>
 						<Pressable
 							onPress={sendEmail}
-							style={{
-								width: "100%",
-								height: 55,
-								backgroundColor: isBothSelected
-									? "#E76B5C"
-									: "rgba(231, 107, 92, 0.5)",
-								borderRadius: 15,
-								marginVertical: 10,
-								justifyContent: "center",
-								alignItems: "center",
-							}}
+							style={[
+								{
+									backgroundColor: isBothSelected
+										? "#E76B5C"
+										: "rgba(231, 107, 92, 0.5)",
+								},
+								styles.pressableButton,
+							]}
 							disabled={!isBothSelected}
 						>
 							<Text
@@ -186,6 +130,51 @@ const SettingContact = ({ navigation }) => {
 	);
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	safearea: {
+		height: "90%",
+		marginVertical: 40,
+		marginHorizontal: 25,
+		flex: 1,
+	},
+	topLabel: { width: "100%", alignItems: "center", marginBottom: 60, top: 10 },
+	titleInput: {
+		width: "100%",
+		padding: 7,
+		borderBottomWidth: 1,
+		borderColor: "#D4D4D4",
+		marginBottom: 10,
+	},
+	helpText: {
+		textAlign: "center",
+		marginVertical: 15,
+		letterSpacing: 1,
+		color: "#5F5F5F",
+	},
+	contentInput: {
+		width: "100%",
+		minHeight: 340,
+		textAlignVertical: "top",
+		padding: 10,
+		borderRadius: 5,
+		marginBottom: 20,
+		backgroundColor: "white",
+	},
+	emailInput: {
+		width: "100%",
+		padding: 7,
+		borderBottomWidth: 1,
+		borderColor: "white",
+		marginVertical: 15,
+	},
+	pressableButton: {
+		width: "100%",
+		height: 55,
+		borderRadius: 15,
+		marginVertical: 10,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+});
 
 export default SettingContact;
