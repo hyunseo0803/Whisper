@@ -23,3 +23,16 @@ export const DefaultTheme = {
       notification: 'rgb(255, 59, 48)',
     },
   };
+
+export const theme = {
+  light : {
+    theme: 'light',
+    color: 'rgb(28, 28, 30)',
+    background: 'rgb(242, 242, 242)',
+  },
+  dark:{
+    theme: 'dark',
+    color: 'rgb(229, 229, 231)',
+    background: '#1C1C1E',
+  }
+}

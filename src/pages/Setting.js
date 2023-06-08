@@ -1,28 +1,22 @@
-import { SafeAreaView, Pressable, StyleSheet, Text, View, Alert, useColorScheme } from "react-native";
-import React from "react";
-import { SIGNOUT } from "../util/firebase/user";
+import { SafeAreaView, Pressable, StyleSheet, Text, View, Alert, useColorScheme, Switch } from "react-native";
+import React, { useState, useEffect } from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
-import { COLOR_BLACK, COLOR_DARK_RED, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY } from "../globalStyle/color";
+import { COLOR_BLACK, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY } from "../globalStyle/color";
+import { EventRegister } from 'react-native-event-listeners'
+import { loadThemeMode, saveThemeMode } from "../util/storage";
 
 const Setting = ( {navigation }) => {
-  const isDark = useColorScheme() === 'dark'
+  const [isDark, setIsDark] = useState(false)
 
-  const onPressBtnLogout = () => {
-    Alert.alert('로그아웃', '로그아웃하시겠습니까?',
-    [
-      {
-        text:'취소',
-      },
-      {
-        text: '로그아웃',
-        onPress: () => {
-          SIGNOUT()
-        }
-      }
-    ])
-  }
+  useEffect(() => {
+    const loadThemeFun = async() => {
+      setIsDark(await loadThemeMode()==='dark')
+    }
+    loadThemeFun()
+  }, []);
+  console.log('setting',isDark)
 
   /**
    * 화면 모드에 따른 아이콘 색 변경
@@ -43,15 +37,22 @@ const Setting = ( {navigation }) => {
           <Ionicons name="chevron-forward-outline" size={25} color={IconColor}></Ionicons>
         </Pressable>
 
-        {/* <Pressable
+        <View
         style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
         onPress={() => navigation.navigate('settingScreenMode')}>
           <View style={styles.flexDirectionRow}>
           <Ionicons name="contrast" size={34} style={{marginLeft:-2, marginRight:2}} color={IconColor}/>
-            <Text style={[GlobalStyle.font_body, {marginLeft:7}, ModeColorStyle(isDark).font_DEFALUT]}>화면</Text>
+            <Text style={[GlobalStyle.font_body, {marginLeft:7}, ModeColorStyle(isDark).font_DEFALUT]}>다크모드</Text>
           </View>
-          <Ionicons name="chevron-forward-outline" size={25} color={IconColor}></Ionicons>
-        </Pressable> */}
+          <Switch
+            value = {isDark}
+            onValueChange = {(value) => {
+              setIsDark(value);
+              saveThemeMode(value);
+              EventRegister.emit('ChangeTheme', value)
+            }}
+          />
+        </View>
 
         <Pressable
         style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
@@ -83,24 +84,6 @@ const Setting = ( {navigation }) => {
           </View>
           <Ionicons name="chevron-forward-outline" size={25} color={IconColor}></Ionicons>
         </Pressable> */}
-
-        <Pressable
-        style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
-        onPress={() => {onPressBtnLogout()}}>
-          <View style={styles.flexDirectionRow}>
-            <AntDesign name="logout" size={30} color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED} />
-            <Text style={[GlobalStyle.font_body, {marginLeft:10}, ModeColorStyle(isDark).font_RED]}>로그아웃</Text>
-          </View>
-        </Pressable>
-
-        <Pressable
-        style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark), {borderBottomWidth:1}]}
-        onPress={() => navigation.navigate('settingWithdrawal')}>
-          <View style={styles.flexDirectionRow}>
-            <AntDesign name="closecircleo" size={30} color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED} />
-            <Text style={[GlobalStyle.font_body, {marginLeft:10}, ModeColorStyle(isDark).font_RED]}>회원탈퇴</Text>
-          </View>
-        </Pressable>
       </View>
     </SafeAreaView>
   );

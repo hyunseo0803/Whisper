@@ -8,14 +8,13 @@ import { changeNumberTwoLength, getMonthDays } from "../../util/Calender";
 
 
 function Body(props) {
-  const isDark = useColorScheme() === 'dark'
-
   // props 데이터들
   const {
     year,
     month,
     data,
     setRendering,
+    isDark
   } = props;
 
   const [totalDays, setTotalDays] = useState([]);

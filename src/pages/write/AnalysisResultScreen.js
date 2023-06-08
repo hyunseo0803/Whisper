@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, StyleSheet, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Alert, useColorScheme } from "react-native";
 import { getGoogleVisionResult, pickImage } from "../../util/writeDiary";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
@@ -15,11 +15,12 @@ import { diaryTopicQuestion, questionToAI } from "../../util/diaryTopic";
 import { moodTextKr } from "../../util/MoodWeather";
 import ModeColorStyle from "../../globalStyle/ModeColorStyle";
 import { COLOR_DARK_BLUE, COLOR_DARK_WHITE, COLOR_LIGHT_BLUE, COLOR_WHITE } from "../../globalStyle/color";
+import themeContext from "../../globalStyle/themeContext";
 
 setupURLPolyfill();
 
 const AnalysisResultScreen = ({ navigation, route }) => {
-	const isDark = useColorScheme() === 'dark'
+	const isDark = useContext(themeContext).theme === 'dark';
 
 	const [analysisMood, setAnalysisMood] = useState("");
 	const [subject, setSubject] = useState("");
@@ -130,7 +131,7 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 				{isLoding ? (
 					<View style={styles.result}>
 						<View style={styles.container}>
-							<HeaderText headerText='Wirte Diary' />
+							<HeaderText headerText='Wirte Diary' isDark={isDark}/>
 						</View>
 						<Text style={[styles.title, ModeColorStyle(isDark).font_DEFALUT, GlobalStyle.font_title1]}>나의 감정 분석 결과</Text>
 						{

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
 	View,
 	StyleSheet,
@@ -20,9 +20,11 @@ import {
 } from "../../globalStyle/color";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { moodAnalysisButtonPressCount, pickImage } from "../../util/writeDiary";
+import themeContext from "../../globalStyle/themeContext";
 
 const WriteAnalysis = ({ navigation: { navigate }, route }) => {
-	const isDark = useColorScheme() === "dark";
+  const isDark = useContext(themeContext).theme === 'dark';
+
 	const { params } = route;
 	const selectedMood = params ? params.selectedMood : null;
 	const selectedWeather = params ? params.selectedWeather : null;

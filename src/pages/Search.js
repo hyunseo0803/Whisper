@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, useColorScheme } from "react-native";
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable } from "react-native";
@@ -11,9 +11,10 @@ import ModeColorStyle from "../globalStyle/ModeColorStyle";
 import { COLOR_BLACK, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_SECONDARY, COLOR_LIGHT_THIRD, COLOR_WHITE } from "../globalStyle/color";
 import HeaderText from "../components/Header";
 import { getDiarySearch } from "../util/database";
+import themeContext from "../globalStyle/themeContext";
 
 const Search = ({navigation}) => {
-  const isDark = useColorScheme() === 'dark'
+  const isDark = useContext(themeContext).theme === 'dark';
 
   const [title, setTitle] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -83,13 +84,16 @@ const Search = ({navigation}) => {
         style={styles.flexCenter}
         onPress={() => {Keyboard.dismiss()}}
       >
-        <HeaderText headerText='search'/>
+        <HeaderText headerText='search' isDark={isDark}/>
 
         <View style={[styles.searchWrap, {backgroundColor : (isDark ? COLOR_DARK_FOURTH : COLOR_WHITE)}]}>
           <View style={[styles.text_input_Box, {marginTop:0}, borderBottom(isDark)]}>
             <Text style={[GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>제목</Text>
             <TextInput
               placeholder="선택없음"
+              placeholderTextColor={
+								isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY
+							}
               style={[GlobalStyle.font_body, styles.text_input, {color:isDark?COLOR_DARK_WHITE:COLOR_BLACK}]}
               value={title}
               onChangeText={text => setTitle(text)}

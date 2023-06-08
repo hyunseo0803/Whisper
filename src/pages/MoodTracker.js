@@ -1,5 +1,5 @@
 import { SafeAreaView, StyleSheet, Text, View, Image, Pressable, Alert, useColorScheme } from "react-native";
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import Header from "../components/calender/Header";
 import MoodBar from "../components/moodTracker/MoodBar";
@@ -10,10 +10,11 @@ import HeaderText from "../components/Header";
 import { getDiaryCountByMood } from "../util/database";
 import { moodArr, moodEngToKr, MoodWeatherFile } from "../util/MoodWeather";
 import { calenderBtnNextMonth, calenderBtnPrevMonth } from "../util/Calender";
+import themeContext from "../globalStyle/themeContext";
 
 
 const MoodTracker = ({navigation}) => {
-  const isDark = useColorScheme() === 'dark'
+  const isDark = useContext(themeContext).theme === 'dark';
   const isFocused = useIsFocused()
 
   const DATE = new Date();
@@ -43,7 +44,7 @@ const MoodTracker = ({navigation}) => {
 
   return (
       <SafeAreaView  style={styles.container}>
-        <HeaderText headerText='MoodTracker'/>
+        <HeaderText headerText='MoodTracker' isDark={isDark}/>
 
         {/* 상단  날짜 이동 View*/}
         <Header

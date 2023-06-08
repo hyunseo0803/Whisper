@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View,SafeAreaView, Pressable, ScrollView, useColorScheme } from "react-native";
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import YMPicker from "../components/datePicker/YMPicker";
@@ -10,9 +10,10 @@ import { COLOR_BLACK, COLOR_DARK_WHITE} from "../globalStyle/color";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
 import { useIsFocused } from "@react-navigation/native";
 import { readDiarys } from "../util/database";
+import themeContext from "../globalStyle/themeContext";
 
 const List = () => {
-  const isDark = useColorScheme() === 'dark'
+  const isDark = useContext(themeContext).theme === 'dark';
   const isFocused = useIsFocused()
 
   const DATE = new Date();

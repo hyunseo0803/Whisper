@@ -1,13 +1,14 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { View, Text, StyleSheet, useColorScheme } from 'react-native';
 import Header from './Header'
 import Body from './Body'
 import { DarkTheme, DefaultTheme, useIsFocused } from '@react-navigation/native';
 import { read, readDiarys } from '../../util/database';
 import { calenderBtnNextMonth, calenderBtnPrevMonth } from '../../util/Calender';
+import themeContext from '../../globalStyle/themeContext';
 
 function Calender() {
-	const isDark = useColorScheme() === 'dark'
+	const isDark = useContext(themeContext).theme === 'dark'
   const isFocused = useIsFocused()
 
   const DATE = new Date();

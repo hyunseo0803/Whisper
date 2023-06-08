@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
 	View,
 	StyleSheet,
@@ -35,9 +35,10 @@ import {
 import HeaderText from "../../components/Header";
 import { deleteAudio, getAudioData, playAudio, startRecording, stopPlayAudio, stopRecording } from "../../util/audioRecord";
 import { pickDiaryImage } from "../../util/writeDiary";
+import themeContext from "../../globalStyle/themeContext";
 
 const WriteContent = ({ navigation, route }) => {
-	const isDark = useColorScheme() === "dark";
+	const isDark = useContext(themeContext).theme === 'dark';
 
 	const [dSubject, setDSubject] = useState([]); // 일기 주제
 	const [dMood, setDMood] = useState("");
@@ -219,7 +220,7 @@ const WriteContent = ({ navigation, route }) => {
 							/>
 						</Pressable>
 						<View style={{ marginTop: 20 }}>
-							<HeaderText headerText="Write Diary" />
+							<HeaderText headerText="Write Diary" isDark={isDark}/>
 						</View>
 						<TouchableOpacity
 							onPress={() =>
@@ -272,6 +273,9 @@ const WriteContent = ({ navigation, route }) => {
 								value={dTitle}
 								onChangeText={(text) => setDTitle(text)}
 								placeholder="일기에 제목을 붙여주세요"
+                placeholderTextColor={
+                  isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY
+                }
 								style={[
 									BodyStyle.titleInput,
 									GlobalStyle.font_title2,

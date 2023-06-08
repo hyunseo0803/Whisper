@@ -8,7 +8,7 @@ import {
   Pressable,
   useColorScheme,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import { Ionicons } from "@expo/vector-icons";
 import DatePicker from "../components/datePicker/DatePicker";
@@ -18,9 +18,10 @@ import { COLOR_BLACK, COLOR_DARK_WHITE } from "../globalStyle/color";
 import HeaderText from "../components/Header";
 import { getDiaryDates } from "../util/database";
 import { moodArr, MoodWeatherFile, weatherArr } from "../util/MoodWeather";
+import themeContext from "../globalStyle/themeContext";
 
 const Write = ({ navigation }) => {
-  const isDark = useColorScheme() === 'dark'
+  const isDark = useContext(themeContext).theme === 'dark';
 
   const DATE = new Date()
 
@@ -81,7 +82,7 @@ const Write = ({ navigation }) => {
 			style={[GlobalStyle.safeAreaWrap, {alignItems:'center', justifyContent:'center'}]}>
 			<View style={styles.container}>
 				<View className="writeDiary">
-					<HeaderText headerText='WriteDiary'/>
+					<HeaderText headerText='WriteDiary' isDark={isDark}/>
 				</View>
 
         {/* datepicker */}

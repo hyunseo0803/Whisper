@@ -1,13 +1,14 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {View, StyleSheet, Text, SafeAreaView, Pressable, ScrollView, useColorScheme} from 'react-native';
 import GlobalStyle from '../../globalStyle/GlobalStyle';
 import { Ionicons } from "@expo/vector-icons";
 import DiaryView from '../../components/DiaryView';
 import { COLOR_BLACK, COLOR_DARK_WHITE } from '../../globalStyle/color';
 import ModeColorStyle from '../../globalStyle/ModeColorStyle';
+import themeContext from '../../globalStyle/themeContext';
 
 const SearchResult = ({ navigation, route }) => {
-  const isDark = useColorScheme() === 'dark'
+  const isDark = useContext(themeContext).theme === 'dark'
 
   const Diarys = route.params.searchedDiarys
 
