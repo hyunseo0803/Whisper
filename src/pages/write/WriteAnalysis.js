@@ -14,7 +14,7 @@ import {
 	COLOR_DARK_WHITE,
 	COLOR_LIGHT_BLUE,
 	COLOR_LIGHT_RED,
-	COLOR_WHITE,
+	COLOR_WHITE, COLOR_BLACK
 } from "../../globalStyle/color";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { moodAnalysisButtonPressCount, pickImage } from "../../util/writeDiary";
