@@ -40,7 +40,6 @@ const SettingContactDetail = ({ navigation, route }) => {
 			try {
 				await deleteContact(id);
 				navigation.navigate("settingContactLog");
-				console.log("지움");
 			} catch (error) {
 				console.error("Error deleting contact:", error);
 			}

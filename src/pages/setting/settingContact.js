@@ -45,14 +45,9 @@ const SettingContact = ({ navigation }) => {
 
 			if (isSent.status === MailComposer.MailComposerStatus.SENT) {
 				const isSaved = await insertContact(date, cTitle, content, user_email); // SQlite에 데이터 저장
-				console.log("이메일 전송");
-				console.log("데이터 저장");
-
 				Alert.alert("알림", "이메일이 성공적으로 전송되었습니다.");
-
 				navigation.navigate("Setting"); // 설정 화면으로 이동
 			} else if (isSent.status === MailComposer.MailComposerStatus.CANCELLED) {
-				console.log("이메일 작성 취소");
 				Alert.alert("알림", "이메일 작성이 취소되었습니다.");
 			}
 		} catch (error) {
@@ -68,7 +63,6 @@ const SettingContact = ({ navigation }) => {
 				marginVertical: 40,
 				marginHorizontal: 25,
 				flex: 1,
-				// backgroundColor: "yellow",
 			}}
 		>
 			<KeyboardAvoidingView

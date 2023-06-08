@@ -35,7 +35,6 @@ const SettingAlert = ({ navigation }) => {
 	const savedAlertTime = async () => {
 		if (selectedTime) {
 			await AsyncStorage.setItem("AlertTime", selectedTime);
-			console.log(selectedTime);
 			navigation.navigate("setting");
 		} else {
 			Alert.alert(
@@ -92,15 +91,12 @@ const SettingAlert = ({ navigation }) => {
 				</View>
 				<View
 					style={{
-						// justifyContent: "space-between",
 						backgroundColor: "white",
 						borderRadius: 15,
-						// display: "flex",
 						flexDirection: "row",
 						width: "100%",
 						height: "8%",
 						marginVertical: 10,
-						// position: "relative",
 						shadowColor: "black",
 						shadowOffset: {
 							width: 5,
@@ -119,17 +115,13 @@ const SettingAlert = ({ navigation }) => {
 							marginVertical: 3,
 							alignItems: "center",
 							justifyContent: "center",
-							// backgroundColor: "red",
 						}}
 					/>
 					<Text
 						style={[
 							{
-								// justifyContent: "center",
 								textAlign: "center",
 								marginVertical: 15,
-								// alignItems: "center",
-								// position: "absolute",
 							},
 							GlobalStyle.font_title2,
 						]}
@@ -212,12 +204,8 @@ const SettingAlert = ({ navigation }) => {
 									borderRadius: 15,
 									marginTop: 240,
 									marginHorizontal: 10,
-									// display: "flex",
-									// flex: 1,
 									justifyContent: "center",
 									alignItems: "center",
-									// position: "absolute",
-									// textAlign: "center",
 								}}
 								onPress={savedAlertTime}
 							>
@@ -225,9 +213,6 @@ const SettingAlert = ({ navigation }) => {
 									style={[
 										{
 											color: "white",
-											// wordSpacing: 10,
-											// letterSpacing: 50,
-											// position: "relative",
 										},
 										GlobalStyle.font_title2,
 									]}
