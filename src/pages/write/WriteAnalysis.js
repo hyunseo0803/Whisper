@@ -5,11 +5,9 @@ import {
 	SafeAreaView,
 	Text,
 	Pressable,
-	useColorScheme,
 } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
-import ModeColorStyle from "../../globalStyle/ModeColorStyle";
-import { Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import {
 	COLOR_DARK_FOURTH,
 	COLOR_DARK_RED,
@@ -21,8 +19,9 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { moodAnalysisButtonPressCount, pickImage } from "../../util/writeDiary";
 import themeContext from "../../globalStyle/themeContext";
+import HeaderText from "../../components/Header";
 
-const WriteAnalysis = ({ navigation: { navigate }, route }) => {
+const WriteAnalysis = ({ navigation, route }) => {
   const isDark = useContext(themeContext).theme === 'dark';
 
 	const { params } = route;
@@ -35,21 +34,22 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
    * 감정분석 버튼 함수
    */
   const handelTakePhoto = async() => {
-    await moodAnalysisButtonPressCount(setButtonPressCount)
-    const result = await pickImage();
-    navigate("AnalysisResultScreen", {
-      imageBase64: result,
-      selectedMood: selectedMood,
-      selectedWeather: selectedWeather,
-      selectedDate: selectedDate,
-    });
+    if(await moodAnalysisButtonPressCount(setButtonPressCount)){
+      const result = await pickImage();
+      navigation.navigate("AnalysisResultScreen", {
+        imageBase64: result,
+        selectedMood: selectedMood,
+        selectedWeather: selectedWeather,
+        selectedDate: selectedDate,
+      });
+    }
   }
 
   /**
    * 일기쓰기 페이지 navigate 함수
    */
 	const Gowrite = () => {
-		navigate("WriteContent", {
+		navigation.navigate("WriteContent", {
 			selectedMood: selectedMood,
 			selectedWeather: selectedWeather,
 			selectedDate: selectedDate,
@@ -89,14 +89,12 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 			style={[{ alignItems: "center" }, GlobalStyle.safeAreaWrap]}
 		>
 			<View style={styles.container}>
-				<Text
-					style={[
-						GlobalStyle.font_caption2,
-						ModeColorStyle(isDark).font_DEFALUT,
-					]}
-				>
-					Write Diary
-				</Text>
+      <Pressable
+          onPress={() => navigation.goBack()}>
+            <Feather name="arrow-left" size={30} color={isDark?COLOR_DARK_WHITE : COLOR_BLACK} style={{marginBottom:20}}/>
+          </Pressable>
+				  <HeaderText headerText='WriteDiary' isDark={isDark}/>
+          <Feather name="arrow-left" size={36} color="rgba(0,0,0,0)" style={{marginBottom:20}}/>
 			</View>
 			<View style={[styles.presswrap]}>
 				<Text
@@ -118,9 +116,7 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 							backgroundColor: isDark ? COLOR_DARK_FOURTH : COLOR_WHITE,
 						},
 					]}
-					onPress={() => {
-            handelTakePhoto();
-					}}
+					onPress={() => { handelTakePhoto(); }}
 				>
 					<View style={[styles.inline]}>
 						<Ionicons
@@ -148,9 +144,7 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 							backgroundColor: isDark ? COLOR_DARK_FOURTH : COLOR_WHITE,
 						},
 					]}
-					onPress={() => {
-						Gowrite();
-					}}
+					onPress={() => { Gowrite(); }}
 				>
 					<View style={[styles.inline]}>
 						<Ionicons
@@ -177,12 +171,14 @@ const WriteAnalysis = ({ navigation: { navigate }, route }) => {
 const styles = StyleSheet.create({
 	container: {
 		width: "100%",
-		justifyContent: "center",
+    display: 'flex',
+    flexDirection: 'row',
+		justifyContent: "space-between",
 		alignItems: "center",
 	},
 	presswrap: {
-		marginTop: 80,
 		width: "90%",
+    justifyContent: 'center'
 	},
 	presszone: {
 		width: "100%",

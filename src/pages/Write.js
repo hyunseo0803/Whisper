@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Feather } from "@expo/vector-icons";
 import DatePicker from "../components/datePicker/DatePicker";
 import { changeNumberTwoLength } from "../util/Calender";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
@@ -79,15 +79,20 @@ const Write = ({ navigation }) => {
 
 	return (
 		<SafeAreaView
-			style={[GlobalStyle.safeAreaWrap, {alignItems:'center', justifyContent:'center'}]}>
+			style={[GlobalStyle.safeAreaWrap, {alignItems:'center', justifyContent:'center', flex:1}]}>
 			<View style={styles.container}>
-				<View className="writeDiary">
-					<HeaderText headerText='WriteDiary' isDark={isDark}/>
+				<View className="writeDiary" style={styles.writeDiary}>
+          <Pressable
+          onPress={() => navigation.pop()}>
+            <Feather name="arrow-left" size={30} color={isDark?COLOR_DARK_WHITE : COLOR_BLACK} style={{marginBottom:20}}/>
+          </Pressable>
+				  <HeaderText headerText='WriteDiary' isDark={isDark}/>
+          <Feather name="arrow-left" size={36} color="rgba(0,0,0,0)" style={{marginBottom:20}}/>
 				</View>
 
         {/* datepicker */}
         <Pressable
-        style={[{display:'flex', flexDirection:'row', marginTop: 20, alignItems:'center', justifyContent:'center'}]}
+        style={[{display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'center'}]}
         onPress={() => setDatepickerShow(true)}>
           <Text style={[, ModeColorStyle(isDark).font_DEFALUT,
           (GlobalStyle.font_title1)]}>
@@ -214,8 +219,9 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	writeDiary: {
-		width: "100%",
-		justifyContent: "center",
+    display: 'flex',
+    flexDirection: 'row',
+		justifyContent: "space-between",
 		alignItems: "center",
 	},
 	writeDiaryText: {
@@ -225,7 +231,7 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		width: "100%",
-		marginBottom: 40,
+		marginBottom: 20,
 	},
 	choose: {
 		display: "flex",

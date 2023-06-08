@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
-import {View, StyleSheet, Text, useColorScheme} from 'react-native';
+import React from 'react';
+import { Text } from 'react-native';
 import GlobalStyle from '../globalStyle/GlobalStyle';
 import ModeColorStyle from '../globalStyle/ModeColorStyle';
-import themeContext from '../globalStyle/themeContext';
 
 /**
  * header text 컴포넌트
@@ -17,7 +16,7 @@ const HeaderText = (props) => {
         marginBottom:20,
         textAlign: 'center'}, 
       GlobalStyle.font_caption2, 
-      ModeColorStyle(isDark).font_DEFALUT
+      ModeColorStyle(isDark).font_DEFALUT,
     ]}
     >
       {props.headerText}

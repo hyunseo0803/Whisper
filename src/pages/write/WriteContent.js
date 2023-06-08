@@ -213,13 +213,12 @@ const WriteContent = ({ navigation, route }) => {
 								);
 							}}
 						>
-							<Ionicons
-								name="arrow-back-outline"
-								size={40}
+              <Feather name="arrow-left" size={35}
 								color={isDark ? COLOR_DARK_WHITE : COLOR_BLACK}
-							/>
+              />
+
 						</Pressable>
-						<View style={{ marginTop: 20 }}>
+						<View style={{ marginTop: 10 }}>
 							<HeaderText headerText="Write Diary" isDark={isDark}/>
 						</View>
 						<TouchableOpacity
@@ -239,7 +238,7 @@ const WriteContent = ({ navigation, route }) => {
 								)
 							}
 						>
-							<Feather name="check" size={40} color={canSave} />
+							<Feather name="check" size={35} color={canSave} />
 						</TouchableOpacity>
 					</View>
 

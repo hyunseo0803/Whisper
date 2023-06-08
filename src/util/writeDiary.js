@@ -162,11 +162,12 @@ export const moodAnalysisButtonPressCount = async(setButtonPressCount) => {
 			Alert.alert(
 				"오늘의 분석 티켓을 모두 사용하셨습니다. 내일 다시 이용하실 수 있어요 !"
 			);
-			return;
+			return false;
 		}
 	}
 
 	await AsyncStorage.setItem("buttonPressCount", buttonPressCount);
+  return true;
 }
 
 /**

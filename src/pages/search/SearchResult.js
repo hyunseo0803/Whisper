@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {View, StyleSheet, Text, SafeAreaView, Pressable, ScrollView, useColorScheme} from 'react-native';
 import GlobalStyle from '../../globalStyle/GlobalStyle';
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Feather } from "@expo/vector-icons";
 import DiaryView from '../../components/DiaryView';
 import { COLOR_BLACK, COLOR_DARK_WHITE } from '../../globalStyle/color';
 import ModeColorStyle from '../../globalStyle/ModeColorStyle';
@@ -28,10 +28,11 @@ const SearchResult = ({ navigation, route }) => {
       <View style={styles.headerWrap}>
         <Pressable
         onPress={() => navigation.pop()}>
-          <Ionicons name="arrow-back-outline" size={36} color={isDark?COLOR_DARK_WHITE : COLOR_BLACK}/>
+          <Feather name="arrow-left" size={36} color={isDark?COLOR_DARK_WHITE : COLOR_BLACK} />
         </Pressable>
         <Text style={[GlobalStyle.font_caption1, ModeColorStyle(isDark).font_DEFALUT]}>Search</Text>
-        <Ionicons name="arrow-back-outline" size={36} color="rgba(0,0,0,0)"/>
+        <Feather name="arrow-left" size={36} color="rgba(0,0,0,0)" />
+
       </View>
 
       {/* body */}
