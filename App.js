@@ -20,12 +20,15 @@ import SettingContactDetail from "./src/pages/setting/settingContactDetail";
 import SettingPremium from "./src/pages/setting/settingPremium";
 import SettingWithdrawal from "./src/pages/setting/settingWithdrawal";
 import { createTable, createContact } from "./src/util/database";
-import { loadThemeMode } from "./src/util/storage";
+import { loadPassword, loadThemeMode } from "./src/util/storage";
 import { EventRegister } from 'react-native-event-listeners'
 import themeContext from './src/globalStyle/themeContext'
+import SettingScreenLock from "./src/pages/setting/settingScreenLock";
+import ScreenlockPw from "./src/pages/screenLock/screenlock.pw";
 
 export default function App() {
-  const [isDark, setIsDark] = useState(false)
+  const [isDark, setIsDark] = useState(false);
+  const [havePW, setHavePW] = useState(false);
   const Stack = createNativeStackNavigator();
 
   const [fontsLoaded] = useFonts({
@@ -36,7 +39,16 @@ export default function App() {
     const loadThemeFun = async() => {
       setIsDark(await loadThemeMode()==='dark')
     }
+    const loadPw = async() => {
+      const result = await loadPassword()
+      if(!result){
+        setHavePW(false)
+      }else{
+        setHavePW(true)
+      }
+    }
     loadThemeFun()
+    loadPw()
     createTable();
     createContact();
   }, []);
@@ -44,7 +56,6 @@ export default function App() {
   useEffect(() => {
     const listener = EventRegister.addEventListener('ChangeTheme', (data) => {
       setIsDark(data)
-      console.log(data)
     })
     if(isDark){
       StatusBar.setBarStyle('light-content');
@@ -67,92 +78,98 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
-  return (
-    <themeContext.Provider
-    value={isDark === true ? theme.dark : theme.light}>
-      <NavigationContainer
-        onLayout={onLayoutRootView}
-        theme={isDark ? DarkTheme : DefaultTheme}
-      >
-        <Stack.Navigator>
-          <Stack.Screen
-            name="HomeTab"
-            component={Tabs}
-            options={{ headerShown: false }}
-          />
 
-          {/* Write */}
-          <Stack.Screen
-            name="Write"
-            component={WriteScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="WriteAnalysis"
-            component={WriteAnalysis}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="AnalysisResultScreen"
-            component={AnalysisResultScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="WriteContent"
-            component={WriteContent}
-            options={{ headerShown: false }}
-          />
-
-          {/* search */}
-          <Stack.Screen
-            name="search"
-            component={Search}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="searchResult"
-            component={SearchResult}
-            options={{ headerShown: false }}
-          />
-
-          {/* setting */}
-          <Stack.Screen
-            name="setting"
-            component={Setting}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="settingAlert"
-            component={SettingAlert}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="settingContact"
-            component={SettingContact}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="settingContactLog"
-            component={SettingContactLog}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="settingContactDetail"
-            component={SettingContactDetail}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="settingPremium"
-            component={SettingPremium}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="settingWithdrawal"
-            component={SettingWithdrawal}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </themeContext.Provider>
-  );
+  if(!havePW){
+    return (
+      <themeContext.Provider
+      value={isDark === true ? theme.dark : theme.light}>
+        <NavigationContainer
+          onLayout={onLayoutRootView}
+          theme={isDark ? DarkTheme : DefaultTheme}
+        >
+          <Stack.Navigator>
+            <Stack.Screen
+              name="HomeTab"
+              component={Tabs}
+              options={{ headerShown: false }}
+            />
+  
+            {/* Write */}
+            <Stack.Screen
+              name="Write"
+              component={WriteScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="WriteAnalysis"
+              component={WriteAnalysis}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="AnalysisResultScreen"
+              component={AnalysisResultScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="WriteContent"
+              component={WriteContent}
+              options={{ headerShown: false }}
+            />
+  
+            {/* search */}
+            <Stack.Screen
+              name="search"
+              component={Search}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="searchResult"
+              component={SearchResult}
+              options={{ headerShown: false }}
+            />
+  
+            {/* setting */}
+            <Stack.Screen
+              name="setting"
+              component={Setting}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="settingAlert"
+              component={SettingAlert}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="settingContact"
+              component={SettingContact}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="settingContactLog"
+              component={SettingContactLog}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="settingContactDetail"
+              component={SettingContactDetail}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="settingScreenLock"
+              component={SettingScreenLock}
+              options={{ headerShown: false }}
+            />
+            {/* <Stack.Screen
+              name="settingPremium"
+              component={SettingPremium}
+              options={{ headerShown: false }}
+            /> */}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </themeContext.Provider>
+    );
+  }
+  return(
+    <ScreenlockPw isDark={isDark} setHavePW={setHavePW}/>
+  )
 }

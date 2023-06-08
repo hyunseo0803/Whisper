@@ -77,6 +77,16 @@ const Setting = ( {navigation }) => {
           <Ionicons name="chevron-forward-outline" size={25} color={IconColor}></Ionicons>
         </Pressable>
 
+        <Pressable
+        style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
+        onPress={() => navigation.navigate('settingScreenLock')}>
+          <View style={styles.flexDirectionRow}>
+            <Ionicons name="lock-closed" size={34} style={{marginLeft:-1}}  color={IconColor} />
+            <Text style={[GlobalStyle.font_body, {marginLeft:7}, ModeColorStyle(isDark).font_DEFALUT]}>화면 잠금</Text>
+          </View>
+          <Ionicons name="chevron-forward-outline" size={25} color={IconColor}></Ionicons>
+        </Pressable>
+
         {/* 프리미엄 기능 보류 */}
         {/* <Pressable
         style={[styles.buttomWrap, styles.justifyContentSB, borderStyle(isDark)]}
