@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
-import { COLOR_BLACK, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY } from "../globalStyle/color";
+import { COLOR_BLACK, COLOR_DARK_BLUE, COLOR_DARK_RED, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_BLUE, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY } from "../globalStyle/color";
 import { EventRegister } from 'react-native-event-listeners'
 import { loadThemeMode, saveThemeMode } from "../util/storage";
 
@@ -16,7 +16,6 @@ const Setting = ( {navigation }) => {
     }
     loadThemeFun()
   }, []);
-  console.log('setting',isDark)
 
   /**
    * 화면 모드에 따른 아이콘 색 변경
@@ -46,6 +45,10 @@ const Setting = ( {navigation }) => {
           </View>
           <Switch
             value = {isDark}
+            // thumbColor={isDark?COLOR_DARK_RED: COLOR_LIGHT_RED}
+            trackColor={
+              {true : COLOR_DARK_BLUE}
+            }
             onValueChange = {(value) => {
               setIsDark(value);
               saveThemeMode(value);
