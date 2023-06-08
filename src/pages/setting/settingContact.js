@@ -8,6 +8,8 @@ import {
 	Pressable,
 	Keyboard,
 	Alert,
+	ScrollView,
+	KeyboardAvoidingView,
 } from "react-native";
 import * as MailComposer from "expo-mail-composer";
 import { insertContact } from "../../util/database";
@@ -60,130 +62,133 @@ const SettingContact = ({ navigation }) => {
 	};
 
 	return (
-		<View>
-			<SafeAreaView
-				style={{
-					alignItems: "center",
-					height: "90%",
-					marginVertical: 40,
-					marginHorizontal: 20,
-				}}
+		<SafeAreaView
+			style={{
+				height: "90%",
+				marginVertical: 40,
+				marginHorizontal: 25,
+				flex: 1,
+				// backgroundColor: "yellow",
+			}}
+		>
+			<KeyboardAvoidingView
+				style={{ flex: 1, width: "100%" }}
+				behavior={Platform.OS === "ios" ? "padding" : "height"}
+				keyboardVerticalOffset={Platform.OS === "ios" ? 55 : 0}
 			>
-				<View
-					style={{
-						width: "100%",
-						alignItems: "center",
-						marginBottom: 60,
-						top: 10,
-					}}
-				>
-					<Text style={GlobalStyle.font_caption1}>Contact Us</Text>
-				</View>
-				<Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
-					<View>
-						<TextInput
-							value={cTitle}
-							onChangeText={(text) => setCTitle(text)}
-							placeholder="문의 제목"
-							style={[
-								{
-									width: "100%",
-									// textAlign: "center",
-									padding: 7,
-									borderBottomWidth: 1,
-									borderColor: "#D4D4D4",
-									marginBottom: 10,
-								},
-								GlobalStyle.font_body,
-							]}
-						/>
-					</View>
-					<View>
-						<Text
-							style={[
-								{
-									textAlign: "center",
-									marginVertical: 10,
-									letterSpacing: 1,
-									color: "#5F5F5F",
-								},
-								GlobalStyle.font_caption1,
-							]}
-						>
-							핸드폰의 기종 및 사양을 함께 입력해주시면 {"\n"}보다 자세한 답변을
-							받으실 수 있습니다.
-						</Text>
-						<TextInput
-							value={content}
-							onChangeText={(text) => setContent(text)}
-							placeholder={`문의하실 내용을 입력 해주세요.`}
-							multiline={true}
-							style={[
-								{
-									width: 300,
-									height: 350,
-									// textAlign: "center",
-									textAlignVertical: "top",
-									padding: 10,
-									// borderWidth: 1,
-									// borderColor: "#86878C",
-									borderRadius: 5,
-									marginBottom: 20,
-									backgroundColor: "white",
-								},
-								GlobalStyle.font_body,
-							]}
-						/>
-					</View>
-					<View>
-						<TextInput
-							value={user_email}
-							onChangeText={(text) => setUser_email(text)}
-							placeholder="회신 받을 이메일 ex)sample@sogon.com"
-							style={[
-								{
-									width: "100%",
-									// textAlign: "center",
-									padding: 7,
-									borderBottomWidth: 1,
-									borderColor: "white",
-									// backgroundColor: "white",
-									marginBottom: 30,
-								},
-								GlobalStyle.font_body,
-							]}
-						/>
-					</View>
-					<Pressable
-						onPress={sendEmail}
+				<ScrollView showsVerticalScrollIndicator={false}>
+					<View
 						style={{
-							width: 300,
-							height: 55,
-							backgroundColor: isBothSelected
-								? "#E76B5C"
-								: "rgba(231, 107, 92, 0.5)",
-							borderRadius: 15,
-							marginVertical: 10,
-							justifyContent: "center",
+							width: "100%",
 							alignItems: "center",
+							marginBottom: 60,
+							top: 10,
 						}}
-						disabled={!isBothSelected}
 					>
-						<Text
-							style={[
-								{
-									color: isBothSelected ? "white" : "rgba(255,255,255,0.5)",
-									letterSpacing: 10,
-								},
-								GlobalStyle.font_title2,
-							]}
+						<Text style={GlobalStyle.font_caption1}>Contact Us</Text>
+					</View>
+					<Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
+						<View>
+							<TextInput
+								value={cTitle}
+								onChangeText={(text) => setCTitle(text)}
+								placeholder="문의 제목"
+								style={[
+									{
+										width: "100%",
+										padding: 7,
+										borderBottomWidth: 1,
+										borderColor: "#D4D4D4",
+										marginBottom: 10,
+									},
+									GlobalStyle.font_body,
+								]}
+							/>
+						</View>
+						<View>
+							<Text
+								style={[
+									{
+										textAlign: "center",
+										marginVertical: 15,
+										letterSpacing: 1,
+										color: "#5F5F5F",
+									},
+									GlobalStyle.font_caption1,
+								]}
+							>
+								핸드폰의 기종 및 사양을 함께 입력해주시면 {"\n"}보다 자세한
+								답변을 받으실 수 있습니다.
+							</Text>
+							<TextInput
+								value={content}
+								onChangeText={(text) => setContent(text)}
+								placeholder={`문의하실 내용을 입력 해주세요.`}
+								multiline={true}
+								style={[
+									{
+										width: "100%",
+										minHeight: 340,
+										textAlignVertical: "top",
+										padding: 10,
+										borderRadius: 5,
+										marginBottom: 20,
+										backgroundColor: "white",
+									},
+									GlobalStyle.font_body,
+								]}
+								scrollEnabled={true}
+								maxLength={800}
+							/>
+						</View>
+						<View>
+							<TextInput
+								value={user_email}
+								onChangeText={(text) => setUser_email(text)}
+								placeholder="회신 받을 이메일 ex)sample@sogon.com"
+								style={[
+									{
+										width: "100%",
+										padding: 7,
+										borderBottomWidth: 1,
+										borderColor: "white",
+										marginVertical: 15,
+									},
+									GlobalStyle.font_body,
+								]}
+							/>
+						</View>
+						<Pressable
+							onPress={sendEmail}
+							style={{
+								width: "100%",
+								height: 55,
+								backgroundColor: isBothSelected
+									? "#E76B5C"
+									: "rgba(231, 107, 92, 0.5)",
+								borderRadius: 15,
+								marginVertical: 10,
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+							disabled={!isBothSelected}
 						>
-							전송
-						</Text>
+							<Text
+								style={[
+									{
+										color: isBothSelected ? "white" : "rgba(255,255,255,0.5)",
+										letterSpacing: 10,
+									},
+									GlobalStyle.font_title2,
+								]}
+							>
+								전송
+							</Text>
+						</Pressable>
 					</Pressable>
-				</Pressable>
-			</SafeAreaView>
-		</View>
+				</ScrollView>
+			</KeyboardAvoidingView>
+		</SafeAreaView>
 	);
 };
 
