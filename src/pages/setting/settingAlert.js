@@ -33,9 +33,16 @@ const SettingAlert = ({ navigation }) => {
 		setToggle(false);
 	};
 	const savedAlertTime = async () => {
-		await AsyncStorage.setItem("AlertTime", selectedTime);
-		console.log(selectedTime);
-		navigation.navigate("setting");
+		if (selectedTime) {
+			await AsyncStorage.setItem("AlertTime", selectedTime);
+			console.log(selectedTime);
+			navigation.navigate("setting");
+		} else {
+			Alert.alert(
+				"알림 시간 저장",
+				"알람시간을 설정하지 않나요? 그렇다면 저장버튼을 누르지 않으셔도 됩니다!"
+			);
+		}
 	};
 
 	useEffect(() => {
@@ -154,54 +161,101 @@ const SettingAlert = ({ navigation }) => {
 					</View>
 				</View>
 				<View>
-					<Text
-						style={[
-							{
-								color: "gray",
-								alignItems: "center",
-								textAlign: "center",
-								justifyContent: "center",
-								marginVertical: 80,
-								letterSpacing: 1,
-							},
-							GlobalStyle.font_body,
-						]}
-					>
-						알람 시간을 설정하시면, {"\n"}매일 소곤소곤 일기장이 일기 쓸 시간에
-						{"\n"}
-						알려드릴게요.
-					</Text>
-					<Pressable
-						style={{
-							width: 250,
-							height: 50,
-							backgroundColor: "#E76B5C",
-							borderRadius: 15,
-							marginTop: 200,
-							marginHorizontal: 10,
-							// display: "flex",
-							// flex: 1,
-							justifyContent: "center",
-							alignItems: "center",
-							// position: "absolute",
-							// textAlign: "center",
-						}}
-						onPress={savedAlertTime}
-					>
+					{selectedTime ? (
+						<View>
+							<Text
+								style={[
+									{
+										color: "#5f5f5f",
+										alignItems: "center",
+										textAlign: "center",
+										justifyContent: "center",
+										marginTop: 80,
+										letterSpacing: 5,
+									},
+									GlobalStyle.font_title1,
+								]}
+							>
+								{selectedTime}
+							</Text>
+							<Text
+								style={[
+									{
+										color: "#5f5f5f",
+										textAlign: "center",
+										letterSpacing: 5,
+										marginTop: 15,
+									},
+									GlobalStyle.font_body,
+								]}
+							>
+								으로 선택되었습니다.
+							</Text>
+							<Text
+								style={[
+									{
+										color: "#5f5f5f",
+										textAlign: "center",
+										letterSpacing: 2,
+										marginTop: 15,
+									},
+									GlobalStyle.font_caption1,
+								]}
+							>
+								알림 받기를 원하시면 저장 버튼까지 눌러주세요 !
+							</Text>
+							<Pressable
+								style={{
+									width: 330,
+									height: 50,
+									backgroundColor: "#E76B5C",
+									borderRadius: 15,
+									marginTop: 240,
+									marginHorizontal: 10,
+									// display: "flex",
+									// flex: 1,
+									justifyContent: "center",
+									alignItems: "center",
+									// position: "absolute",
+									// textAlign: "center",
+								}}
+								onPress={savedAlertTime}
+							>
+								<Text
+									style={[
+										{
+											color: "white",
+											// wordSpacing: 10,
+											// letterSpacing: 50,
+											// position: "relative",
+										},
+										GlobalStyle.font_title2,
+									]}
+								>
+									저장
+								</Text>
+							</Pressable>
+						</View>
+					) : (
 						<Text
 							style={[
 								{
-									color: "white",
-									// wordSpacing: 10,
-									// letterSpacing: 50,
-									// position: "relative",
+									color: "gray",
+									alignItems: "center",
+									textAlign: "center",
+									justifyContent: "center",
+									marginVertical: 80,
+									letterSpacing: 1,
 								},
-								GlobalStyle.font_title2,
+								GlobalStyle.font_body,
 							]}
 						>
-							저장
+							알람 시간을 설정하시면, {"\n"}매일 소곤소곤 일기장이 일기 쓸
+							시간에
+							{"\n"}
+							알려드릴게요.
 						</Text>
-					</Pressable>
+					)}
 				</View>
 			</SafeAreaView>
 		</View>
