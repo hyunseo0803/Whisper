@@ -316,15 +316,21 @@ export const readcontact = async () => {
 	return new Promise((resolve, reject) => {
 		db.transaction((tx) => {
 			tx.executeSql(
-				"SELECT title FROM contact",
+				"SELECT title, date ,id FROM contact",
 				[],
 				(_, resultSet) => {
 					const { rows } = resultSet;
-					const title = [];
+					const contacts = [];
 					for (let i = 0; i < rows.length; i++) {
-						title.push(rows.item(i).title);
+						const data = rows.item(i);
+						const contact = {
+							title: data.title,
+							date: data.date,
+							id: data.id,
+						};
+						contacts.push(contact);
 					}
-					resolve(title);
+					resolve(contacts);
 				},
 				(_, error) => {
 					reject(error);
@@ -336,23 +342,25 @@ export const readcontact = async () => {
 
 /**
  * 문의 상세 조회
- * * @param {Stirng} cTitle
+ * * @param {int} id
  *
  */
-export const readcontactDetail = async (cTitle) => {
+export const readcontactDetail = async (id) => {
 	return new Promise((resolve, reject) => {
 		db.transaction((tx) => {
 			tx.executeSql(
-				"SELECT * FROM contact WHERE title=?",
-				[cTitle],
+				"SELECT * FROM contact WHERE id=?",
+				[id],
 				(_, resultSet) => {
 					const { rows } = resultSet;
 					if (rows.length > 0) {
 						const contact = rows.item(0);
 						resolve({
+							id: contact.id,
 							title: contact.title,
 							content: contact.content,
 							email: contact.email,
+							date: contact.date,
 						});
 					} else {
 						reject(new Error("Contact not found"));
@@ -377,6 +385,58 @@ export const deleteDiarys = async (id) => {
 				tx.executeSql(
 					"DELETE FROM diary WHERE id = ?",
 					[id],
+					(_, { row }) => {
+						return true;
+					},
+					(_, error) => {
+						console.error(error, "삭제 과정에서 에러 발생!");
+						return false;
+					}
+				);
+			});
+		});
+	} catch (e) {
+		console.error(e);
+	}
+};
+/**
+ * 문의 내역 삭제
+ * @param {int} id
+ * @returns
+ */
+export const deleteContact = async (id) => {
+	try {
+		return new Promise((resolve, reject) => {
+			db.transaction((tx) => {
+				tx.executeSql(
+					"DELETE FROM contact WHERE id= ?",
+					[id],
+					(_, { rowsAffected }) => {
+						if (rowsAffected > 0) {
+							resolve(true);
+						} else {
+							resolve(false);
+						}
+					},
+					(_, error) => {
+						console.error(error, "삭제 과정에서 에러 발생!");
+						reject(error);
+					}
+				);
+			});
+		});
+	} catch (e) {
+		console.error(e);
+	}
+};
+
+export const deleteAllContact = async () => {
+	try {
+		return new Promise((resolve, reject) => {
+			db.transaction((tx) => {
+				tx.executeSql(
+					"DELETE FROM contact",
+					[],
 					(_, { row }) => {
 						return true;
 					},
