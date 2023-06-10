@@ -5,6 +5,7 @@ import GlobalStyle from "../../globalStyle/GlobalStyle";
 import DailyDiaryScreen from "../../pages/home/DailyDiaryScreen";
 import BottomSheet from 'reanimated-bottom-sheet';
 import { changeNumberTwoLength, getMonthDays } from "../../util/Calender";
+import { base64ToUri } from "../../util/writeDiary";
 
 
 function Body(props) {
@@ -43,8 +44,12 @@ function Body(props) {
    * @returns {string}imgUrl
    */
   const FindImg = (day) => {
-    let img = DATA.find(data => (data.date === `${year}-${changeNumberTwoLength(month)}-${changeNumberTwoLength(day)}`)&&(data.is_featured===1))
-    return img?.image
+    const img = DATA.find(data => (data.date === `${year}-${changeNumberTwoLength(month)}-${changeNumberTwoLength(day)}`)&&(data.is_featured===1))
+    if(img?.image !== undefined){
+      return base64ToUri(img?.image)
+    }else{
+      return ''
+    }
   }
 
   /**
@@ -105,7 +110,7 @@ function Body(props) {
                       }}
                     }>
                       <ImageBackground 
-                      source={{url: FindImg(day) === undefined ? "" : FindImg(day)}}
+                      source={{url: FindImg(day) === '' ? "" : FindImg(day)}}
                       style={[{width: "100%", height: "100%" }, day===''? {opacity:0} : {opacity: 0.6}, {backgroundColor: haveDiary(day) ? isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY : isDark ? COLOR_DARK_THIRD : COLOR_LIGHT_THIRD}]}
                       />
                       <Text 

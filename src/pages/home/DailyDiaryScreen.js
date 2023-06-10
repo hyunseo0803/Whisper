@@ -5,7 +5,7 @@ import LogoRed from '../../../assets/images/logo.png'
 import { COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_LIGHT_SECONDARY, COLOR_WHITE, COLOR_LIGHT_RED, COLOR_DARK_RED } from '../../globalStyle/color';
 import GlobalStyle from '../../globalStyle/GlobalStyle';
 import ModeColorStyle from '../../globalStyle/ModeColorStyle';
-import {changeMonth, changeNumberTwoLength} from '../../util/Calender'
+import {changeMonth} from '../../util/Calender'
 import PagerView from 'react-native-pager-view';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { getAudioData, playAudio, stopPlayAudio } from '../../util/audioRecord';

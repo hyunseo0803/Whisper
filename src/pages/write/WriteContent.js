@@ -34,7 +34,7 @@ import {
 } from "../../globalStyle/color";
 import HeaderText from "../../components/Header";
 import { deleteAudio, getAudioData, playAudio, startRecording, stopPlayAudio, stopRecording } from "../../util/audioRecord";
-import { pickDiaryImage } from "../../util/writeDiary";
+import { base64ToUri, pickDiaryImage } from "../../util/writeDiary";
 import themeContext from "../../globalStyle/themeContext";
 
 const WriteContent = ({ navigation, route }) => {
@@ -57,6 +57,7 @@ const WriteContent = ({ navigation, route }) => {
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [recording, setRecording] = useState();
 	const [audioData, setAudioData] = useState({});
+  const [imgUri, setImgUri] = useState(''); // 예시 이미지에 넣을 이미지 uri
 
 	useEffect(() => {
 		const { params } = route;
@@ -169,8 +170,6 @@ const WriteContent = ({ navigation, route }) => {
 	 * @param {string} text
 	 */
 	const btnAddSubject = (text) => {
-		console.log(text)
-		console.log(dContent)
     const result = dContent + "\n" + text + "\n"
 
 		setDContent(result);
@@ -189,6 +188,13 @@ const WriteContent = ({ navigation, route }) => {
 			isDark ? setCanSave(COLOR_DARK_RED) : setCanSave(COLOR_LIGHT_RED);
 		}
 	}, [dContent, dTitle]);
+
+  useEffect(() => {
+    const updateImageUri = async() => {
+      setImgUri(await base64ToUri(selectedImage))
+    };
+    updateImageUri()
+  }, [selectedImage])
 
 	return (
 		<SafeAreaView style={GlobalStyle.safeAreaWrap}>
@@ -356,8 +362,7 @@ const WriteContent = ({ navigation, route }) => {
 							<TouchableOpacity style={BodyStyle.btnImg} onPress={() => pickImage()}>
 								{selectedImage ? (
 									<Image
-										source={{ uri: selectedImage }}
-										onChangePhoto={{ uri: setSelectedImage }}
+										source={{ uri: imgUri }}
 										style={{ width: "100%", height: "100%" }}
 									/>
 								) : (

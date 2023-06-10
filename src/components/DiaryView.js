@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Text, Image, Pressable, Alert, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Text, Image, Alert, TouchableOpacity} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import GlobalStyle from '../globalStyle/GlobalStyle';
 import DeleteMessage from './DeleteMessage';
 import { COLOR_BLACK, COLOR_DARK_BG, COLOR_DARK_FIVTH, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_RED, COLOR_DARK_WHITE, COLOR_LIGHT_BG, COLOR_LIGHT_FOURTH, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_RED } from '../globalStyle/color';
 import ModeColorStyle from '../globalStyle/ModeColorStyle';
 import { getAudioData, playAudio, stopPlayAudio } from '../util/audioRecord';
+import { base64ToUri } from '../util/writeDiary';
 
 /**
  * 
@@ -40,7 +41,7 @@ const DiaryView = (props) => {
     isDark
   } = props;
 
-  const imgUrl = {uri : img}  // 이미지 주소
+  const imgUrl = {uri : base64ToUri(img)}  // 이미지 주소
   
   /**
    * 이미지의 로컬 경로를 리턴하는 함수
