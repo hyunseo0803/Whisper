@@ -101,7 +101,7 @@ const askPermissionsAsync = async () => {
 /**
  * 사진 찍고 base64값 받는 함수
  */
-export const pickImage = async () => {
+export const takePhoto = async () => {
 	askPermissionsAsync();
 	let result = await ImagePicker.launchCameraAsync({
 		mediaTypes: ImagePicker.MediaTypeOptions.Images, // 이미지만 받음
@@ -110,7 +110,7 @@ export const pickImage = async () => {
 		quality: 0.5,
 		base64: true,
 	});
-
+  
 	if (!result.canceled) {
     return result.assets[0].base64
 	}else{
@@ -168,6 +168,22 @@ export const moodAnalysisButtonPressCount = async(setButtonPressCount) => {
 
 	await AsyncStorage.setItem("buttonPressCount", buttonPressCount);
   return true;
+}
+
+/**
+ * 버튼 누른 횟수를 하나 증가시켜주는 함수
+ */
+export const addButtonPressCount = async() => {
+	const buttonPressCount = await AsyncStorage.getItem("buttonPressCount");
+  await AsyncStorage.setItem("buttonPressCount", (buttonPressCount*1+1).toString());
+}
+
+/**
+ * buttonPressCount 갯수 조회 함수
+ * @returns {string}btnPressCount
+ */
+export const getButtonPressCount = async() => {
+  return await AsyncStorage.getItem("buttonPressCount");
 }
 
 /**
