@@ -1,5 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, StyleSheet, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Alert, useColorScheme } from "react-native";
+import {
+	View,
+	StyleSheet,
+	Text,
+	SafeAreaView,
+	Image,
+	TouchableOpacity,
+	ScrollView,
+	Alert,
+	useColorScheme,
+} from "react-native";
 import { getGoogleVisionResult, pickImage } from "../../util/writeDiary";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import happy from "../../../assets/images/mood/happy.png";
@@ -14,13 +24,18 @@ import HeaderText from "../../components/Header";
 import { diaryTopicQuestion, questionToAI } from "../../util/diaryTopic";
 import { moodTextKr } from "../../util/MoodWeather";
 import ModeColorStyle from "../../globalStyle/ModeColorStyle";
-import { COLOR_DARK_BLUE, COLOR_DARK_WHITE, COLOR_LIGHT_BLUE, COLOR_WHITE } from "../../globalStyle/color";
+import {
+	COLOR_DARK_BLUE,
+	COLOR_DARK_WHITE,
+	COLOR_LIGHT_BLUE,
+	COLOR_WHITE,
+} from "../../globalStyle/color";
 import themeContext from "../../globalStyle/themeContext";
 
 setupURLPolyfill();
 
 const AnalysisResultScreen = ({ navigation, route }) => {
-	const isDark = useContext(themeContext).theme === 'dark';
+	const isDark = useContext(themeContext).theme === "dark";
 
 	const [analysisMood, setAnalysisMood] = useState("");
 	const [subject, setSubject] = useState("");
@@ -28,11 +43,30 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	const [isLoding, setIsLoding] = useState(false);
 	const [analysisLoding, setAnalysisIsLoding] = useState(false);
 	const [openaiLoding, setOpenaiLoding] = useState(false);
+	const [loadingText, setLoadingText] = useState("분석중 . . .");
 
 	const { params } = route;
 	const selectedMood = params ? params.selectedMood : null;
 	const selectedWeather = params ? params.selectedWeather : null;
 	const selectedDate = params.selectedDate;
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setLoadingText((prevText) => {
+				if (prevText === "분석중 . . .") {
+					return "분석중";
+				} else if (prevText === "분석중") {
+					return "분석중 .";
+				} else if (prevText === "분석중 .") {
+					return "분석중 . .";
+				} else if (prevText === "분석중 . .") {
+					return "분석중 . . .";
+				}
+			});
+		}, 800);
+
+		return () => clearInterval(interval);
+	}, []);
 
 	useEffect(() => {
 		setIsLoding(false);
@@ -44,10 +78,10 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 		}
 	}, [analysisLoding, openaiLoding]);
 
-  /**
-   * 일기 주제 선택 함수
-   * @param {string} topic 
-   */
+	/**
+	 * 일기 주제 선택 함수
+	 * @param {string} topic
+	 */
 	const handelTopicPress = (topic) => {
 		if (selectedTopic.includes(topic)) {
 			setSelectedTopic(selectedTopic.filter((t) => t !== topic));
@@ -56,10 +90,10 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 		}
 	};
 	const isSelected = !!selectedTopic;
-  
-  /**
-   * 일기쓰기 화면으로 이동하는 함수
-   */
+
+	/**
+	 * 일기쓰기 화면으로 이동하는 함수
+	 */
 	const handleNextButton = () => {
 		navigation.navigate("WriteContent", {
 			selectedTopic: selectedTopic,
@@ -69,18 +103,18 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 		});
 	};
 
-  /**
-   * moodImage 오브젝트
-   */
-  const moodImage = {
-    happy: happy,
-    sad: sad,
-    disgust: disgust,
-    surprised: surprised,
-    angry: angry,
-    fear: fear,
-    expressionless: expressionless
-  };
+	/**
+	 * moodImage 오브젝트
+	 */
+	const moodImage = {
+		happy: happy,
+		sad: sad,
+		disgust: disgust,
+		surprised: surprised,
+		angry: angry,
+		fear: fear,
+		expressionless: expressionless,
+	};
 
 	useEffect(() => {
 		const getGoogleVisionResultFun = async () => {
@@ -88,14 +122,16 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 			try {
 				const result = await getGoogleVisionResult(route.params.imageBase64);
 
-				if(!result){
-          Alert.alert('얼굴 인식실패!', '카메라로 얼굴이 나오도록 지금 자신의 모습을 찍어주세요! \n 감정분석을 통해 일기 주제를 추천해드립니다.')
-					pickImage()
-        }
-        else{
-          setAnalysisMood(result);
-          setAnalysisIsLoding(true);
-        }
+				if (!result) {
+					Alert.alert(
+						"얼굴 인식실패!",
+						"카메라로 얼굴이 나오도록 지금 자신의 모습을 찍어주세요! \n 감정분석을 통해 일기 주제를 추천해드립니다."
+					);
+					pickImage();
+				} else {
+					setAnalysisMood(result);
+					setAnalysisIsLoding(true);
+				}
 			} catch (error) {
 				console.error(error);
 			}
@@ -114,11 +150,11 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 			const prompt = diaryTopicQuestion(analysisMood);
 
 			if (prompt !== "") {
-        const result = await questionToAI(prompt, setSubject)
-        if(result){
-          setOpenaiLoding(true);
-        }
-      }
+				const result = await questionToAI(prompt, setSubject);
+				if (result) {
+					setOpenaiLoding(true);
+				}
+			}
 		};
 		runPrompt();
 	}, [analysisMood]);
@@ -126,23 +162,54 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	return (
 		<ScrollView>
 			<SafeAreaView
-				style={[{ alignItems: "center" }, GlobalStyle.safeAreaWrap]}
+				style={[
+					{
+						marginVertical: 40,
+						alignItems: "center",
+					},
+					GlobalStyle.safeAreaWrap,
+				]}
 			>
 				{isLoding ? (
 					<View style={styles.result}>
 						<View style={styles.container}>
-							<HeaderText headerText='Wirte Diary' isDark={isDark}/>
+							<HeaderText headerText="Wirte Diary" isDark={isDark} />
 						</View>
-						<Text style={[styles.title, ModeColorStyle(isDark).font_DEFALUT, GlobalStyle.font_title1]}>나의 감정 분석 결과</Text>
+						<Text
+							style={[
+								styles.title,
+								ModeColorStyle(isDark).font_DEFALUT,
+								GlobalStyle.font_title1,
+							]}
+						>
+							나의 감정 분석 결과
+						</Text>
 						{
 							// 분석된 감정이 공백이 아니면 분석감정 출력
-							analysisMood !== "" &&
-                <View style={styles.analysis}>
-									<Image source={moodImage[analysisMood]} style={styles.icon}></Image>
-                  <Text style={[GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>{moodTextKr[analysisMood]}</Text>
-                </View>
+							analysisMood !== "" && (
+								<View style={styles.analysis}>
+									<Image
+										source={moodImage[analysisMood]}
+										style={styles.icon}
+									></Image>
+									<Text
+										style={[
+											GlobalStyle.font_body,
+											ModeColorStyle(isDark).font_DEFALUT,
+										]}
+									>
+										{moodTextKr[analysisMood]}
+									</Text>
+								</View>
+							)
 						}
-						<Text style={[GlobalStyle.font_title2, styles.topicTitle, ModeColorStyle(isDark).font_DEFALUT]}>
+						<Text
+							style={[
+								GlobalStyle.font_title2,
+								styles.topicTitle,
+								ModeColorStyle(isDark).font_DEFALUT,
+							]}
+						>
 							이런 주제는 어때요?
 						</Text>
 
@@ -155,16 +222,30 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 												onPress={() => handelTopicPress(item)}
 												style={[
 													styles.touchable,
-                          {borderColor : isDark ? COLOR_DARK_BLUE : COLOR_LIGHT_BLUE},
-													selectedTopic.includes(item) && {backgroundColor: isDark? COLOR_DARK_BLUE : COLOR_LIGHT_BLUE}
+													{
+														borderColor: isDark
+															? COLOR_DARK_BLUE
+															: COLOR_LIGHT_BLUE,
+													},
+													selectedTopic.includes(item) && {
+														backgroundColor: isDark
+															? COLOR_DARK_BLUE
+															: COLOR_LIGHT_BLUE,
+													},
 												]}
 											>
 												<Text
 													style={[
 														styles.topic,
-                            {color : isDark ? COLOR_DARK_BLUE : COLOR_LIGHT_BLUE},
+														{
+															color: isDark
+																? COLOR_DARK_BLUE
+																: COLOR_LIGHT_BLUE,
+														},
 														GlobalStyle.font_body,
-														selectedTopic.includes(item) &&  { color : isDark ? COLOR_DARK_WHITE : COLOR_WHITE }
+														selectedTopic.includes(item) && {
+															color: isDark ? COLOR_DARK_WHITE : COLOR_WHITE,
+														},
 													]}
 												>
 													{item}
@@ -200,11 +281,10 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 						</View>
 					</View>
 				) : (
-					<View style={styles.result}>
-						<Image
-							source={require("../../../assets/images/opener-loading.gif")}
-							style={styles.loading}
-						/>
+					<View style={styles.loading}>
+						<Text style={[styles.loadingText, GlobalStyle.font_body]}>
+							{loadingText}
+						</Text>
 					</View>
 				)}
 			</SafeAreaView>
@@ -220,8 +300,16 @@ const styles = StyleSheet.create({
 	},
 
 	loading: {
-		width: 350,
-		height: 350,
+		width: 330,
+		height: 650,
+		marginVertical: 15,
+		justifyContent: "center",
+		alignContent: "center",
+	},
+	loadingText: {
+		letterSpacing: 3,
+		justifyContent: "center",
+		textAlign: "center",
 	},
 	result: {
 		width: "100%",
@@ -284,7 +372,7 @@ const styles = StyleSheet.create({
 	},
 	topic: {
 		marginHorizontal: 10,
-    marginVertical: 5
+		marginVertical: 5,
 	},
 	selectedText: {
 		color: "white",
