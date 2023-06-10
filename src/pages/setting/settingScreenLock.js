@@ -89,30 +89,6 @@ const SettingScreenLock = ({ navigation }) => {
           </Pressable>
         }
 
-        {/* face ID */}
-        <View style={[styles.wrap, lineStyle(isDark).top_line]}>
-          <View style={styles.iconTextWrap}>
-            <View style={styles.iconWrap}>
-              <Octicons name="smiley" size={24} style={ModeColorStyle(isDark).font_DEFALUT}/>
-            </View>
-            <Text style={[GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>생체인식</Text>
-          </View>
-          <Switch
-            value = {IsFaceId}
-            style={{ transform: [{ scaleX: 0.8 }, { scaleY: .8 }] }}
-            // thumbColor={isDark?COLOR_DARK_RED: COLOR_LIGHT_RED}
-            trackColor={
-              {true : COLOR_DARK_BLUE}
-            }
-            onValueChange = {(value) => {
-              if(!IsPassword){
-                setIsFaceId(value);
-              }
-              // saveThemeMode(value);
-              // EventRegister.emit('ChangeTheme', value)
-            }}
-          />
-        </View>
       </View>
 
       {
