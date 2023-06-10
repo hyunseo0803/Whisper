@@ -6,6 +6,7 @@ import DailyDiaryScreen from "../../pages/home/DailyDiaryScreen";
 import BottomSheet from 'reanimated-bottom-sheet';
 import { changeNumberTwoLength, getMonthDays } from "../../util/Calender";
 import { base64ToUri } from "../../util/writeDiary";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 
 function Body(props) {
@@ -134,17 +135,17 @@ function Body(props) {
           animationType={'fade'}
           style={{flex:1}}
         >
-          <View
+          <GestureHandlerRootView
           style={{flex:1, backgroundColor:"rgba(0,0,0,0.5)", justifyContent:'center', alignItems: 'center'}}
           >
-          <BottomSheet
-            ref={ModalSheetRef}
-            snapPoints={['95%','0%']}
-            borderRadius={20}
-            renderContent={renderContent}
-            onCloseEnd={() => {setShowPhotoModal(false); setRendering(prev => !prev)}}
-          />
-          </View>
+            <BottomSheet
+              ref={ModalSheetRef}
+              snapPoints={['95%','0%']}
+              borderRadius={20}
+              renderContent={renderContent}
+              onCloseEnd={() => {setShowPhotoModal(false); setRendering(prev => !prev)}}
+            />
+          </GestureHandlerRootView>
 
         </Modal>
       }
