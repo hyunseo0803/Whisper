@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import {
 	View,
 	StyleSheet,
@@ -10,8 +10,13 @@ import {
 import { readcontact } from "../../util/database";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import { useFocusEffect } from "@react-navigation/native";
+import themeContext from "../../globalStyle/themeContext";
+import { COLOR_DARK_PRIMARY, COLOR_DARK_THIRD, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_THIRD } from "../../globalStyle/color";
+import ModeColorStyle from "../../globalStyle/ModeColorStyle";
+import HeaderBack from "../../components/HeaderBack";
 
 const SettingContactLog = ({ navigation }) => {
+	const isDark = useContext(themeContext).theme === 'dark'
 	const [contacts, setContacts] = useState([]);
 
 	const fetchCTitles = useCallback(async () => {
@@ -33,47 +38,46 @@ const SettingContactLog = ({ navigation }) => {
 	const detailContact = (id) => {
 		navigation.navigate("settingContactDetail", { id: id });
 	};
+
 	return (
-		<SafeAreaView style={styles.safearea}>
-			{contacts.length === 0 ? (
+		<SafeAreaView style={[styles.safearea, GlobalStyle.safeAreaWrap]}>
+    
+      {/* header */}
+      <HeaderBack text='Inquiry history' backFun={() => navigation.pop()}/>
+
+			{contacts.length === 0 ? 
+      (
 				<View style={styles.nothingContentView}>
-					<Text style={[GlobalStyle.font_body, styles.nothingContentText]}>
+					<Text style={[GlobalStyle.font_body, styles.nothingContentText, ModeColorStyle(isDark).font_DEFALUT]}>
 						문의 내역이 없습니다.
 					</Text>
-					<Text style={[GlobalStyle.font_caption1, styles.nothingContentText]}>
+					<Text style={[GlobalStyle.font_caption1, styles.nothingContentText, {color:isDark?COLOR_DARK_PRIMARY:COLOR_LIGHT_PRIMARY}]}>
 						{"\n"}피드백도, 칭찬도 모두 좋으니 {"\n"}
 						편하게 남겨주세요!
 					</Text>
 				</View>
 			) : (
-				<>
-					<View style={styles.topLabel}>
-						<Text style={GlobalStyle.font_caption1}>Inquiry history</Text>
-					</View>
-					{contacts.map((contact, index) => (
-						<Pressable
-							key={index}
-							onPress={() => detailContact(contact.id)}
-							style={{
-								overflow: "auto",
-							}}
-						>
-							<View style={styles.contactListView}>
-								<Text style={[styles.cTitle, GlobalStyle.font_body]}>
-									{index + 1}. {contact.title}
-								</Text>
-								<View style={{ justifyContent: "flex-end" }}>
-									<Text style={[styles.cDate, GlobalStyle.font_caption2]}>
-										{contact.date}
-									</Text>
-								</View>
-							</View>
-							{index !== contacts.length + 1 && (
-								<View style={styles.separator} />
-							)}
-						</Pressable>
-					))}
-				</>
+        <ScrollView style={{flex:1, width: '95%', paddingTop: 10}}>
+				  {contacts.map((contact, index) => (
+				  	<Pressable
+				  		key={index}
+				  		onPress={() => detailContact(contact.id)}
+				  		style={[{overflow: "auto", paddingVertical:10},
+                      {borderBottomWidth:index===contacts.length-1?0:1, borderColor: isDark?COLOR_DARK_THIRD:COLOR_LIGHT_THIRD}]}
+				  	>
+				  		<View style={styles.contactListView}>
+				  			<Text style={[styles.cTitle, GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}
+                ellipsizeMode={'tail'}
+                numberOfLines={1}>
+				  				{index + 1}. {contact.title}
+				  			</Text>
+				  			<Text style={[styles.cDate, GlobalStyle.font_caption2, {color:isDark?COLOR_DARK_PRIMARY:COLOR_LIGHT_PRIMARY}]}>
+				  				{contact.date}
+				  			</Text>
+				  		</View>
+				  	</Pressable>
+				  ))}
+        </ScrollView>
 			)}
 		</SafeAreaView>
 	);
@@ -82,34 +86,21 @@ const SettingContactLog = ({ navigation }) => {
 const styles = StyleSheet.create({
 	safearea: {
 		alignItems: "center",
-		height: "90%",
-		marginVertical: 40,
-		marginHorizontal: 20,
 	},
 	cTitle: {
-		flex: 1,
+		flex: .97,
 	},
-	cDitle: {},
-	separator: {
-		width: 300,
-		height: 1,
-		backgroundColor: "#E2E2E2",
-		marginVertical: 10,
+	cDitle: {
+    justifyContent: "flex-end"
 	},
 	nothingContentView: {
-		marginTop: "80%",
+    flex:1,
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	nothingContentText: {
 		letterSpacing: 3,
 		textAlign: "center",
-	},
-	topLabel: {
-		width: "100%",
-		alignItems: "center",
-		marginBottom: 100,
-		top: 10,
 	},
 	contactListView: {
 		display: "flex",

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
 	View,
 	StyleSheet,
@@ -10,9 +10,15 @@ import {
 } from "react-native";
 import { readcontactDetail, deleteContact } from "../../util/database";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
-import { AntDesign } from "@expo/vector-icons";
+import { Octicons, Feather } from "@expo/vector-icons";
+import themeContext from "../../globalStyle/themeContext";
+import ModeColorStyle from "../../globalStyle/ModeColorStyle";
+import { COLOR_BLACK, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_DARK_WHITE, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY, COLOR_WHITE } from "../../globalStyle/color";
+import HeaderBack from "../../components/HeaderBack";
 
 const SettingContactDetail = ({ navigation, route }) => {
+	const isDark = useContext(themeContext).theme === 'dark'
+
 	const { params } = route;
 	const id = params ? params.id : null;
 	const [title, setTitle] = useState("");
@@ -58,143 +64,108 @@ const SettingContactDetail = ({ navigation, route }) => {
 		);
 	};
 
+
 	return (
-		<SafeAreaView style={styles.safearea}>
-			<ScrollView
-				contentContainerStyle={{ alignItems: "center" }}
-				showsVerticalScrollIndicator={false}
-			>
-				<View style={styles.topLabel}>
-					<Text style={GlobalStyle.font_caption1}>Inquiry history</Text>
-				</View>
-				<View style={styles.titleLabelView}>
-					<Text style={[styles.titleLabel, GlobalStyle.font_body]}>
-						문의 제목
-					</Text>
-					<Text style={[styles.dateLabel, GlobalStyle.font_caption2]}>
-						{date}
-					</Text>
-				</View>
-				<View style={styles.title}>
-					<Text style={[{ textAlignVertical: "top" }, GlobalStyle.font_body]}>
-						{title}
-					</Text>
-				</View>
-				<View style={styles.contentLabelView}>
-					<Text style={[styles.contentLabel, GlobalStyle.font_body]}>
+		<SafeAreaView style={GlobalStyle.safeAreaWrap}>
+      {/* header */}
+      <HeaderBack text='Inquiry history Detail' backFun={() => navigation.pop()}/>
+      
+      <View style={styles(isDark).bodyWrap}>
+        {/* title */}
+        <View style={styles(isDark).contact_titleContent_wrap}>
+          <View style={styles(isDark).title_date_wrap}>
+            <Text style={[styles(isDark).title, GlobalStyle.font_body]}>
+              문의 제목
+            </Text>
+            <Text style={[styles(isDark).dateLabel, GlobalStyle.font_caption2]}>
+              {date}
+            </Text>
+          </View>
+          <View style={[styles(isDark).contentBox, boxStyle(isDark).textBox]}>
+            <Text style={[{ textAlignVertical: "top" }, GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>
+              {title}
+            </Text>
+          </View>
+        </View>
+        {/* content */}
+				<View style={styles(isDark).contact_titleContent_wrap}>
+					<Text style={[styles(isDark).title, GlobalStyle.font_body]}>
 						문의 내용
 					</Text>
+          <ScrollView style={[styles(isDark).contentBox, boxStyle(isDark).textBox, {height:'50%'}]}>
+            <Text style={[{ textAlignVertical: "top" }, GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>
+              {content}
+            </Text>
+          </ScrollView>
 				</View>
-				<View style={styles.content}>
-					<Text style={({ textAlignVertical: "top" }, GlobalStyle.font_body)}>
-						{content}
-					</Text>
-				</View>
-				<View style={styles.emailLabelView}>
-					<Text
-						style={[{ flex: 1, marginHorizontal: 10 }, GlobalStyle.font_body]}
-					>
+        {/* email */}
+				<View style={styles.contact_titleContent_wrap}>
+					<Text style={[GlobalStyle.font_body, styles(isDark).title]}>
 						회신 받으실 이메일
 					</Text>
+          <View style={[styles(isDark).contentBox, boxStyle(isDark).textBox]}>
+            <Text style={[{ textAlignVertical: "top" }, GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>
+              {email}
+            </Text>
+				  </View>
 				</View>
-				<View style={styles.email}>
-					<Text style={[{ textAlignVertical: "top" }, GlobalStyle.font_body]}>
-						{email}
-					</Text>
-				</View>
-				<Pressable onPress={checkDeleteContact} style={styles.deleteButton}>
-					<AntDesign name="delete" size={30} color="white" />
-				</Pressable>
-			</ScrollView>
+      </View>
+
+      {/* button */}
+			<Pressable onPress={checkDeleteContact} style={[styles(isDark).deleteButton]}>
+				<Octicons name="trash" size={30} color="white" />
+			</Pressable>
 		</SafeAreaView>
 	);
 };
 
-const styles = StyleSheet.create({
-	safearea: {
-		alignItems: "center",
-		height: "90%",
-		marginVertical: 40,
-		marginHorizontal: 20,
-	},
-	topLabel: {
-		width: "100%",
-		alignItems: "center",
-		marginBottom: 60,
-		top: 10,
-	},
-	titleLabelView: {
-		display: "flex",
+const styles = (isDark) => StyleSheet.create({
+  bodyWrap:{
+    width: '100%',
+    display: 'flex',
+    flex: 0.97,
+    marginTop: 20
+  },
+
+  title_date_wrap:{
+    display: "flex",
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		marginBottom: 10,
-	},
-	titleLabel: {
-		flex: 1,
-		textAlign: "left",
-		marginHorizontal: 10,
-	},
+    paddingRight: 10
+  },
+  contact_titleContent_wrap:{
+    marginBottom: 30
+  },
+  title:{
+    color: isDark? COLOR_DARK_PRIMARY : COLOR_LIGHT_PRIMARY,
+    paddingLeft: 10
+  },
+  contentBox:{
+    marginTop: 10,
+    width: '100%',
+		padding: 10,
+		borderRadius: 10,
+  },
 	dateLabel: {
 		flex: 1,
 		textAlign: "right",
-		marginHorizontal: 10,
-		color: "#5F5F5F",
-	},
-	title: {
-		backgroundColor: "white",
-		width: 320,
-		padding: 10,
-		justifyContent: "flex-start",
-		alignItems: "flex-start",
-
-		borderRadius: 10,
-		marginBottom: 35,
-	},
-	contentLabelView: {
-		display: "flex",
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		marginBottom: 10,
-	},
-	contentLabel: {
-		flex: 1,
-		marginHorizontal: 10,
-	},
-	content: {
-		backgroundColor: "white",
-		width: 320,
-		minHeight: 340,
-		padding: 10,
-		justifyContent: "flex-start",
-		alignItems: "flex-start",
-		borderRadius: 10,
-		marginBottom: 35,
-	},
-	emailLabelView: {
-		display: "flex",
-		flexDirection: "row",
-		alignItems: "center",
-		marginBottom: 10,
-	},
-	email: {
-		backgroundColor: "white",
-		width: 320,
-		padding: 10,
-		justifyContent: "flex-start",
-		alignItems: "flex-start",
-		borderRadius: 10,
+		color: isDark ? COLOR_DARK_PRIMARY : COLOR_LIGHT_PRIMARY,
 	},
 	deleteButton: {
 		width: "100%",
-		height: 55,
-		backgroundColor: "#E76B5C",
+		height: 60,
 		borderRadius: 15,
-		marginVertical: 40,
 		justifyContent: "center",
 		alignItems: "center",
+    backgroundColor: isDark? COLOR_DARK_RED : COLOR_LIGHT_RED
 	},
 });
+
+const boxStyle = (isDark) => StyleSheet.create({
+  textBox: {
+    backgroundColor: isDark? COLOR_DARK_FOURTH : COLOR_WHITE
+  },
+})
 
 export default SettingContactDetail;
