@@ -5,11 +5,12 @@ import LogoRed from '../../../assets/images/logo.png'
 import { COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_LIGHT_SECONDARY, COLOR_WHITE, COLOR_LIGHT_RED, COLOR_DARK_RED } from '../../globalStyle/color';
 import GlobalStyle from '../../globalStyle/GlobalStyle';
 import ModeColorStyle from '../../globalStyle/ModeColorStyle';
-import {changeMonth, changeNumberTwoLength} from '../../util/Calender'
+import {changeMonth} from '../../util/Calender'
 import PagerView from 'react-native-pager-view';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { getAudioData, playAudio, stopPlayAudio } from '../../util/audioRecord';
 import {readDailyDiarys, setFeaturedDiaryImg} from '../../util/database.js'
+import { base64ToUri } from '../../util/writeDiary';
 
 
 function DailyDiaryScreen(props) {
@@ -104,7 +105,7 @@ function DailyDiaryScreen(props) {
                 // 이미지
                 datas.image !== '' &&
                 <View style={styles(isDark).imgWrap}>
-                  <Image source={{ uri:  datas.image }} style={styles(isDark).imgStyle} />
+                  <Image source={{ uri:  base64ToUri(datas.image) }} style={styles(isDark).imgStyle} />
                   <AntDesign name={datas.is_featured===0 ? "staro" : 'star'} size={25} color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
                   style={{position: 'absolute', right: 10, top:10}} 
                   onPress={() => handleSetFeaturedImg(datas.id, datas.date, datas.is_featured)}/>

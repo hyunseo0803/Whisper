@@ -5,6 +5,7 @@ import {
 	SafeAreaView,
 	Text,
 	Pressable,
+	Alert,
 } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import { Feather, Ionicons } from "@expo/vector-icons";
@@ -17,7 +18,7 @@ import {
 	COLOR_WHITE, COLOR_BLACK
 } from "../../globalStyle/color";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { moodAnalysisButtonPressCount, pickImage } from "../../util/writeDiary";
+import { addButtonPressCount, getButtonPressCount, moodAnalysisButtonPressCount, takePhoto } from "../../util/writeDiary";
 import themeContext from "../../globalStyle/themeContext";
 import HeaderText from "../../components/Header";
 
@@ -35,13 +36,18 @@ const WriteAnalysis = ({ navigation, route }) => {
    */
   const handelTakePhoto = async() => {
     if(await moodAnalysisButtonPressCount(setButtonPressCount)){
-      const result = await pickImage();
-      navigation.navigate("AnalysisResultScreen", {
-        imageBase64: result,
-        selectedMood: selectedMood,
-        selectedWeather: selectedWeather,
-        selectedDate: selectedDate,
-      });
+      const result = await takePhoto();
+	  if(result===''){
+		await addButtonPressCount()
+		setButtonPressCount(await getButtonPressCount())
+	  }else{
+		  navigation.navigate("AnalysisResultScreen", {
+		    imageBase64: result,
+		    selectedMood: selectedMood,
+		    selectedWeather: selectedWeather,
+		    selectedDate: selectedDate,
+	    });
+	  }
     }
   }
 
@@ -65,8 +71,8 @@ const WriteAnalysis = ({ navigation, route }) => {
 			if (!storedDate || storedDate !== currentDate) {
 				// 현재 날짜와 이전에 저장된 날짜가 다른 경우
 				await AsyncStorage.setItem("buttonPressDate", currentDate);
-				await AsyncStorage.setItem("buttonPressCount", "2"); // 초기값으로 2를 설정
-				setButtonPressCount("2");
+				await AsyncStorage.setItem("buttonPressCount", "20"); // 초기값으로 2를 설정
+				setButtonPressCount("20");
 			} else {
 				// 이전에 저장된 날짜와 현재 날짜가 같은 경우
 				const storedButtonPressCount = await AsyncStorage.getItem(

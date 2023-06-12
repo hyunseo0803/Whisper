@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
 	View,
 	StyleSheet,
@@ -14,8 +14,15 @@ import {
 import * as MailComposer from "expo-mail-composer";
 import { insertContact } from "../../util/database";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
+import themeContext from "../../globalStyle/themeContext";
+import { Feather } from '@expo/vector-icons';
+import { COLOR_BLACK, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_DARK_THIRD, COLOR_DARK_WHITE, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY, COLOR_LIGHT_THIRD, COLOR_WHITE } from "../../globalStyle/color";
+import ModeColorStyle from "../../globalStyle/ModeColorStyle";
+import HeaderBack from "../../components/HeaderBack";
 
 const SettingContact = ({ navigation }) => {
+  const isDark = useContext(themeContext).theme === 'dark'
+
 	const [cTitle, setCTitle] = useState("");
 	const [content, setContent] = useState("");
 	const [user_email, setUser_email] = useState("");
@@ -56,28 +63,31 @@ const SettingContact = ({ navigation }) => {
 		}
 	};
 
+	const placeholderColor = isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY
+	const textColor = isDark?COLOR_DARK_WHITE:COLOR_BLACK
+	const borderColor = isDark?COLOR_DARK_THIRD:COLOR_LIGHT_THIRD
+
 	return (
-		<SafeAreaView style={styles.safearea}>
+		<SafeAreaView style={[styles.safearea, GlobalStyle.safeAreaWrap]}>
 			<KeyboardAvoidingView
 				style={{ flex: 1, width: "100%" }}
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
-				keyboardVerticalOffset={Platform.OS === "ios" ? 55 : 0}
+				keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}
 			>
+				{/* header */}
+				<HeaderBack text={'Contact Us'} backFun={() => navigation.pop()}/>
+
 				<ScrollView showsVerticalScrollIndicator={false}>
-					<View style={styles.topLabel}>
-						<Text style={GlobalStyle.font_caption1}>Contact Us</Text>
-					</View>
 					<Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
-						<View>
 							<TextInput
 								value={cTitle}
 								onChangeText={(text) => setCTitle(text)}
 								placeholder="문의 제목"
-								style={[styles.titleInput, GlobalStyle.font_body]}
+								placeholderTextColor={placeholderColor}
+								style={[styles.titleInput, GlobalStyle.font_body, {color:textColor, borderColor:borderColor}]}
 							/>
-						</View>
-						<View>
-							<Text style={[styles.helpText, GlobalStyle.font_caption1]}>
+
+							<Text style={[styles.helpText, GlobalStyle.font_caption1, {color:isDark?COLOR_DARK_PRIMARY:COLOR_LIGHT_PRIMARY}]}>
 								핸드폰의 기종 및 사양을 함께 입력해주시면 {"\n"}보다 자세한
 								답변을 받으실 수 있습니다.
 							</Text>
@@ -85,26 +95,26 @@ const SettingContact = ({ navigation }) => {
 								value={content}
 								onChangeText={(text) => setContent(text)}
 								placeholder={`문의하실 내용을 입력 해주세요.`}
+								placeholderTextColor={placeholderColor}
 								multiline={true}
-								style={[styles.contentInput, GlobalStyle.font_body]}
+								style={[styles.contentInput, GlobalStyle.font_body, {backgroundColor:isDark?COLOR_DARK_FOURTH:COLOR_WHITE, color:textColor}]}
 								scrollEnabled={true}
 								maxLength={800}
 							/>
-						</View>
-						<View>
 							<TextInput
 								value={user_email}
+								keyboardType={"email-address"}
 								onChangeText={(text) => setUser_email(text)}
 								placeholder="회신 받을 이메일 ex)sample@sogon.com"
-								style={[styles.emailInput, GlobalStyle.font_body]}
+								placeholderTextColor={placeholderColor}
+								style={[styles.emailInput, GlobalStyle.font_body, {color:textColor, borderColor:borderColor}]}
 							/>
-						</View>
 						<Pressable
 							onPress={sendEmail}
 							style={[
 								{
 									backgroundColor: isBothSelected
-										? "#E76B5C"
+										? isDark?COLOR_DARK_RED:COLOR_LIGHT_RED
 										: "rgba(231, 107, 92, 0.5)",
 								},
 								styles.pressableButton,
@@ -114,7 +124,7 @@ const SettingContact = ({ navigation }) => {
 							<Text
 								style={[
 									{
-										color: isBothSelected ? "white" : "rgba(255,255,255,0.5)",
+										color: isBothSelected ? isDark?COLOR_DARK_WHITE:COLOR_WHITE : "rgba(255,255,255,0.5)",
 										letterSpacing: 10,
 									},
 									GlobalStyle.font_title2,
@@ -132,24 +142,19 @@ const SettingContact = ({ navigation }) => {
 
 const styles = StyleSheet.create({
 	safearea: {
-		height: "90%",
-		marginVertical: 40,
-		marginHorizontal: 25,
 		flex: 1,
 	},
-	topLabel: { width: "100%", alignItems: "center", marginBottom: 60, top: 10 },
-	titleInput: {
-		width: "100%",
-		padding: 7,
-		borderBottomWidth: 1,
-		borderColor: "#D4D4D4",
-		marginBottom: 10,
-	},
+	topLabel: { marginBottom: 60, top: 10 },
 	helpText: {
 		textAlign: "center",
 		marginVertical: 15,
 		letterSpacing: 1,
-		color: "#5F5F5F",
+		marginTop: 30
+	},
+	titleInput:{
+		padding: 10,
+		borderBottomWidth:1,
+		marginTop: 10
 	},
 	contentInput: {
 		width: "100%",
@@ -158,7 +163,6 @@ const styles = StyleSheet.create({
 		padding: 10,
 		borderRadius: 5,
 		marginBottom: 20,
-		backgroundColor: "white",
 	},
 	emailInput: {
 		width: "100%",

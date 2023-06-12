@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import {
 	View,
 	StyleSheet,
@@ -6,6 +6,7 @@ import {
 	SafeAreaView,
 	Pressable,
 	Alert,
+	Switch,
 } from "react-native";
 import { useState } from "react";
 import Toggle from "react-native-toggle-input";
@@ -14,9 +15,27 @@ import moment from "moment";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import { Feather, Ionicons } from "@expo/vector-icons";
+import HeaderBack from "../../components/HeaderBack";
+import ModeColorStyle from "../../globalStyle/ModeColorStyle";
+import themeContext from "../../globalStyle/themeContext";
+import {
+	COLOR_DARK_BLUE,
+	COLOR_DARK_FOURTH,
+	COLOR_DARK_PRIMARY,
+	COLOR_DARK_RED,
+	COLOR_DARK_SECONDARY,
+	COLOR_DARK_WHITE,
+	COLOR_LIGHT_BLUE,
+	COLOR_LIGHT_PRIMARY,
+	COLOR_LIGHT_RED,
+	COLOR_LIGHT_SECONDARY,
+	COLOR_WHITE,
+} from "../../globalStyle/color";
 import * as Notifications from "expo-notifications";
 
 const SettingAlert = ({ navigation }) => {
+	const isDark = useContext(themeContext).theme === "dark";
+
 	const [toggle, setToggle] = useState(false);
 	const [modal, setModal] = useState(false);
 	const [selectedTime, setSelectedTime] = useState(null);
@@ -111,6 +130,9 @@ const SettingAlert = ({ navigation }) => {
 		}
 	});
 
+	const colorGray = isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY;
+	const colorPrimary = isDark ? COLOR_DARK_PRIMARY : COLOR_LIGHT_PRIMARY;
+
 	useEffect(() => {
 		const loadAlertTime = async () => {
 			const storedAlertTime = await AsyncStorage.getItem("AlertTime");
@@ -138,55 +160,93 @@ const SettingAlert = ({ navigation }) => {
 	}, [toggle]);
 
 	return (
-		<View>
-			<SafeAreaView style={styles.safearea}>
-				<View style={styles.topLabel}>
-					<Text style={GlobalStyle.font_caption1}>Setting Alert</Text>
-				</View>
+		<SafeAreaView style={GlobalStyle.safeAreaWrap}>
+			<HeaderBack text={"Setting Alert"} backFun={() => navigation.pop()} />
+
+			<View style={{ flex: 0.4 }}>
 				<View style={styles.middleLabel}>
-					<Text style={[{ marginHorizontal: 5 }, GlobalStyle.font_caption1]}>
+					<Text
+						style={[
+							{
+								marginHorizontal: 5,
+								color: isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY,
+							},
+							GlobalStyle.font_caption1,
+						]}
+					>
 						일기를 매일 쓸 수 있도록 제가 챙겨줄게요
 					</Text>
-					<Feather name="smile" size={24} color="black" />
-				</View>
-				<View style={styles.selectTimeView}>
-					<Ionicons
-						name="alarm"
-						size={45}
-						color="black"
-						style={styles.selectTimeView_icon}
+					<Feather
+						name="smile"
+						size={20}
+						color={isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY}
 					/>
-					<Text style={[styles.selectTimeView_label, GlobalStyle.font_title2]}>
-						알람 시간 설정하기
-					</Text>
-					<View style={styles.toggleWrapper}>
-						<Toggle
-							size={27}
-							filled={true}
-							circleColor={"white"}
-							toggle={toggle}
-							setToggle={handleToggle}
-						/>
-
-						<DateTimePickerModal
-							isVisible={modal}
-							mode="time"
-							onConfirm={handleConfirmTime}
-							onCancel={handleCancelTimePicker}
-						/>
-					</View>
 				</View>
-				<View>
-					{selectedTime ? (
+
+				{/* 시간 설정 박스 */}
+				<View
+					style={[
+						styles.selectTimeView,
+						{ backgroundColor: isDark ? COLOR_DARK_FOURTH : COLOR_WHITE },
+					]}
+				>
+					<View
+						style={{
+							display: "flex",
+							flexDirection: "row",
+							alignItems: "center",
+						}}
+					>
+						<Ionicons
+							name="alarm"
+							size={35}
+							style={[
+								styles.selectTimeView_icon,
+								ModeColorStyle(isDark).font_DEFALUT,
+							]}
+						/>
+						<Text
+							style={[
+								styles.selectTimeView_label,
+								GlobalStyle.font_title2,
+								ModeColorStyle(isDark).font_DEFALUT,
+							]}
+						>
+							알람 시간 설정하기
+						</Text>
+					</View>
+					<Switch
+						value={toggle}
+						onValueChange={handleToggle}
+						trackColor={{ true: isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED }}
+					/>
+					<DateTimePickerModal
+						isVisible={modal}
+						mode="time"
+						onConfirm={handleConfirmTime}
+						onCancel={handleCancelTimePicker}
+					/>
+				</View>
+			</View>
+
+			{/* 설명 & 시간 view */}
+			<View style={{ flex: 0.58 }}>
+				{selectedTime ? (
+					<View style={styles.isSelectedTime}>
+						{/* text Wrap */}
 						<View>
-							<Text style={[styles.selectedtimeView, GlobalStyle.font_title1]}>
+							<Text
+								style={[
+									styles.selectedtimeView,
+									GlobalStyle.font_title1,
+									{ color: colorPrimary },
+								]}
+							>
 								{selectedTime}
 							</Text>
 							<Text
 								style={[
-									{
-										letterSpacing: 5,
-									},
+									{ letterSpacing: 5, color: colorPrimary },
 									styles.selectedwordView,
 									GlobalStyle.font_body,
 								]}
@@ -195,51 +255,50 @@ const SettingAlert = ({ navigation }) => {
 							</Text>
 							<Text
 								style={[
-									{
-										letterSpacing: 2,
-									},
+									{ letterSpacing: 2, color: colorPrimary },
 									styles.selectedwordView,
 									GlobalStyle.font_caption1,
 								]}
 							>
 								알림 받기를 원하시면 저장 버튼까지 눌러주세요 !
 							</Text>
-							<Pressable
-								style={styles.pressableButton}
-								onPress={savedAlertTime}
-							>
-								<Text style={[styles.pressableText, GlobalStyle.font_title2]}>
-									저장
-								</Text>
-							</Pressable>
 						</View>
-					) : (
-						<Text style={[styles.textView, GlobalStyle.font_body]}>
-							알람 시간을 설정하시면, {"\n"}매일 소곤소곤 일기장이 일기 쓸
-							시간에
-							{"\n"}
-							알려드릴게요.
-						</Text>
-					)}
-				</View>
-			</SafeAreaView>
-		</View>
+						<Pressable
+							style={[styles.pressableButton, ModeColorStyle(isDark).bg_RED]}
+							onPress={savedAlertTime}
+						>
+							<Text
+								style={[
+									{ color: isDark ? COLOR_DARK_WHITE : COLOR_WHITE },
+									GlobalStyle.font_title2,
+								]}
+							>
+								저장
+							</Text>
+						</Pressable>
+					</View>
+				) : (
+					<Text
+						style={[
+							styles.textView,
+							GlobalStyle.font_body,
+							{ color: isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY },
+						]}
+					>
+						알람 시간을 설정하시면, {"\n"}매일 소곤소곤 일기장이 일기 쓸 시간에{" "}
+						{"\n"} 알려드릴게요.
+					</Text>
+				)}
+			</View>
+		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
 	safearea: {
 		alignItems: "center",
-		height: "90%",
-		marginVertical: 40,
-		marginHorizontal: 20,
 	},
-	topLabel: {
-		width: "100%",
-		alignItems: "center",
-		marginBottom: 100,
-		top: 10,
-	},
+
 	middleLabel: {
 		width: "100%",
 		alignItems: "center",
@@ -247,14 +306,13 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "row",
 		justifyContent: "center",
+		marginTop: 30,
+		marginBottom: 10,
 	},
 	selectTimeView: {
-		backgroundColor: "white",
 		borderRadius: 15,
 		flexDirection: "row",
 		width: "100%",
-		height: "8%",
-		marginVertical: 10,
 		shadowColor: "black",
 		shadowOffset: {
 			width: 5,
@@ -262,54 +320,45 @@ const styles = StyleSheet.create({
 		},
 		shadowOpacity: 0.2,
 		shadowRadius: 8,
+		justifyContent: "space-between",
+		alignItems: "center",
+		paddingHorizontal: 15,
+		paddingVertical: 10,
 	},
 	selectTimeView_icon: {
-		marginHorizontal: 10,
+		marginRight: 10,
 		marginVertical: 3,
 		alignItems: "center",
 		justifyContent: "center",
 	},
 	selectTimeView_label: {
 		textAlign: "center",
-		marginVertical: 15,
-	},
-	toggleWrapper: {
-		justifyContent: "center",
-		marginLeft: 40,
 	},
 	selectedtimeView: {
-		color: "#5f5f5f",
 		alignItems: "center",
 		textAlign: "center",
 		justifyContent: "center",
-		marginTop: 80,
 		letterSpacing: 5,
 	},
 	selectedwordView: {
-		color: "#5f5f5f",
 		textAlign: "center",
 		marginTop: 15,
 	},
 	pressableButton: {
-		width: 330,
-		height: 50,
-		backgroundColor: "#E76B5C",
+		width: "90%",
+		height: 55,
 		borderRadius: 15,
-		marginTop: 240,
-		marginHorizontal: 10,
 		justifyContent: "center",
 		alignItems: "center",
-	},
-	pressableText: {
-		color: "white",
 	},
 	textView: {
-		color: "gray",
-		alignItems: "center",
 		textAlign: "center",
-		justifyContent: "center",
-		marginVertical: 80,
 		letterSpacing: 1,
+	},
+	isSelectedTime: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "space-between",
 	},
 });
 

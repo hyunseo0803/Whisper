@@ -1,6 +1,7 @@
 import {GOOGLE_VISION_KEY} from '@env'
 import { Alert } from 'react-native';
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from 'expo-file-system';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 /**
@@ -101,7 +102,7 @@ const askPermissionsAsync = async () => {
 /**
  * 사진 찍고 base64값 받는 함수
  */
-export const pickImage = async () => {
+export const takePhoto = async () => {
 	askPermissionsAsync();
 	let result = await ImagePicker.launchCameraAsync({
 		mediaTypes: ImagePicker.MediaTypeOptions.Images, // 이미지만 받음
@@ -110,7 +111,7 @@ export const pickImage = async () => {
 		quality: 0.5,
 		base64: true,
 	});
-
+  
 	if (!result.canceled) {
     return result.assets[0].base64
 	}else{
@@ -171,8 +172,24 @@ export const moodAnalysisButtonPressCount = async(setButtonPressCount) => {
 }
 
 /**
- * 사진첩에서 이미지 선택
- * @returns imgUri
+ * 버튼 누른 횟수를 하나 증가시켜주는 함수
+ */
+export const addButtonPressCount = async() => {
+	const buttonPressCount = await AsyncStorage.getItem("buttonPressCount");
+  await AsyncStorage.setItem("buttonPressCount", (buttonPressCount*1+1).toString());
+}
+
+/**
+ * buttonPressCount 갯수 조회 함수
+ * @returns {string}btnPressCount
+ */
+export const getButtonPressCount = async() => {
+  return await AsyncStorage.getItem("buttonPressCount");
+}
+
+/**
+ * 이미지를 바이너리로 변환하여 출력
+ * @returns base64Image
  */
 export const pickDiaryImage = async() => {
   let imageData = await ImagePicker.launchImageLibraryAsync({
@@ -182,8 +199,22 @@ export const pickDiaryImage = async() => {
     quality: 1,
   });
   if (!imageData.canceled) {
-    return imageData.assets[0].uri;
+    const imgUri = imageData.assets[0].uri;
+    const base64Image = await FileSystem.readAsStringAsync(imgUri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    return base64Image;
   }else{
     return '';
   }
+}
+
+/**
+ * 바이너리 이미지를 uri로 바꿔주는 함수
+ * @param {string} base64Image 
+ * @returns uri
+ */
+export const base64ToUri = (base64Image) => {
+  const imageUri = `data:image/jpeg;base64,${base64Image}`;
+  return imageUri
 }

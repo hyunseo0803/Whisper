@@ -10,7 +10,7 @@ import {
 	Alert,
 	useColorScheme,
 } from "react-native";
-import { getGoogleVisionResult, pickImage } from "../../util/writeDiary";
+import { getGoogleVisionResult } from "../../util/writeDiary";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import happy from "../../../assets/images/mood/happy.png";
 import disgust from "../../../assets/images/mood/disgust.png";
@@ -127,7 +127,7 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 						"얼굴 인식실패!",
 						"카메라로 얼굴이 나오도록 지금 자신의 모습을 찍어주세요! \n 감정분석을 통해 일기 주제를 추천해드립니다."
 					);
-					pickImage();
+					navigation.pop();
 				} else {
 					setAnalysisMood(result);
 					setAnalysisIsLoding(true);
