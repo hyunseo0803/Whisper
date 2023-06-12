@@ -14,11 +14,13 @@ import moment from "moment";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import { Feather, Ionicons } from "@expo/vector-icons";
+import * as Notifications from "expo-notifications";
 
 const SettingAlert = ({ navigation }) => {
 	const [toggle, setToggle] = useState(false);
 	const [modal, setModal] = useState(false);
 	const [selectedTime, setSelectedTime] = useState(null);
+	const [initialToggle, setInitialToggle] = useState(false);
 
 	const handleToggle = () => {
 		setToggle(!toggle);
@@ -35,7 +37,62 @@ const SettingAlert = ({ navigation }) => {
 	const savedAlertTime = async () => {
 		if (selectedTime) {
 			await AsyncStorage.setItem("AlertTime", selectedTime);
-			navigation.navigate("setting");
+			navigation.pop();
+
+			const { status } = await Notifications.requestPermissionsAsync();
+			if (status === "granted") {
+				const now = new Date();
+				const selectedDateTime = moment(selectedTime, "HH:mm").toDate();
+				let trigger;
+
+				if (selectedDateTime < now) {
+					const nextDay = moment().add(1, "day").startOf("day");
+					const nextTrigger = nextDay.clone().set({
+						hour: moment(selectedDateTime).hours(),
+						minute: moment(selectedDateTime).minutes(),
+					});
+
+					if (nextTrigger < now) {
+						trigger = nextDay
+							.clone()
+							.add(1, "day")
+							.set({
+								hour: moment(selectedDateTime).hours(),
+								minute: moment(selectedDateTime).minutes(),
+							})
+							.toDate();
+					} else {
+						trigger = nextTrigger.toDate();
+					}
+				} else {
+					trigger = selectedDateTime;
+				}
+
+				const schedulingOptions = {
+					time: trigger,
+					repeat: "day",
+				};
+
+				const notificationContent = {
+					title: "소곤소곤",
+					body: "오늘의 일기를 쓸 시간이에요 ! ",
+					sound: true,
+					vibrate: true,
+					priority: "high",
+				};
+
+				await Notifications.scheduleNotificationAsync({
+					content: notificationContent,
+					trigger: schedulingOptions.time,
+				});
+
+				console.log(
+					"알림이 울릴 날짜와 시간:",
+					moment(trigger).format("YYYY-MM-DD HH:mm")
+				);
+			} else {
+				Alert.alert("알림 권한 설정", "알림 권한 설정 해 주세요.");
+			}
 		} else {
 			Alert.alert(
 				"알림 시간 저장",
@@ -53,6 +110,32 @@ const SettingAlert = ({ navigation }) => {
 			setSelectedTime(null);
 		}
 	});
+
+	useEffect(() => {
+		const loadAlertTime = async () => {
+			const storedAlertTime = await AsyncStorage.getItem("AlertTime");
+			if (storedAlertTime) {
+				setToggle(true);
+				setSelectedTime(storedAlertTime);
+				setInitialToggle(true);
+			}
+		};
+
+		loadAlertTime();
+	}, []);
+	useEffect(() => {
+		const handleToggleOff = async () => {
+			if (initialToggle && !toggle) {
+				try {
+					await AsyncStorage.removeItem("AlertTime");
+				} catch (error) {
+					console.log("Error removing AlertTime from AsyncStorage:", error);
+				}
+			}
+		};
+
+		handleToggleOff();
+	}, [toggle]);
 
 	return (
 		<View>
