@@ -121,10 +121,8 @@ const AnalysisResultScreen = ({ navigation, route }) => {
         else{
           setAnalysisMood(result);
 
-          const randomTopic = await diaryTopic[`${analysisMood}`].shuffle()
-          console.log(randomTopic.slice(0, 6))
-          // setSubject(randomTopic.slice(0, 6))
-          // console.log(subject)
+          const randomTopic = await diaryTopic[`${result}`]
+          setSubject(randomTopic.sort(() => Math.random()-randomTopic.length).slice(0,6))
 
           setAnalysisIsLoding(true);
         }
