@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, StyleSheet, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Alert, useColorScheme } from "react-native";
+import { View, StyleSheet, Text, SafeAreaView, Image, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
 import { addButtonPressCount, getGoogleVisionResult } from "../../util/writeDiary";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import happy from "../../../assets/images/mood/happy.png";
@@ -10,14 +10,15 @@ import fear from "../../../assets/images/mood/fear.png";
 import expressionless from "../../../assets/images/mood/expressionless.png";
 import surprised from "../../../assets/images/mood/surprised.png";
 import { setupURLPolyfill } from "react-native-url-polyfill";
-import HeaderText from "../../components/Header";
-import { diaryTopicQuestion, questionToAI } from "../../util/diaryTopic";
+import HeaderBack from '../../components/HeaderBack'
 import { moodTextKr } from "../../util/MoodWeather";
 import ModeColorStyle from "../../globalStyle/ModeColorStyle";
 import {
 	COLOR_DARK_BLUE,
+	COLOR_DARK_RED,
 	COLOR_DARK_WHITE,
 	COLOR_LIGHT_BLUE,
+	COLOR_LIGHT_RED,
 	COLOR_WHITE,
 } from "../../globalStyle/color";
 import themeContext from "../../globalStyle/themeContext";
@@ -28,11 +29,9 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	const isDark = useContext(themeContext).theme === "dark";
 
 	const [analysisMood, setAnalysisMood] = useState("");
-	const [subject, setSubject] = useState("");
+	const [subject, setSubject] = useState(new Array(6).fill(0));
 	const [selectedTopic, setSelectedTopic] = useState([]);
-	const [isLoding, setIsLoding] = useState(false);
 	const [analysisLoding, setAnalysisIsLoding] = useState(false);
-	const [openaiLoding, setOpenaiLoding] = useState(false);
 	const [loadingText, setLoadingText] = useState("분석중 . . .");
 
 	const { params } = route;
@@ -53,20 +52,20 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 					return "분석중 . . .";
 				}
 			});
-		}, 800);
+		}, 400);
 
 		return () => clearInterval(interval);
 	}, []);
 
-	useEffect(() => {
-		setIsLoding(false);
-		if (analysisLoding && openaiLoding) {
-			setIsLoding(false);
-		}
-		if (analysisLoding === true && openaiLoding === true) {
-			setIsLoding(true);
-		}
-	}, [analysisLoding, openaiLoding]);
+	// useEffect(() => {
+	// 	setIsLoding(false);
+	// 	if (analysisLoding && openaiLoding) {
+	// 		setIsLoding(false);
+	// 	}
+	// 	if (analysisLoding === true && openaiLoding === true) {
+	// 		setIsLoding(true);
+	// 	}
+	// }, [analysisLoding, openaiLoding]);
 
 	/**
 	 * 일기 주제 선택 함수
@@ -134,151 +133,149 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 		3. 버튼 꾸미고, 나머지 ui만들기 
 */
 
-	useEffect(() => {
-		const runPrompt = async () => {
-			setOpenaiLoding(false);
-			const prompt = diaryTopicQuestion(analysisMood);
+	// useEffect(() => {
+	// 	const runPrompt = async () => {
+	// 		setOpenaiLoding(false);
+	// 		const prompt = diaryTopicQuestion(analysisMood);
 
-			if (prompt !== "") {
-				const result = await questionToAI(prompt, setSubject);
-				if (result) {
-					setOpenaiLoding(true);
-				}
-			}
-		};
-		runPrompt();
-	}, [analysisMood]);
+	// 		if (prompt !== "") {
+	// 			const result = await questionToAI(prompt, setSubject);
+	// 			if (result) {
+	// 				setOpenaiLoding(true);
+	// 			}
+	// 		}
+	// 	};
+	// 	runPrompt();
+	// }, [analysisMood]);
 
 	return (
-		<ScrollView>
-			<SafeAreaView
-				style={[
-					{
-						marginVertical: 40,
-						alignItems: "center",
-					},
-					GlobalStyle.safeAreaWrap,
-				]}
-			>
-				{isLoding ? (
-					<View style={styles.result}>
-						<View style={styles.container}>
-							<HeaderText headerText="Wirte Diary" isDark={isDark} />
-						</View>
-						<Text
-							style={[
-								styles.title,
-								ModeColorStyle(isDark).font_DEFALUT,
-								GlobalStyle.font_title1,
-							]}
-						>
-							나의 감정 분석 결과
-						</Text>
-						{
-							// 분석된 감정이 공백이 아니면 분석감정 출력
-							analysisMood !== "" && (
-								<View style={styles.analysis}>
-									<Image
-										source={moodImage[analysisMood]}
-										style={styles.icon}
-									></Image>
-									<Text
-										style={[
-											GlobalStyle.font_body,
-											ModeColorStyle(isDark).font_DEFALUT,
-										]}
-									>
-										{moodTextKr[analysisMood]}
-									</Text>
-								</View>
-							)
-						}
-						<Text
-							style={[
-								GlobalStyle.font_title2,
-								styles.topicTitle,
-								ModeColorStyle(isDark).font_DEFALUT,
-							]}
-						>
-							이런 주제는 어때요?
-						</Text>
+			<SafeAreaView style={[GlobalStyle.safeAreaWrap, {alignItems: 'center'}]}>
+        <HeaderBack text="Wirte Diary" backFun={() => navigation.pop()}/>
+				{analysisLoding ? (
+          <View style={{flex:.97, alignContent: 'center', justifyContent: 'center', width:'100%'}}>
+            <View style={[styles.result]}>
+              {/* 감정 분석 결과 text 이미지 */}
+              <View style={{flex:.45}}>
+                <Text
+                  style={[
+                    styles.title,
+                    ModeColorStyle(isDark).font_DEFALUT,
+                    GlobalStyle.font_title1,
+                  ]}
+                >
+                  나의 감정 분석 결과
+                </Text>
+                {
+                  // 분석된 감정이 공백이 아니면 분석감정 출력
+                  analysisMood !== "" && (
+                    <View style={styles.analysis}>
+                      <Image
+                        source={moodImage[analysisMood]}
+                        style={styles.icon}
+                      ></Image>
+                      <Text
+                        style={[
+                          GlobalStyle.font_body,
+                          ModeColorStyle(isDark).font_DEFALUT,
+                        ]}
+                      >
+                        {moodTextKr[analysisMood]}
+                      </Text>
+                    </View>
+                  )
+                }
+              </View>
+              {/* 일기 주제들 wrap */}
+              <View style={{flex: .55}}>
+                <Text
+                  style={[
+                    GlobalStyle.font_title2,
+                    styles.topicTitle,
+                    ModeColorStyle(isDark).font_DEFALUT,
+                  ]}
+                >
+                  이런 주제는 어때요?
+                </Text>
 
-						<View style={styles.subject}>
-							{subject &&
-								subject.map((item, index) => {
-									return (
-										<View style={styles.buttonContainer} key={index}>
-											<TouchableOpacity
-												onPress={() => handelTopicPress(item)}
-												style={[
-													styles.touchable,
-													{
-														borderColor: isDark
-															? COLOR_DARK_BLUE
-															: COLOR_LIGHT_BLUE,
-													},
-													selectedTopic.includes(item) && {
-														backgroundColor: isDark
-															? COLOR_DARK_BLUE
-															: COLOR_LIGHT_BLUE,
-													},
-												]}
-											>
-												<Text
-													style={[
-														styles.topic,
-														{
-															color: isDark
-																? COLOR_DARK_BLUE
-																: COLOR_LIGHT_BLUE,
-														},
-														GlobalStyle.font_body,
-														selectedTopic.includes(item) && {
-															color: isDark ? COLOR_DARK_WHITE : COLOR_WHITE,
-														},
-													]}
-												>
-													{item}
-												</Text>
-											</TouchableOpacity>
-										</View>
-									);
-								})}
-						</View>
-						<View style={styles.button}>
-							<TouchableOpacity
-								style={[
-									styles.buttonTouchable,
-									{
-										backgroundColor: isSelected
-											? "#E76B5C"
-											: "rgba(231, 107, 92, 0.5)",
-									},
-								]}
-								onPress={handleNextButton}
-								disabled={!isSelected}
-							>
-								<Text
-									style={[
-										styles.buttonText,
-										GlobalStyle.font_title2,
-										{ color: isSelected ? "white" : "#CCCCCC" },
-									]}
-								>
-									다음
-								</Text>
-							</TouchableOpacity>
-						</View>
+                <View style={styles.subject}>
+                  {subject &&
+                    subject.map((item, index) => {
+                      return (
+                        <View style={styles.buttonContainer} key={index}>
+                          <TouchableOpacity
+                            onPress={() => handelTopicPress(item)}
+                            style={[
+                              styles.touchable,
+                              {
+                                borderColor: isDark
+                                  ? COLOR_DARK_BLUE
+                                  : COLOR_LIGHT_BLUE,
+                              },
+                              selectedTopic.includes(item) && {
+                                backgroundColor: isDark
+                                  ? COLOR_DARK_BLUE
+                                  : COLOR_LIGHT_BLUE,
+                              },
+                            ]}
+                          >
+                            <Text
+                              style={[
+                                styles.topic,
+                                {
+                                  color: isDark
+                                    ? COLOR_DARK_BLUE
+                                    : COLOR_LIGHT_BLUE,
+                                },
+                                GlobalStyle.font_body,
+                                selectedTopic.includes(item) && {
+                                  color: isDark ? COLOR_DARK_WHITE : COLOR_WHITE,
+                                },
+                              ]}
+                              ellipsizeMode="tail"
+                            >
+                              {/* {item} */}
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      );
+                    })}
+                </View>
+              </View>
+            </View>
+            <View style={{width:'100%', alignItems:'center'}}>
+              <TouchableOpacity
+                style={[
+                  styles.buttonTouchable,
+                  {
+                    backgroundColor: isSelected
+                      ? "#E76B5C"
+                      : "rgba(231, 107, 92, 0.5)",
+                  },
+                ]}
+                onPress={handleNextButton}
+                disabled={!isSelected}
+              >
+                <Text
+                  style={[
+                    styles.buttonText,
+                    GlobalStyle.font_title2,
+                    { color: isSelected ? "white" : "#CCCCCC" },
+                  ]}
+                >
+                  다음
+                </Text>
+              </TouchableOpacity>
+            </View>
 					</View>
 				) : (
 					<View style={styles.loading}>
-						<Text style={[styles.loadingText, GlobalStyle.font_body]}>
+            <ActivityIndicator size="large" color={isDark?COLOR_DARK_RED:COLOR_LIGHT_RED} style={{marginBottom: 30}}/>
+						<Text style={[styles.loadingText, GlobalStyle.font_body, ModeColorStyle(isDark).font_DEFALUT]}>
 							{loadingText}
 						</Text>
 					</View>
 				)}
 			</SafeAreaView>
-		</ScrollView>
 	);
 };
 
@@ -290,28 +287,27 @@ const styles = StyleSheet.create({
 	},
 
 	loading: {
-		width: 330,
-		height: 650,
-		marginVertical: 15,
+    flex:1,
 		justifyContent: "center",
 		alignContent: "center",
 	},
 	loadingText: {
 		letterSpacing: 3,
-		justifyContent: "center",
+    alignItems : 'center',
+		// justifyContent: "center",
 		textAlign: "center",
+    marginBottom: 60
 	},
 	result: {
 		width: "100%",
+    flex:.97,
 		justifyContent: "center",
 		alignContent: "center",
 		textAlign: "center",
 	},
 
 	title: {
-		marginVertical: 40,
-		fontSize: 30,
-		fontWeight: 800,
+		marginVertical: 30,
 		justifyContent: "center",
 		alignContent: "center",
 		textAlign: "center",
@@ -356,7 +352,6 @@ const styles = StyleSheet.create({
 	},
 	topicTitle: {
 		width: "100%",
-		marginTop: 40,
 		alignItems: "flex-start",
 		justifyContent: "flex-start",
 	},
@@ -367,18 +362,12 @@ const styles = StyleSheet.create({
 	selectedText: {
 		color: "white",
 	},
-	button: {
-		marginVertical: 50,
-		justifyContent: "center",
-		alignItems: "center",
-	},
 	buttonTouchable: {
 		width: 250,
-		height: 50,
+		height: 55,
 		borderRadius: 50,
 		justifyContent: "center",
 		alignItems: "center",
-		textAlign: "center",
 	},
 	buttonText: {
 		textAlign: "center",
