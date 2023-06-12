@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useContext, useState, useEffect } from "react";
-import { Modal, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { useContext, useState, useEffect, useRef } from "react";
+import { Animated, Modal, Pressable, SafeAreaView, StyleSheet, Text, View, Easing, Vibration } from "react-native";
 import { COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY } from "../globalStyle/color";
 import GlobalStyle from "../globalStyle/GlobalStyle";
 import ModeColorStyle from "../globalStyle/ModeColorStyle";
@@ -20,6 +20,8 @@ export const LockModal = (props) => {
 
   const [pwCheckScreen, setPwCheckScreen] = useState(false)
   const [plzPwText, setPlzPwText] = useState('비밀번호를 다시 입력해주세요')
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
 
   // 키보드 배열
   const keybordArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, 'delete'];
@@ -48,6 +50,54 @@ export const LockModal = (props) => {
     }
   }
 
+
+    /**
+   * 좌우로 흔들리는 애니메이션
+   */
+     const startShakeAnimation = () => {
+      Animated.sequence([
+        Animated.timing(animatedValue, {
+          toValue: 1,
+          duration: 50,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animatedValue, {
+          toValue: -1,
+          duration: 50,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animatedValue, {
+          toValue: 1,
+          duration: 50,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animatedValue, {
+          toValue: 0,
+          duration: 50,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    };
+  
+    /**
+     * 에니메이션 스타일
+     */
+    const animatedStyle = {
+      transform: [
+        {
+          translateX: animatedValue.interpolate({
+            inputRange: [-1, 1],
+            outputRange: [-10, 10],
+          }),
+        },
+      ],
+    };
+
+
   /**
    * 모달 닫는 함수
    */
@@ -75,6 +125,8 @@ export const LockModal = (props) => {
         }
         // 뒤에서는 저장되었는지 확인하고 저장되었으면 활성화, 아니면 비활성화로 변경
       }else{
+        startShakeAnimation();
+        Vibration.vibrate()
         setPlzPwText('비밀번호가 일치하지 않습니다!')
         setPasswordCheck('')
       }
@@ -100,7 +152,7 @@ export const LockModal = (props) => {
               !pwCheckScreen ?
               <Text style={[ModalStyles.plz_pw_text, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}>비밀번호를 입력해주세요</Text>
               :
-              <Text style={[ModalStyles.plz_pw_text, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}>{plzPwText}</Text>
+              <Animated.Text style={[ModalStyles.plz_pw_text, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT, animatedStyle]}>{plzPwText}</Animated.Text>
             }
             {/* 비밀번호 동그라미 wrap*/}
             <View style={[ModalStyles.passwordRoundWrap]}>

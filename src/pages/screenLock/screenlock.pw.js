@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useContext, useState, useEffect } from 'react';
-import {View, StyleSheet, SafeAreaView, Text, Pressable} from 'react-native';
+import React, { useContext, useState, useEffect, useRef } from 'react';
+import {View, StyleSheet, SafeAreaView, Text, Pressable, Vibration, Animated, Easing} from 'react-native';
 import { COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY } from '../../globalStyle/color';
 import GlobalStyle from '../../globalStyle/GlobalStyle';
 import ModeColorStyle from '../../globalStyle/ModeColorStyle';
@@ -14,6 +14,7 @@ const ScreenlockPw = (props) => {
   const [truePW, setTruePW] = useState('')
   const passwordLength = 4
   const [plzPwText, setPlzPwText] = useState('비밀번호를 입력해주세요') // 비밀번호가 틀렸습니다!
+  const animatedValue = useRef(new Animated.Value(0)).current;
 
   // 키보드 배열
   const keybordArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, 'delete'];
@@ -39,11 +40,56 @@ const ScreenlockPw = (props) => {
     }
     loadPw()
   }, []);
-  console.log(truePW)
+
+  /**
+   * 좌우로 흔들리는 애니메이션
+   */
+  const startShakeAnimation = () => {
+    Animated.sequence([
+      Animated.timing(animatedValue, {
+        toValue: 1,
+        duration: 50,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+      Animated.timing(animatedValue, {
+        toValue: -1,
+        duration: 50,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+      Animated.timing(animatedValue, {
+        toValue: 1,
+        duration: 50,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+      Animated.timing(animatedValue, {
+        toValue: 0,
+        duration: 50,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const animatedStyle = {
+    transform: [
+      {
+        translateX: animatedValue.interpolate({
+          inputRange: [-1, 1],
+          outputRange: [-10, 10],
+        }),
+      },
+    ],
+  };
+
 
   useEffect(() => {
     if(password.length === passwordLength){
       if(password !== truePW){
+        startShakeAnimation();
+        Vibration.vibrate()
         setPlzPwText('비밀번호가 틀렸습니다!')
         setPassword('')
       }else{
@@ -52,11 +98,15 @@ const ScreenlockPw = (props) => {
     }
   }, [password]);
 
+  useEffect(() => {
+  }, []);
+
   return (
-    <SafeAreaView style={[GlobalStyle.safeAreaWrap, {position:'relative'}]}>
+    <SafeAreaView style={[GlobalStyle.safeAreaWrap, {position:'relative'}
+    , { backgroundColor: isDark ? '#1C1C1E' : 'rgb(242, 242, 242)'}]}>
 
       <View style={ModalStyles.headWrap}>
-        <Text style={[ModalStyles.plz_pw_text, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}>{plzPwText}</Text>
+        <Animated.Text style={[ModalStyles.plz_pw_text, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT, animatedStyle]}>{plzPwText}</Animated.Text>
         {/* 비밀번호 동그라미 wrap*/}
         <View style={[ModalStyles.passwordRoundWrap]}>
           {
