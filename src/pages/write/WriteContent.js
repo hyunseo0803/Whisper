@@ -12,11 +12,11 @@ import {
 	Image,
 	Alert,
 	useColorScheme,
-  TouchableHighlight,
-  TouchableOpacity,
+	TouchableHighlight,
+	TouchableOpacity,
 } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
-import { Ionicons, Feather } from "@expo/vector-icons";
+import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -24,21 +24,32 @@ import { insertDiary } from "../../util/database";
 import ModeColorStyle from "../../globalStyle/ModeColorStyle";
 import {
 	COLOR_BLACK,
+	COLOR_DARK_FOURTH,
+	COLOR_DARK_PRIMARY,
 	COLOR_DARK_RED,
 	COLOR_DARK_SECONDARY,
 	COLOR_DARK_THIRD,
 	COLOR_DARK_WHITE,
+	COLOR_LIGHT_PRIMARY,
 	COLOR_LIGHT_RED,
 	COLOR_LIGHT_SECONDARY,
 	COLOR_LIGHT_THIRD,
+	COLOR_WHITE,
 } from "../../globalStyle/color";
 import HeaderText from "../../components/Header";
-import { deleteAudio, getAudioData, playAudio, startRecording, stopPlayAudio, stopRecording } from "../../util/audioRecord";
+import {
+	deleteAudio,
+	getAudioData,
+	playAudio,
+	startRecording,
+	stopPlayAudio,
+	stopRecording,
+} from "../../util/audioRecord";
 import { base64ToUri, pickDiaryImage } from "../../util/writeDiary";
 import themeContext from "../../globalStyle/themeContext";
 
 const WriteContent = ({ navigation, route }) => {
-	const isDark = useContext(themeContext).theme === 'dark';
+	const isDark = useContext(themeContext).theme === "dark";
 
 	const [dSubject, setDSubject] = useState([]); // 일기 주제
 	const [dMood, setDMood] = useState("");
@@ -57,7 +68,7 @@ const WriteContent = ({ navigation, route }) => {
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [recording, setRecording] = useState();
 	const [audioData, setAudioData] = useState({});
-  const [imgUri, setImgUri] = useState(''); // 예시 이미지에 넣을 이미지 uri
+	const [imgUri, setImgUri] = useState(""); // 예시 이미지에 넣을 이미지 uri
 
 	useEffect(() => {
 		const { params } = route;
@@ -72,13 +83,18 @@ const WriteContent = ({ navigation, route }) => {
 	}, []);
 
 	const pickImage = async () => {
-    const result = await pickDiaryImage();
-    result !== '' ? setSelectedImage(result) : Alert.alert('사진불러오기 실패!', '사진을 불러오는데 실패했습니다. 다시 시도해주세요.')
+		const result = await pickDiaryImage();
+		result !== ""
+			? setSelectedImage(result)
+			: Alert.alert(
+					"사진불러오기 실패!",
+					"사진을 불러오는데 실패했습니다. 다시 시도해주세요."
+			  );
 	};
 
-  /**
-   * 일기 저장 함수
-   */
+	/**
+	 * 일기 저장 함수
+	 */
 	const handleSave = async () => {
 		try {
 			const isSaved = await insertDiary(
@@ -106,42 +122,41 @@ const WriteContent = ({ navigation, route }) => {
 		getAudioData(audioData.id);
 	}, []);
 
-  /**
-   * 음성중지 & 저장 버튼함수
-   */
+	/**
+	 * 음성중지 & 저장 버튼함수
+	 */
 	const handleStopRecording = async () => {
 		setIsRecording(false);
 		setRecording(undefined);
-    const result = await stopRecording(recording)
+		const result = await stopRecording(recording);
 		setAudioData(result);
 	};
 
-  /**
-   * 녹음시작 버튼 함수
-   */
+	/**
+	 * 녹음시작 버튼 함수
+	 */
 	const handleStartRecording = async () => {
 		setIsRecording(true);
-    const result = await startRecording()
-    if(!result){
-      console.error("Failed to start recording:", error);
-      Alert.alert("녹음 실패!", '다시 시도해주세요.')
-    }
-    else{
-      setRecording(result)
-    }
+		const result = await startRecording();
+		if (!result) {
+			console.error("Failed to start recording:", error);
+			Alert.alert("녹음 실패!", "다시 시도해주세요.");
+		} else {
+			setRecording(result);
+		}
 	};
 
-  /**
-   * 일기 재생 함수
-   */
+	/**
+	 * 일기 재생 함수
+	 */
 	const handlePlayAudio = async () => {
-    const result = await playAudio(audioData, setIsPlaying)
-    if(!result){
-      Alert.alert('재생할 녹음이 없습니다.')
-    }else{
-      setSound(result)
+		const result = await playAudio(audioData, setIsPlaying);
+		if (!result) {
+			Alert.alert("재생할 녹음이 없습니다.");
+		} else {
+			setSound(result);
 			setIsPlaying(true);
-    }
+		}
 	};
 
 	/**
@@ -162,7 +177,7 @@ const WriteContent = ({ navigation, route }) => {
 	};
 
 	const okhandelDeleteAudio = async () => {
-    setAudioData(await deleteAudio(audioData))
+		setAudioData(await deleteAudio(audioData));
 	};
 
 	/**
@@ -170,7 +185,7 @@ const WriteContent = ({ navigation, route }) => {
 	 * @param {string} text
 	 */
 	const btnAddSubject = (text) => {
-    const result = dContent + "\n" + text + "\n"
+		const result = dContent + "\n" + text + "\n";
 
 		setDContent(result);
 	};
@@ -189,12 +204,12 @@ const WriteContent = ({ navigation, route }) => {
 		}
 	}, [dContent, dTitle]);
 
-  useEffect(() => {
-    const updateImageUri = async() => {
-      setImgUri(await base64ToUri(selectedImage))
-    };
-    updateImageUri()
-  }, [selectedImage])
+	useEffect(() => {
+		const updateImageUri = async () => {
+			setImgUri(await base64ToUri(selectedImage));
+		};
+		updateImageUri();
+	}, [selectedImage]);
 
 	return (
 		<SafeAreaView style={GlobalStyle.safeAreaWrap}>
@@ -219,13 +234,14 @@ const WriteContent = ({ navigation, route }) => {
 								);
 							}}
 						>
-              <Feather name="arrow-left" size={35}
+							<Feather
+								name="arrow-left"
+								size={35}
 								color={isDark ? COLOR_DARK_WHITE : COLOR_BLACK}
-              />
-
+							/>
 						</Pressable>
 						<View style={{ marginTop: 10 }}>
-							<HeaderText headerText="Write Diary" isDark={isDark}/>
+							<HeaderText headerText="Write Diary" isDark={isDark} />
 						</View>
 						<TouchableOpacity
 							onPress={() =>
@@ -278,9 +294,9 @@ const WriteContent = ({ navigation, route }) => {
 								value={dTitle}
 								onChangeText={(text) => setDTitle(text)}
 								placeholder="일기에 제목을 붙여주세요"
-                placeholderTextColor={
-                  isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY
-                }
+								placeholderTextColor={
+									isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY
+								}
 								style={[
 									BodyStyle.titleInput,
 									GlobalStyle.font_title2,
@@ -302,7 +318,9 @@ const WriteContent = ({ navigation, route }) => {
 							) : null}
 							<TouchableOpacity
 								style={BodyStyle.btnMic}
-								onPress={() => (recording ? handleStopRecording() : handleStartRecording())}
+								onPress={() =>
+									recording ? handleStopRecording() : handleStartRecording()
+								}
 							>
 								<Ionicons
 									name={recording ? "stop-circle" : "mic-circle"}
@@ -310,22 +328,28 @@ const WriteContent = ({ navigation, route }) => {
 									color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
 								/>
 							</TouchableOpacity>
-							{audioData.id !== undefined &&
-                <TouchableOpacity onPress={() => !isPlaying ? handlePlayAudio() : stopPlayAudio(sound, setIsPlaying, isPlaying)}>
+							{audioData.id !== undefined && (
+								<TouchableOpacity
+									onPress={() =>
+										!isPlaying
+											? handlePlayAudio()
+											: stopPlayAudio(sound, setIsPlaying, isPlaying)
+									}
+								>
 									<Ionicons
-										name= {isPlaying ? "pause-circle" : "play-circle"}
+										name={isPlaying ? "pause-circle" : "play-circle"}
 										size={45}
 										color={isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED}
 									/>
 								</TouchableOpacity>
-							}
+							)}
 						</View>
 
 						{/* 본문 textInput */}
 
 						<TextInput
 							onChangeText={(text) => setDContent(text)}
-              value={dContent}
+							value={dContent}
 							placeholder="음성 인식 기능(녹음시작)을 활용하거나 직접 입력하여 일기를 기록해 보세요! 
             여러분의 이야기를 기록해드릴게요. 오늘은 어떤 하루였나요? :)"
 							placeholderTextColor={
@@ -359,17 +383,49 @@ const WriteContent = ({ navigation, route }) => {
 								alignItems: "center",
 							}}
 						>
-							<TouchableOpacity style={BodyStyle.btnImg} onPress={() => pickImage()}>
+							<TouchableOpacity
+								style={BodyStyle.btnImg}
+								onPress={() => pickImage()}
+							>
 								{selectedImage ? (
 									<Image
 										source={{ uri: imgUri }}
 										style={{ width: "100%", height: "100%" }}
 									/>
 								) : (
-									<Image
-										source={require("../../../assets/images/btnAddImg.png")}
-										style={{ width: "100%", height: "100%" }}
-									/>
+									// <Image
+									// 	source={require("../../../assets/images/btnAddImg.png")}
+									// 	style={{ width: "100%", height: "100%" }}
+									// /
+									// >
+									<View
+										style={{
+											backgroundColor: isDark ? COLOR_DARK_FOURTH : COLOR_WHITE,
+											width: 240,
+											height: 240,
+											justifyContent: "center",
+											alignItems: "center",
+										}}
+									>
+										<MaterialCommunityIcons
+											name="camera-plus-outline"
+											size={35}
+											color={isDark ? COLOR_DARK_PRIMARY : COLOR_LIGHT_PRIMARY}
+											style={{ margin: 20 }}
+										/>
+										<Text
+											style={[
+												GlobalStyle.font_caption1,
+												{
+													color: isDark
+														? COLOR_DARK_PRIMARY
+														: COLOR_LIGHT_PRIMARY,
+												},
+											]}
+										>
+											오늘의 사진을 추가해보세요!
+										</Text>
+									</View>
 								)}
 							</TouchableOpacity>
 						</View>
@@ -407,8 +463,8 @@ const headerStyle = StyleSheet.create({
 	},
 	subjectText: {
 		color: "#fff",
-    marginVertical:10,
-    marginHorizontal: 15
+		marginVertical: 10,
+		marginHorizontal: 15,
 	},
 });
 
@@ -465,8 +521,8 @@ const BodyStyle = StyleSheet.create({
 	},
 
 	btnImg: {
-		width: 250,
-		height: 250,
+		width: 240,
+		height: 240,
 		borderRadius: 10,
 		overflow: "hidden",
 		marginTop: 40,
