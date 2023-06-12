@@ -22,6 +22,7 @@ import {
 	COLOR_WHITE,
 } from "../../globalStyle/color";
 import themeContext from "../../globalStyle/themeContext";
+import diaryTopic from '../../util/diaryTopic.json'
 
 setupURLPolyfill();
 
@@ -29,7 +30,7 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 	const isDark = useContext(themeContext).theme === "dark";
 
 	const [analysisMood, setAnalysisMood] = useState("");
-	const [subject, setSubject] = useState(new Array(6).fill(0));
+	const [subject, setSubject] = useState([]);
 	const [selectedTopic, setSelectedTopic] = useState([]);
 	const [analysisLoding, setAnalysisIsLoding] = useState(false);
 	const [loadingText, setLoadingText] = useState("분석중 . . .");
@@ -119,6 +120,12 @@ const AnalysisResultScreen = ({ navigation, route }) => {
         }
         else{
           setAnalysisMood(result);
+
+          const randomTopic = await diaryTopic[`${analysisMood}`].shuffle()
+          console.log(randomTopic.slice(0, 6))
+          // setSubject(randomTopic.slice(0, 6))
+          // console.log(subject)
+
           setAnalysisIsLoding(true);
         }
 			} catch (error) {
@@ -127,26 +134,6 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 		};
 		getGoogleVisionResultFun();
 	}, [analysisMood]);
-
-	/* TODO 1. 일기 주제 더 간결하게 추출하기 
-		2. 로딩중 화면 만들기 
-		3. 버튼 꾸미고, 나머지 ui만들기 
-*/
-
-	// useEffect(() => {
-	// 	const runPrompt = async () => {
-	// 		setOpenaiLoding(false);
-	// 		const prompt = diaryTopicQuestion(analysisMood);
-
-	// 		if (prompt !== "") {
-	// 			const result = await questionToAI(prompt, setSubject);
-	// 			if (result) {
-	// 				setOpenaiLoding(true);
-	// 			}
-	// 		}
-	// 	};
-	// 	runPrompt();
-	// }, [analysisMood]);
 
 	return (
 			<SafeAreaView style={[GlobalStyle.safeAreaWrap, {alignItems: 'center'}]}>
@@ -233,7 +220,7 @@ const AnalysisResultScreen = ({ navigation, route }) => {
                               ]}
                               ellipsizeMode="tail"
                             >
-                              {/* {item} */}
+                              {item}
                             </Text>
                           </TouchableOpacity>
                         </View>
