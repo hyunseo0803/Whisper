@@ -121,7 +121,7 @@ function DailyDiaryScreen(props) {
                 style={{marginTop: 10, alignItems: 'center'}}
                 onPress={() => !isPlaying ? handlePlayAudio(datas.audio_id) : stopPlayAudio(sound, setIsPlaying, isPlaying)}>
                 <Ionicons 
-                  name={isPlaying ? "pause-circle" : "play-circle"} 
+                  name={isPlaying ? "stop-circle" : "play-circle"} 
                   size={40} 
                   color={isDark?COLOR_DARK_RED : COLOR_LIGHT_RED} />
                 </Pressable> 
