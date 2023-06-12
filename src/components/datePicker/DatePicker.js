@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {View, Modal, Pressable, useColorScheme, Text} from 'react-native';
 import { COLOR_BLACK, COLOR_DARK_BLUE, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_RED, COLOR_DARK_WHITE, COLOR_LIGHT_BLUE, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY, COLOR_WHITE,
 COLOR_DARK_SECONDARY } from '../../globalStyle/color';
 import { modalS } from './YMPicker';
 import {Calendar} from 'react-native-calendars';
+import themeContext from '../../globalStyle/themeContext';
 
 /**
  * Datepicker 컴포넌트
@@ -15,7 +16,7 @@ import {Calendar} from 'react-native-calendars';
  */
 const DatePicker = (props) => {
 
-  const isDark = useColorScheme() === 'dark'
+  const isDark = useContext(themeContext).theme === 'dark'
   const DATE = new Date()
 
   const {

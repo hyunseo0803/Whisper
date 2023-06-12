@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {View, StyleSheet, Modal, Pressable, Text, useColorScheme} from 'react-native';
 import YMPicker, { modalS } from './YMPicker';
 import {Calendar} from 'react-native-calendars';
@@ -7,10 +7,11 @@ import { getDatesStartToLast } from '../../util/Calender';
 import GlobalStyle from '../../globalStyle/GlobalStyle';
 import {COLOR_DARK_FOURTH, COLOR_WHITE, COLOR_DARK_BLUE, COLOR_LIGHT_BLUE, COLOR_LIGHT_RED, COLOR_DARK_RED, COLOR_DARK_WHITE, COLOR_BLACK,
   COLOR_DARK_SECONDARY, COLOR_LIGHT_SECONDARY, COLOR_DARK_PRIMARY} from '../../globalStyle/color'
+import themeContext from '../../globalStyle/themeContext';
 
 
 const DateRangePicker = (props) => {
-  const isDark = useColorScheme() === 'dark'
+  const isDark = useContext(themeContext).theme === 'dark'
 
   const DATE = new Date()
   const [selected, setSelected] = useState('');
