@@ -6,7 +6,7 @@ import {
 	SafeAreaView,
 	Pressable,
 	Alert,
-  Switch,
+	Switch,
 } from "react-native";
 import { useState } from "react";
 import Toggle from "react-native-toggle-input";
@@ -18,14 +18,28 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import HeaderBack from "../../components/HeaderBack";
 import ModeColorStyle from "../../globalStyle/ModeColorStyle";
 import themeContext from "../../globalStyle/themeContext";
-import { COLOR_DARK_BLUE, COLOR_DARK_FOURTH, COLOR_DARK_PRIMARY, COLOR_DARK_RED, COLOR_DARK_SECONDARY, COLOR_DARK_WHITE, COLOR_LIGHT_BLUE, COLOR_LIGHT_PRIMARY, COLOR_LIGHT_RED, COLOR_LIGHT_SECONDARY, COLOR_WHITE } from "../../globalStyle/color";
+import {
+	COLOR_DARK_BLUE,
+	COLOR_DARK_FOURTH,
+	COLOR_DARK_PRIMARY,
+	COLOR_DARK_RED,
+	COLOR_DARK_SECONDARY,
+	COLOR_DARK_WHITE,
+	COLOR_LIGHT_BLUE,
+	COLOR_LIGHT_PRIMARY,
+	COLOR_LIGHT_RED,
+	COLOR_LIGHT_SECONDARY,
+	COLOR_WHITE,
+} from "../../globalStyle/color";
+import * as Notifications from "expo-notifications";
 
 const SettingAlert = ({ navigation }) => {
-  const isDark = useContext(themeContext).theme === 'dark'
+	const isDark = useContext(themeContext).theme === "dark";
 
 	const [toggle, setToggle] = useState(false);
 	const [modal, setModal] = useState(false);
 	const [selectedTime, setSelectedTime] = useState(null);
+	const [initialToggle, setInitialToggle] = useState(false);
 
 	const handleToggle = () => {
 		setToggle(!toggle);
@@ -42,7 +56,62 @@ const SettingAlert = ({ navigation }) => {
 	const savedAlertTime = async () => {
 		if (selectedTime) {
 			await AsyncStorage.setItem("AlertTime", selectedTime);
-			navigation.navigate("setting");
+			navigation.pop();
+
+			const { status } = await Notifications.requestPermissionsAsync();
+			if (status === "granted") {
+				const now = new Date();
+				const selectedDateTime = moment(selectedTime, "HH:mm").toDate();
+				let trigger;
+
+				if (selectedDateTime < now) {
+					const nextDay = moment().add(1, "day").startOf("day");
+					const nextTrigger = nextDay.clone().set({
+						hour: moment(selectedDateTime).hours(),
+						minute: moment(selectedDateTime).minutes(),
+					});
+
+					if (nextTrigger < now) {
+						trigger = nextDay
+							.clone()
+							.add(1, "day")
+							.set({
+								hour: moment(selectedDateTime).hours(),
+								minute: moment(selectedDateTime).minutes(),
+							})
+							.toDate();
+					} else {
+						trigger = nextTrigger.toDate();
+					}
+				} else {
+					trigger = selectedDateTime;
+				}
+
+				const schedulingOptions = {
+					time: trigger,
+					repeat: "day",
+				};
+
+				const notificationContent = {
+					title: "소곤소곤",
+					body: "오늘의 일기를 쓸 시간이에요 ! ",
+					sound: true,
+					vibrate: true,
+					priority: "high",
+				};
+
+				await Notifications.scheduleNotificationAsync({
+					content: notificationContent,
+					trigger: schedulingOptions.time,
+				});
+
+				console.log(
+					"알림이 울릴 날짜와 시간:",
+					moment(trigger).format("YYYY-MM-DD HH:mm")
+				);
+			} else {
+				Alert.alert("알림 권한 설정", "알림 권한 설정 해 주세요.");
+			}
 		} else {
 			Alert.alert(
 				"알림 시간 저장",
@@ -61,89 +130,167 @@ const SettingAlert = ({ navigation }) => {
 		}
 	});
 
-  const colorGray = isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY
-  const colorPrimary = isDark?COLOR_DARK_PRIMARY:COLOR_LIGHT_PRIMARY
+	const colorGray = isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY;
+	const colorPrimary = isDark ? COLOR_DARK_PRIMARY : COLOR_LIGHT_PRIMARY;
+
+	useEffect(() => {
+		const loadAlertTime = async () => {
+			const storedAlertTime = await AsyncStorage.getItem("AlertTime");
+			if (storedAlertTime) {
+				setToggle(true);
+				setSelectedTime(storedAlertTime);
+				setInitialToggle(true);
+			}
+		};
+
+		loadAlertTime();
+	}, []);
+	useEffect(() => {
+		const handleToggleOff = async () => {
+			if (initialToggle && !toggle) {
+				try {
+					await AsyncStorage.removeItem("AlertTime");
+				} catch (error) {
+					console.log("Error removing AlertTime from AsyncStorage:", error);
+				}
+			}
+		};
+
+		handleToggleOff();
+	}, [toggle]);
 
 	return (
-	  <SafeAreaView style={GlobalStyle.safeAreaWrap}>
-      <HeaderBack text={'Setting Alert'} backFun={() => navigation.pop()}/>
+		<SafeAreaView style={GlobalStyle.safeAreaWrap}>
+			<HeaderBack text={"Setting Alert"} backFun={() => navigation.pop()} />
 
-        <View style={{flex:.4}}>
-          <View style={styles.middleLabel}>
-            <Text style={[{ marginHorizontal: 5, color:isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY }, 
-              GlobalStyle.font_caption1 ]}
-            >
-              일기를 매일 쓸 수 있도록 제가 챙겨줄게요
-            </Text>
-            <Feather name="smile" size={20} color={isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY} />
-          </View>
-
-          {/* 시간 설정 박스 */}
-          <View style={[styles.selectTimeView, {backgroundColor:isDark?COLOR_DARK_FOURTH:COLOR_WHITE}]}>
-            <View style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
-              <Ionicons
-                name="alarm"
-                size={35}
-                style={[styles.selectTimeView_icon, ModeColorStyle(isDark).font_DEFALUT]}
-              />
-              <Text style={[styles.selectTimeView_label, GlobalStyle.font_title2, ModeColorStyle(isDark).font_DEFALUT]}>
-                알람 시간 설정하기
-              </Text>
-            </View>
-            <Switch
-              value={toggle}
-              onValueChange={handleToggle}
-              trackColor={
-                {true : isDark?COLOR_DARK_RED:COLOR_LIGHT_RED}
-              }
-            />
-            <DateTimePickerModal
-              isVisible={modal}
-              mode="time"
-              onConfirm={handleConfirmTime}
-              onCancel={handleCancelTimePicker}
-            />
-          </View>
-        </View>
-
-        {/* 설명 & 시간 view */}
-				<View style={{flex:.58}}>
-					{selectedTime ? (
-						<View style={styles.isSelectedTime}>
-              {/* text Wrap */}
-              <View>
-                <Text style={[styles.selectedtimeView, GlobalStyle.font_title1, {color:colorPrimary}]}>
-                  {selectedTime}
-                </Text>
-                <Text
-                  style={[
-                    {letterSpacing: 5, color:colorPrimary},
-                    styles.selectedwordView,
-                    GlobalStyle.font_body,
-                  ]}
-                >
-                  으로 선택되었습니다.
-                </Text>
-                <Text style={[{letterSpacing: 2, color:colorPrimary}, styles.selectedwordView, GlobalStyle.font_caption1 ]}>
-                  알림 받기를 원하시면 저장 버튼까지 눌러주세요 !
-                </Text>
-              </View>
-							<Pressable
-								style={[styles.pressableButton, ModeColorStyle(isDark).bg_RED]}
-								onPress={savedAlertTime}
-							>
-								<Text style={[{color:isDark?COLOR_DARK_WHITE:COLOR_WHITE}, GlobalStyle.font_title2]}>
-									저장
-								</Text>
-							</Pressable>
-						</View>
-					) : (
-						<Text style={[styles.textView, GlobalStyle.font_body, {color:isDark?COLOR_DARK_SECONDARY:COLOR_LIGHT_SECONDARY}]}>
-							알람 시간을 설정하시면, {"\n"}매일 소곤소곤 일기장이 일기 쓸 시간에 {"\n"} 알려드릴게요.
-						</Text>
-					)}
+			<View style={{ flex: 0.4 }}>
+				<View style={styles.middleLabel}>
+					<Text
+						style={[
+							{
+								marginHorizontal: 5,
+								color: isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY,
+							},
+							GlobalStyle.font_caption1,
+						]}
+					>
+						일기를 매일 쓸 수 있도록 제가 챙겨줄게요
+					</Text>
+					<Feather
+						name="smile"
+						size={20}
+						color={isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY}
+					/>
 				</View>
-			</SafeAreaView>
+
+				{/* 시간 설정 박스 */}
+				<View
+					style={[
+						styles.selectTimeView,
+						{ backgroundColor: isDark ? COLOR_DARK_FOURTH : COLOR_WHITE },
+					]}
+				>
+					<View
+						style={{
+							display: "flex",
+							flexDirection: "row",
+							alignItems: "center",
+						}}
+					>
+						<Ionicons
+							name="alarm"
+							size={35}
+							style={[
+								styles.selectTimeView_icon,
+								ModeColorStyle(isDark).font_DEFALUT,
+							]}
+						/>
+						<Text
+							style={[
+								styles.selectTimeView_label,
+								GlobalStyle.font_title2,
+								ModeColorStyle(isDark).font_DEFALUT,
+							]}
+						>
+							알람 시간 설정하기
+						</Text>
+					</View>
+					<Switch
+						value={toggle}
+						onValueChange={handleToggle}
+						trackColor={{ true: isDark ? COLOR_DARK_RED : COLOR_LIGHT_RED }}
+					/>
+					<DateTimePickerModal
+						isVisible={modal}
+						mode="time"
+						onConfirm={handleConfirmTime}
+						onCancel={handleCancelTimePicker}
+					/>
+				</View>
+			</View>
+
+			{/* 설명 & 시간 view */}
+			<View style={{ flex: 0.58 }}>
+				{selectedTime ? (
+					<View style={styles.isSelectedTime}>
+						{/* text Wrap */}
+						<View>
+							<Text
+								style={[
+									styles.selectedtimeView,
+									GlobalStyle.font_title1,
+									{ color: colorPrimary },
+								]}
+							>
+								{selectedTime}
+							</Text>
+							<Text
+								style={[
+									{ letterSpacing: 5, color: colorPrimary },
+									styles.selectedwordView,
+									GlobalStyle.font_body,
+								]}
+							>
+								으로 선택되었습니다.
+							</Text>
+							<Text
+								style={[
+									{ letterSpacing: 2, color: colorPrimary },
+									styles.selectedwordView,
+									GlobalStyle.font_caption1,
+								]}
+							>
+								알림 받기를 원하시면 저장 버튼까지 눌러주세요 !
+							</Text>
+						</View>
+						<Pressable
+							style={[styles.pressableButton, ModeColorStyle(isDark).bg_RED]}
+							onPress={savedAlertTime}
+						>
+							<Text
+								style={[
+									{ color: isDark ? COLOR_DARK_WHITE : COLOR_WHITE },
+									GlobalStyle.font_title2,
+								]}
+							>
+								저장
+							</Text>
+						</Pressable>
+					</View>
+				) : (
+					<Text
+						style={[
+							styles.textView,
+							GlobalStyle.font_body,
+							{ color: isDark ? COLOR_DARK_SECONDARY : COLOR_LIGHT_SECONDARY },
+						]}
+					>
+						알람 시간을 설정하시면, {"\n"}매일 소곤소곤 일기장이 일기 쓸 시간에{" "}
+						{"\n"} 알려드릴게요.
+					</Text>
+				)}
+			</View>
+		</SafeAreaView>
 	);
 };
 
@@ -159,8 +306,8 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "row",
 		justifyContent: "center",
-    marginTop: 30,
-    marginBottom:10
+		marginTop: 30,
+		marginBottom: 10,
 	},
 	selectTimeView: {
 		borderRadius: 15,
@@ -173,13 +320,13 @@ const styles = StyleSheet.create({
 		},
 		shadowOpacity: 0.2,
 		shadowRadius: 8,
-    justifyContent: 'space-between',
-    alignItems: 'center',
+		justifyContent: "space-between",
+		alignItems: "center",
 		paddingHorizontal: 15,
-    paddingVertical: 10
+		paddingVertical: 10,
 	},
 	selectTimeView_icon: {
-    marginRight: 10,
+		marginRight: 10,
 		marginVertical: 3,
 		alignItems: "center",
 		justifyContent: "center",
@@ -198,7 +345,7 @@ const styles = StyleSheet.create({
 		marginTop: 15,
 	},
 	pressableButton: {
-		width: '90%',
+		width: "90%",
 		height: 55,
 		borderRadius: 15,
 		justifyContent: "center",
@@ -208,11 +355,11 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		letterSpacing: 1,
 	},
-  isSelectedTime:{
-    flex:1,
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
+	isSelectedTime: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "space-between",
+	},
 });
 
 export default SettingAlert;
