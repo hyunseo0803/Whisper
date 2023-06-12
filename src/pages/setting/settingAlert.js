@@ -107,10 +107,10 @@ const SettingAlert = ({ navigation }) => {
 					trigger: schedulingOptions.time,
 				});
 
-				console.log(
-					"알림이 울릴 날짜와 시간:",
-					moment(trigger).format("YYYY-MM-DD HH:mm")
-				);
+				// console.log(
+				// 	"알림이 울릴 날짜와 시간:",
+				// 	moment(trigger).format("YYYY-MM-DD HH:mm")
+				// );
 			} else {
 				Alert.alert("알림 권한 설정", "알림 권한 설정 해 주세요.");
 			}
@@ -153,7 +153,7 @@ const SettingAlert = ({ navigation }) => {
 				try {
 					await AsyncStorage.removeItem("AlertTime");
 				} catch (error) {
-					console.log("Error removing AlertTime from AsyncStorage:", error);
+					console.error("Error removing AlertTime from AsyncStorage:", error);
 				}
 			}
 		};
