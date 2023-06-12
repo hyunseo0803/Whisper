@@ -30,8 +30,7 @@ export const createContact = () => {
                     ( id INTEGER PRIMARY KEY AUTOINCREMENT,
                       date TEXT NOT NULL,
                       title TEXT NOT NULL,
-                      content TEXT NOT NULL,
-					  email TEXT NOT NULL
+                      content TEXT NOT NULL
                       )
     `);
 	});
@@ -59,7 +58,7 @@ const addColumn = () => {
 const deleteDiaryTable = () => {
 	db.transaction((tx) => {
 		tx.executeSql(
-			"DROP TABLE IF EXISTS diary",
+			"DROP TABLE IF EXISTS contact",
 			[],
 			() => {
 				//   console.log('diary 테이블이 삭제되었습니다.');
@@ -70,7 +69,7 @@ const deleteDiaryTable = () => {
 		);
 	});
 };
-// deleteDiaryTable()
+// deleteDiaryTable();
 
 /**
  * 일기 추가 함수
@@ -96,38 +95,50 @@ export const insertDiary = async (
 		return new Promise(
 			(resolve, reject) => {
 				db.transaction((tx) => {
-          // 해당 날짜에 is_featured가 1인 데이터가 있는지 확인
-          tx.executeSql(
-            `SELECT COUNT(*) AS count FROM diary WHERE date = ? AND is_featured = 1`,
-            [date],
-            (_, { rows }) => {
-              const { count } = rows.item(0);
-            
-              // is_featured 값을 설정
-              const isFeatured = count > 0 ? 0 : (image!=='' ? 1 : 0);
-            
-              console.log(date)
-              // 일기 데이터 삽입
-              tx.executeSql(
-                `INSERT INTO diary (date, title, mood, weather, image, content, audio_id, sound, file, status, is_featured) 
+					// 해당 날짜에 is_featured가 1인 데이터가 있는지 확인
+					tx.executeSql(
+						`SELECT COUNT(*) AS count FROM diary WHERE date = ? AND is_featured = 1`,
+						[date],
+						(_, { rows }) => {
+							const { count } = rows.item(0);
+
+							// is_featured 값을 설정
+							const isFeatured = count > 0 ? 0 : image !== "" ? 1 : 0;
+
+							console.log(date);
+							// 일기 데이터 삽입
+							tx.executeSql(
+								`INSERT INTO diary (date, title, mood, weather, image, content, audio_id, sound, file, status, is_featured) 
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [date, title, mood, weather, image, content, audioData.id, audioData.sound, audioData.file, audioData.status, isFeatured],
-                (_, { rowsAffected, insertId }) => {
-                  if (rowsAffected > 0) {
-                    resolve(true);
-                  }
-                },
-                (_, error) => {
-                  console.error("Failed to insert data:", error);
-                  reject(false);
-                }
-              );
-            },
-            (_, error) => {
-              console.error("Failed to check is_featured:", error);
-              reject(false);
-            }
-          );
+								[
+									date,
+									title,
+									mood,
+									weather,
+									image,
+									content,
+									audioData.id,
+									audioData.sound,
+									audioData.file,
+									audioData.status,
+									isFeatured,
+								],
+								(_, { rowsAffected, insertId }) => {
+									if (rowsAffected > 0) {
+										resolve(true);
+									}
+								},
+								(_, error) => {
+									console.error("Failed to insert data:", error);
+									reject(false);
+								}
+							);
+						},
+						(_, error) => {
+							console.error("Failed to check is_featured:", error);
+							reject(false);
+						}
+					);
 				});
 			},
 			(error) => {
@@ -248,8 +259,8 @@ export const insertContact = async (date, cTitle, content, user_email) => {
 			(resolve, reject) => {
 				db.transaction((tx) => {
 					tx.executeSql(
-						`INSERT INTO contact (date,title,content,email) VALUES(?,?,?,?)`,
-						[date, cTitle, content, user_email],
+						`INSERT INTO contact (date,title,content) VALUES(?,?,?)`,
+						[date, cTitle, content],
 						(_, { rowsAffected, insertId }) => {
 							if (rowsAffected > 0) {
 								console.log(`Data inserted successfully. ID:${insertId}`);
