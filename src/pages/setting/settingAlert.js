@@ -46,8 +46,8 @@ const SettingAlert = ({ navigation }) => {
 	};
 
 	const handleConfirmTime = (time) => {
-		const selectedTime = moment(time).format("HH:mm");
-		setSelectedTime(selectedTime);
+		const newSelectedTime = moment(time).format("HH:mm");
+		setSelectedTime(newSelectedTime);
 	};
 	const handleCancelTimePicker = () => {
 		setModal(false);
@@ -99,6 +99,8 @@ const SettingAlert = ({ navigation }) => {
 					vibrate: true,
 					priority: "high",
 				};
+
+				await Notifications.cancelAllScheduledNotificationsAsync();
 
 				await Notifications.scheduleNotificationAsync({
 					content: notificationContent,
