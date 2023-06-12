@@ -5,7 +5,6 @@ import {
 	SafeAreaView,
 	Text,
 	Pressable,
-	Alert,
 } from "react-native";
 import GlobalStyle from "../../globalStyle/GlobalStyle";
 import { Feather, Ionicons } from "@expo/vector-icons";
@@ -17,29 +16,30 @@ import {
 	COLOR_LIGHT_RED,
 	COLOR_WHITE, COLOR_BLACK
 } from "../../globalStyle/color";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { addButtonPressCount, getButtonPressCount, moodAnalysisButtonPressCount, takePhoto } from "../../util/writeDiary";
+import { addButtonPressCount, getButtonPressCount, getButtonPressDate, moodAnalysisButtonPressCount, setButtonPress, takePhoto } from "../../util/writeDiary";
 import themeContext from "../../globalStyle/themeContext";
 import HeaderText from "../../components/Header";
+import { useIsFocused } from "@react-navigation/native";
 
 const WriteAnalysis = ({ navigation, route }) => {
   const isDark = useContext(themeContext).theme === 'dark';
+  const isFocused = useIsFocused()
 
 	const { params } = route;
 	const selectedMood = params ? params.selectedMood : null;
 	const selectedWeather = params ? params.selectedWeather : null;
 	const selectedDate = params ? params.selectedDate : null;
-	const [buttonPressCount, setButtonPressCount] = useState(null);
+	const [btnPressCount, setBtnPressCount] = useState(null);
 
   /**
    * 감정분석 버튼 함수
    */
   const handelTakePhoto = async() => {
-    if(await moodAnalysisButtonPressCount(setButtonPressCount)){
+    if(await moodAnalysisButtonPressCount(setBtnPressCount)){
       const result = await takePhoto();
 	  if(result===''){
 		await addButtonPressCount()
-		setButtonPressCount(await getButtonPressCount())
+		setBtnPressCount(await getButtonPressCount())
 	  }else{
 		  navigation.navigate("AnalysisResultScreen", {
 		    imageBase64: result,
@@ -66,29 +66,26 @@ const WriteAnalysis = ({ navigation, route }) => {
   useEffect(() => {
 		const fetchButtonPressCount = async () => {
 			const currentDate = new Date().toISOString().split("T")[0];
-			const storedDate = await AsyncStorage.getItem("buttonPressDate");
+			const storedDate = await getButtonPressDate();
 
 			if (!storedDate || storedDate !== currentDate) {
 				// 현재 날짜와 이전에 저장된 날짜가 다른 경우
-				await AsyncStorage.setItem("buttonPressDate", currentDate);
-				await AsyncStorage.setItem("buttonPressCount", "20"); // 초기값으로 2를 설정
-				setButtonPressCount("20");
+        await setButtonPress(currentDate, '2')  // 초기값 2
+				setBtnPressCount("2");
 			} else {
 				// 이전에 저장된 날짜와 현재 날짜가 같은 경우
-				const storedButtonPressCount = await AsyncStorage.getItem(
-					"buttonPressCount"
-				);
+				const storedButtonPressCount = await getButtonPressCount()
 				if (storedButtonPressCount !== null) {
-					setButtonPressCount(storedButtonPressCount);
+					setBtnPressCount(storedButtonPressCount);
 				} else {
 					// 만약 저장된 값이 없다면 초기값
-					setButtonPressCount("2");
+					setBtnPressCount("2");
 				}
 			}
 		};
 
 		fetchButtonPressCount();
-	}, []);
+	}, [isFocused]);
 
 	return (
 		<SafeAreaView
@@ -110,7 +107,7 @@ const WriteAnalysis = ({ navigation, route }) => {
 						{ color: isDark ? COLOR_DARK_WHITE : COLOR_LIGHT_BLUE },
 					]}
 				>
-					남은 분석 티켓: {buttonPressCount} 개
+					남은 분석 티켓: {btnPressCount} 개
 				</Text>
 
 				<Pressable

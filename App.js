@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { StatusBar } from "react-native";
+import { StatusBar, View } from "react-native";
 import WriteScreen from "./src/pages/Write";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -168,5 +168,9 @@ export default function App() {
 			</themeContext.Provider>
 		);
 	}
-	return <ScreenlockPw isDark={isDark} setHavePW={setHavePW} />;
+	return (
+		<View style={{flex:1, backgroundColor: isDark ? '#1C1C1E' : 'rgb(242, 242, 242)'}}>
+			<ScreenlockPw isDark={isDark} setHavePW={setHavePW} />
+		</View>
+	)
 }

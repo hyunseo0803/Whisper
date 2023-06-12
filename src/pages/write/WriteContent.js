@@ -400,14 +400,15 @@ const headerStyle = StyleSheet.create({
 	subjectBox: {
 		boxSizing: "border-box",
 		backgroundColor: "#4E4981",
-		paddingHorizontal: 15,
-		paddingVertical: 10,
+		// paddingHorizontal: 15,
 		marginHorizontal: 5,
 		borderRadius: 50,
 		justifyContent: "center",
 	},
 	subjectText: {
 		color: "#fff",
+    marginVertical:10,
+    marginHorizontal: 15
 	},
 });
 
