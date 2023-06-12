@@ -23,6 +23,7 @@ import {
 } from "../../globalStyle/color";
 import themeContext from "../../globalStyle/themeContext";
 import diaryTopic from '../../util/diaryTopic.json'
+import { Ionicons } from "@expo/vector-icons";
 
 setupURLPolyfill();
 
@@ -92,6 +93,15 @@ const AnalysisResultScreen = ({ navigation, route }) => {
 			selectedDate: selectedDate,
 		});
 	};
+
+  /**
+   * 일기 주제 새로고침
+   */
+  const handleNewTopic = () => {
+    const randomTopic = diaryTopic[`${analysisMood}`]
+    setSelectedTopic([])
+    setSubject(randomTopic.sort(() => Math.random()-randomTopic.length).slice(0,6))
+  }
 
 	/**
 	 * moodImage 오브젝트
@@ -227,16 +237,9 @@ const AnalysisResultScreen = ({ navigation, route }) => {
                 </View>
               </View>
             </View>
-            <View style={{width:'100%', alignItems:'center'}}>
+            <View style={{width:'100%', alignItems:'center', justifyContent:'center', display:'flex', 'flexDirection':'row'}}>
               <TouchableOpacity
-                style={[
-                  styles.buttonTouchable,
-                  {
-                    backgroundColor: isSelected
-                      ? "#E76B5C"
-                      : "rgba(231, 107, 92, 0.5)",
-                  },
-                ]}
+                style={[ styles.buttonTouchable,ModeColorStyle(isDark).bg_RED]}
                 onPress={handleNextButton}
                 disabled={!isSelected}
               >
@@ -249,6 +252,10 @@ const AnalysisResultScreen = ({ navigation, route }) => {
                 >
                   다음
                 </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+              onPress={() => handleNewTopic()}>
+                <Ionicons name="ios-reload-circle" size={60} style={[ModeColorStyle(isDark).font_RED]} />
               </TouchableOpacity>
             </View>
 					</View>
@@ -348,11 +355,12 @@ const styles = StyleSheet.create({
 		color: "white",
 	},
 	buttonTouchable: {
-		width: 250,
+		width: 200,
 		height: 55,
 		borderRadius: 50,
 		justifyContent: "center",
 		alignItems: "center",
+    marginRight: 20
 	},
 	buttonText: {
 		textAlign: "center",
