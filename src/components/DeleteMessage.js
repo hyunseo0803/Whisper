@@ -1,9 +1,10 @@
 // 일기 삭제 버튼 모달창
 
-import React from 'react';
+import React, { useContext } from 'react';
 import {View, StyleSheet, Text, Modal, Pressable, Alert, useColorScheme, TouchableHighlight, TouchableOpacity} from 'react-native';
 import GlobalStyle from '../globalStyle/GlobalStyle'
 import ModeColorStyle from '../globalStyle/ModeColorStyle';
+import themeContext from '../globalStyle/themeContext';
 import { deleteDiarys } from '../util/database';
 
 /**
@@ -20,7 +21,8 @@ const DeleteMessage = (props) => {
     setRedirect
   } = props;
 
-  const isDark = useColorScheme() === 'dark'
+  const isDark = useContext(themeContext).theme === 'dark'
+
 
   const onClickDelete = (want_delete) => {
     if(want_delete === true) {
