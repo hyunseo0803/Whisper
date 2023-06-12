@@ -175,16 +175,40 @@ export const moodAnalysisButtonPressCount = async(setButtonPressCount) => {
  * 버튼 누른 횟수를 하나 증가시켜주는 함수
  */
 export const addButtonPressCount = async() => {
-	const buttonPressCount = await AsyncStorage.getItem("buttonPressCount");
-  await AsyncStorage.setItem("buttonPressCount", (buttonPressCount*1+1).toString());
+  try{
+    const buttonPressCount = await AsyncStorage.getItem("buttonPressCount");
+    await AsyncStorage.setItem("buttonPressCount", (buttonPressCount*1+1).toString());
+    return true
+  }catch(e){
+    console.error(e)
+    return false
+  }
 }
 
 /**
- * buttonPressCount 갯수 조회 함수
+ * storage buttonPressCount 갯수 조회 함수
  * @returns {string}btnPressCount
  */
 export const getButtonPressCount = async() => {
   return await AsyncStorage.getItem("buttonPressCount");
+}
+
+/**
+ * storage buttonPressDate 조회 함수
+ * @returns 마지막으로 버튼 누른 날짜
+ */
+export const getButtonPressDate = async() => {
+  return await AsyncStorage.getItem("buttonPressDate")
+}
+
+/**
+ * buttonPressCount 갯수 저장 함수
+ * @param {string} date 
+ * @param {string} num 
+ */
+export const setButtonPress = async(date, num) => {
+  await AsyncStorage.setItem("buttonPressDate", date)
+  await AsyncStorage.setItem("buttonPressCount", num) 
 }
 
 /**
