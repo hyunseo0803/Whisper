@@ -53,7 +53,7 @@ const SearchResult = ({ navigation, route }) => {
           }
           return(
             <DiaryView
-              dId={diary.d_id}
+              dId={diary.id}
               key={index}
               date = {diary.date}
               title = {diary.title}

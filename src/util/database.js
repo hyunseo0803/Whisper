@@ -397,11 +397,11 @@ export const deleteDiarys = async (id) => {
 					"DELETE FROM diary WHERE id = ?",
 					[id],
 					(_, { row }) => {
-						return true;
+						resolve(true);
 					},
 					(_, error) => {
 						console.error(error, "삭제 과정에서 에러 발생!");
-						return false;
+						reject(false);
 					}
 				);
 			});
